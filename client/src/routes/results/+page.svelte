@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { eventNames, type CompetitionResults } from '../../lib/types';
+    import { page } from '$app/stores';
+	import { eventNames, type CompetitionResults } from '$lib/types';
 
 	const url = 'http://localhost:8000/results';
 
