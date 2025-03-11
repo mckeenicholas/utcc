@@ -1,22 +1,22 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { page } from '$app/stores';
-    import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-    import type { CompetitionResults } from '$lib/types';
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
+	import type { CompetitionResults } from '$lib/types';
 
-    let competitionResults = $state<CompetitionResults | null>(null);
+	let competitionResults = $state<CompetitionResults | null>(null);
 
-    onMount(async () => {
-        const compid = parseInt($page.params.compid);
-        const url = `http://localhost:8000/results/${compid}`;
+	onMount(async () => {
+		const compid = parseInt($page.params.compid);
+		const url = `http://localhost:8000/results/${compid}`;
 
-        const response = await fetch(url);
-        const data: CompetitionResults = await response.json();
+		const response = await fetch(url);
+		const data: CompetitionResults = await response.json();
 
-        competitionResults = data;
-    });
+		competitionResults = data;
+	});
 </script>
 
 {#if competitionResults}
-    <CompetitionResultsDisplay {competitionResults} />
+	<CompetitionResultsDisplay {competitionResults} />
 {/if}

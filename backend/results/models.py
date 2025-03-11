@@ -43,22 +43,11 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.name} - {self.event} - {self.competition.date}"
 
-    def get_time_display(self, time_field):
-        time_value = getattr(self, time_field)
-        if time_value is None:
-            return ""
-        elif time_value == -1:
-            return "DNF"
-        elif time_value == -2:
-            return "DNS"
-        else:
-            return str(time_value)
-
-    def get_all_times_display(self):
+    def get_times(self):
         return [
-            self.get_time_display("time1"),
-            self.get_time_display("time2"),
-            self.get_time_display("time3"),
-            self.get_time_display("time4"),
-            self.get_time_display("time5"),
+            self.time1,
+            self.time2,
+            self.time3,
+            self.time4,
+            self.time5,
         ]

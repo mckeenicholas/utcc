@@ -27,7 +27,7 @@ def results_list(_, competition_id=None):
             for result in round_results:
                 person_data = {
                     "name": result.name,
-                    "times": result.get_all_times_display(),
+                    "times": result.get_times(),
                 }
                 persons_data.append(person_data)
 
@@ -49,7 +49,7 @@ def results_list(_, competition_id=None):
     )
 
 
-def competition_list(request):
+def competition_list(_):
     competitions = Competition.objects.all().order_by("-date")
     competitions_data = [
         {"id": comp.id, "name": comp.name, "date": comp.date.isoformat()}

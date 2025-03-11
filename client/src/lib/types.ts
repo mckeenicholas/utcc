@@ -37,7 +37,7 @@ export const eventNames = {
 
 export interface Person {
 	name: string;
-	times: string[];
+	times: number[];
 }
 
 export interface EventResults {
