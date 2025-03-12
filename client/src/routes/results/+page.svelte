@@ -18,35 +18,27 @@
 		competitionResults = resultsData;
 		competitionsList = competitionsData;
 	});
-
-	function handleCompetitionSelect(event: Event) {
-		const select = event.target as HTMLSelectElement;
-		const id = parseInt(select.value);
-		if (id) {
-			window.location.href = `/results/${id}`;
-		}
-	}
 </script>
 
-{#if competitionsList}
-	<div class="m-4 w-64">
-		<label for="competition-select" class="mb-1 block text-sm font-medium text-gray-700">
-			View past results
-		</label>
-		<select
-			id="competition-select"
-			class="block w-full rounded-md bg-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-			onchange={handleCompetitionSelect}
-		>
-			{#each competitionsList.competitions as competition}
-				<option value={competition.id}>
-					{competition.name} ({competition.date})
-				</option>
-			{/each}
-		</select>
-	</div>
-{/if}
+<div class="flex justify-center">
+	{#if competitionsList}
+		<div class="m-4 flex w-full items-center rounded-md bg-gray-200 shadow-sm">
+			<p class="ms-2 block whitespace-nowrap font-medium">Past competitions:</p>
+			<div class="max-w-full overflow-x-auto whitespace-nowrap">
+				{#each competitionsList.competitions as competition}
+					<a href={`/results/${competition.id}`} class="inline-block p-2 hover:bg-gray-300">
+						{competition.name}
+					</a>
+				{/each}
+			</div>
+		</div>
+	{/if}
+</div>
 
 {#if competitionResults}
-	<CompetitionResultsDisplay {competitionResults} />
+	<hr />
+	<CompetitionResultsDisplay
+		{competitionResults}
+		title={`Most recent results: ${competitionResults.competition.name}`}
+	/>
 {/if}

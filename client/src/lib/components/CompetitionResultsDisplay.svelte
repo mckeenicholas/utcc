@@ -2,7 +2,10 @@
 	import { eventNames, eventSolves, type CompetitionResults, type WCAEvent } from '$lib/types';
 	import { bestTime, calculateWCAAverage, compareTimes, renderTime } from '$lib/utils';
 
-	let { competitionResults }: { competitionResults: CompetitionResults } = $props();
+	let {
+		competitionResults,
+		title
+	}: { competitionResults: CompetitionResults; title?: string | null } = $props();
 
 	let sortedResults = $derived(
 		competitionResults.results.map(({ event, rounds }) => ({
@@ -14,6 +17,8 @@
 		}))
 	);
 
+	let displayTitle = $derived(title ?? `Results for ${competitionResults.competition.name}`);
+
 	let innerWidth = $state<number>(0);
 	let selectedPerson = $state<{ name: string; times: number[] } | null>(null);
 	let selectedEvent = $state<WCAEvent>('333');
@@ -22,13 +27,13 @@
 
 <svelte:window bind:innerWidth />
 <div class="mx-4 my-2">
-	<h1 class="mb-4 text-2xl font-bold">Results for {competitionResults.competition.name}</h1>
+	<h1 class="mb-4 text-2xl font-bold">{displayTitle}</h1>
 	<div class="w-full space-y-6">
 		{#each sortedResults as { event, rounds }}
 			<div class="rounded-lg bg-white p-1 shadow">
 				{#each rounds as { round, results }}
 					<div>
-						<h2 class="mb-2 text-xl font-semibold ms-2">
+						<h2 class="mb-2 ms-2 text-xl font-semibold">
 							{eventNames[event]} - Round {round}
 						</h2>
 						<div class="overflow-x-auto rounded-md">

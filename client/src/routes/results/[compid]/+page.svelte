@@ -18,6 +18,9 @@
 	});
 </script>
 
+<div class="m-4 mb-3">
+	<a class="rounded-md bg-gray-200 p-2 text-xl hover:bg-gray-300" href="/results"> ← Back </a>
+</div>
 {#if competitionResults}
 	<CompetitionResultsDisplay {competitionResults} />
 {/if}

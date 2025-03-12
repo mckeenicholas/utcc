@@ -22,11 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
+
 def get_env_or_error(var_name):
     value = os.getenv(var_name)
     if value is None:
         raise EnvironmentError(f"Set the {var_name} environment variable")
     return value
+
 
 SECRET_KEY = get_env_or_error("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
@@ -135,8 +137,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-STATIC_ROOT = "django-static/"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -146,9 +146,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React default port
     "http://127.0.0.1:5173",
+    "https://utcc.nmckee.org",
 ]
 
 # Optional: Allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org/"]
 
 APPEND_SLASH = False
