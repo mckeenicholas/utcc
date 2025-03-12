@@ -41,7 +41,7 @@ class Result(models.Model):
     time5 = models.IntegerField()
 
     def __str__(self):
-        return f"{self.name} - {self.event} - {self.competition.date}"
+        return f"{self.name}: {self.round} - {self.event} - {self.competition.date}"
 
     def get_times(self):
         return [
