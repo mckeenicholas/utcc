@@ -35,21 +35,41 @@ export const eventNames = {
 	'333mbf': '3x3x3 Multi-Blind'
 } as const;
 
+export const eventSolves: Partial<Record<WCAEvent, number>> = {
+	'333': 5,
+	'222': 5,
+	'444': 5,
+	'555': 5,
+	'666': 3,
+	'777': 3,
+	'333bf': 3,
+	'333fm': 3,
+	'333oh': 5,
+	minx: 5,
+	pyram: 5,
+	clock: 5,
+	skewb: 5,
+	sq1: 5,
+	'444bf': 3,
+	'555bf': 3
+} as const;
+
 export interface Person {
 	name: string;
 	times: number[];
 }
 
-export interface EventResults {
-	name: string;
-	rounds: {
-		[roundNumber: string]: Person[];
-	};
+export interface Round {
+	round: number;
+	results: Person[];
+}
+
+export interface EventResult {
+	event: WCAEvent;
+	rounds: Round[];
 }
 
 export interface CompetitionResults {
 	competition: Competition;
-	results: {
-		[event in WCAEvent]?: EventResults;
-	};
+	results: EventResult[];
 }

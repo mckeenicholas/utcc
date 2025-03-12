@@ -14,10 +14,10 @@ def results_list(_, competition_id=None):
     results = Result.objects.filter(competition=competition).order_by("event", "round")
 
     # Group results by event
-    events_data = {}
+    events_data = []
     for event, event_results in groupby(results, key=attrgetter("event")):
         event_results = list(event_results)
-        rounds_data = {}
+        rounds_data = []
 
         # Group by round within each event
         for round_num, round_results in groupby(event_results, key=attrgetter("round")):
@@ -31,12 +31,9 @@ def results_list(_, competition_id=None):
                 }
                 persons_data.append(person_data)
 
-            rounds_data[round_num] = persons_data
+            rounds_data.append({"round": round_num, "results": persons_data})
 
-        events_data[event] = {
-            "name": dict(Result.EVENT_CHOICES)[event],
-            "rounds": rounds_data,
-        }
+        events_data.append({"event": event, "rounds": rounds_data})
 
     return JsonResponse(
         {

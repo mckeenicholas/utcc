@@ -1,8 +1,18 @@
 <script lang="ts">
-	import { eventNames, type CompetitionResults, type WCAEvent } from '$lib/types';
-	import { bestTime, calculateWCAAverage, renderTime } from '$lib/utils';
+	import { eventNames, eventSolves, type CompetitionResults, type WCAEvent } from '$lib/types';
+	import { bestTime, calculateWCAAverage, compareTimes, renderTime } from '$lib/utils';
 
 	let { competitionResults }: { competitionResults: CompetitionResults } = $props();
+
+	let sortedResults = $derived(
+		competitionResults.results.map(({ event, rounds }) => ({
+			event,
+			rounds: rounds.map(({ round, results }) => ({
+				round,
+				results: results.slice().sort((a, b) => compareTimes(event, a.times, b.times))
+			}))
+		}))
+	);
 
 	let innerWidth = $state<number>(0);
 	let selectedPerson = $state<{ name: string; times: number[] } | null>(null);
@@ -14,12 +24,12 @@
 <div class="mx-4 my-2">
 	<h1 class="mb-4 text-2xl font-bold">Results for {competitionResults.competition.name}</h1>
 	<div class="w-full space-y-6">
-		{#each Object.entries(competitionResults.results) as [eventId, eventResults]}
+		{#each sortedResults as { event, rounds }}
 			<div class="rounded-lg bg-white p-1 shadow">
-				{#each Object.entries(eventResults.rounds) as [roundNum, roundResults]}
+				{#each rounds as { round, results }}
 					<div>
-						<h2 class="mb-2 text-xl font-semibold">
-							{eventNames[eventId as keyof typeof eventNames]} - Round {roundNum}
+						<h2 class="mb-2 text-xl font-semibold ms-2">
+							{eventNames[event]} - Round {round}
 						</h2>
 						<div class="overflow-x-auto rounded-md">
 							<table class="w-full">
@@ -27,7 +37,7 @@
 									<tr>
 										<th class="px-4 py-2 text-center">#</th>
 										<th class="px-4 py-2 text-center">Name</th>
-										{#each roundResults[0].times as _, idx}
+										{#each Array.from({ length: eventSolves[event]! }) as _, idx}
 											<th class="hidden px-4 py-2 text-center md:table-cell">{idx + 1}</th>
 										{/each}
 										<th class="px-4 py-2 text-center">Average</th>
@@ -35,7 +45,7 @@
 									</tr>
 								</thead>
 								<tbody class="bg-gray-100">
-									{#each roundResults as roundPerson, index}
+									{#each results as roundPerson, index}
 										<tr>
 											{#if index != 0}
 												<td colspan="100">
@@ -48,7 +58,7 @@
 											onclick={() => {
 												if (innerWidth > 768) return;
 												selectedPerson = roundPerson;
-												selectedEvent = eventId as WCAEvent;
+												selectedEvent = event;
 												showModal = true;
 											}}
 										>
@@ -60,10 +70,10 @@
 												</td>
 											{/each}
 											<td class="px-4 py-2 text-center">
-												{calculateWCAAverage(eventId as WCAEvent, roundPerson.times)}
+												{renderTime(calculateWCAAverage(event, roundPerson.times))}
 											</td>
 											<td class="px-4 py-2 text-center">
-												{bestTime(roundPerson.times)}
+												{renderTime(bestTime(roundPerson.times))}
 											</td>
 										</tr>
 									{/each}

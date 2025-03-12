@@ -1,0 +1,43 @@
+services:
+  backend:
+    image: utcc-backend
+    pull_policy: never
+    container_name: utcc-backend
+    env_file: backend.env
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    networks:
+      - app-network
+
+  client:
+    image: utcc-client
+    pull_policy: never
+    container_name: utcc-client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - 80:80
+    networks:
+      - app-network
+
+  db:
+    image: postgres:17.4-alpine
+    restart: always
+    env_file:
+      - backend.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -2,9 +2,7 @@
 	import { onMount } from 'svelte';
 	import { type CompetitionList, type CompetitionResults } from '$lib/types';
 	import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-
-	const resultsURL = 'http://localhost:8000/results';
-	const competitionsURL = 'http://localhost:8000/results/competitions';
+	import { resultsURL, competitionsURL } from '$lib/utils';
 
 	let competitionResults = $state<CompetitionResults | null>(null);
 	let competitionsList = $state<CompetitionList | null>(null);
@@ -14,6 +12,8 @@
 			fetch(resultsURL).then((res) => res.json()),
 			fetch(competitionsURL).then((res) => res.json())
 		]);
+
+		console.log(resultsData);
 
 		competitionResults = resultsData;
 		competitionsList = competitionsData;

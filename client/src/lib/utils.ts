@@ -1,5 +1,10 @@
 import type { WCAEvent } from './types';
 
+const BASE_URL = 'http://localhost/api';
+
+export const resultsURL = `${BASE_URL}/results/`;
+export const competitionsURL = `${BASE_URL}/results/competitions/`;
+
 export const Ao5 = (times: number[]): number => {
 	if (times.length !== 5) {
 		throw new Error('Ao5 requires exactly 5 times');
@@ -7,7 +12,7 @@ export const Ao5 = (times: number[]): number => {
 
 	const sortedTimes = [...times].sort((a, b) => a - b);
 
-	return Math.trunc((sortedTimes[1] + sortedTimes[2] + sortedTimes[3]) / 3) / 100;
+	return Math.trunc((sortedTimes[1] + sortedTimes[2] + sortedTimes[3]) / 3);
 };
 
 export const Mo3 = (times: number[]): number => {
@@ -15,7 +20,7 @@ export const Mo3 = (times: number[]): number => {
 		throw new Error('Mo3 requires exactly 3 times');
 	}
 
-	return Math.trunc((times[0] + times[1] + times[2]) / 3) / 100;
+	return Math.trunc((times[0] + times[1] + times[2]) / 3);
 };
 
 export const Bo3 = (times: number[]): number => {
@@ -23,7 +28,7 @@ export const Bo3 = (times: number[]): number => {
 		throw new Error('Bo3 requires exactly 3 times');
 	}
 
-	return Math.min(...times) / 100;
+	return Math.min(...times);
 };
 
 export const calculateWCAAverage = (event: WCAEvent, times: number[]): number => {
@@ -49,16 +54,14 @@ export const compareTimes = (event: WCAEvent, times1: number[], times2: number[]
 	return Math.min(...times1) - Math.min(...times2);
 };
 
-export const bestTime = (times: number[]): string => {
+export const bestTime = (times: number[]): number => {
 	const validTimes = times.filter((time) => time > 0);
 
 	if (validTimes.length == 0) {
-		return 'DNF';
+		return -1;
 	}
 
-	const minTime = Math.min(...validTimes);
-
-	return String(minTime / 100);
+	return Math.min(...validTimes);
 };
 
 export const renderTime = (time: number): string => {
@@ -74,5 +77,14 @@ export const renderTime = (time: number): string => {
 		return '';
 	}
 
-	return String(time / 100);
+	const seconds = time / 100;
+
+	if (seconds >= 60) {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = (seconds % 60).toFixed(2);
+		// Pad seconds with leading zero if needed
+		return `${minutes}:${remainingSeconds.padStart(5, '0')}`;
+	}
+
+	return seconds.toFixed(2);
 };
