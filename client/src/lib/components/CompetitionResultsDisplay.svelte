@@ -104,12 +104,14 @@
 		<div class="w-full max-w-lg rounded-lg bg-white p-6" role="dialog" aria-modal="true">
 			<h3 class="mb-4 text-xl font-semibold">{selectedPerson.name}</h3>
 			<div class="grid grid-cols-2 gap-4">
-				<div class="bold">Attempts</div>
+				<div class="font-semibold">Attempts</div>
 				<div>{selectedPerson.times.map(renderTime).join(', ')}</div>
-				<div>Average</div>
-				<div>{calculateWCAAverage(selectedEvent as WCAEvent, selectedPerson.times)}</div>
-				<div>Best</div>
-				<div>{bestTime(selectedPerson.times)}</div>
+				<div class="font-semibold">Average</div>
+				<div>
+					{renderTime(calculateWCAAverage(selectedEvent as WCAEvent, selectedPerson.times))}
+				</div>
+				<div class="font-semibold">Best</div>
+				<div>{renderTime(bestTime(selectedPerson.times))}</div>
 			</div>
 			<button
 				class="mt-4 rounded bg-gray-200 px-4 py-2 hover:bg-gray-300"

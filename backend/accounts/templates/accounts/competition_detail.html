@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{{ competition.name }} - Results</title>
+    <style>
+      .results-list {
+        margin-bottom: 30px;
+      }
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 5px;
+      }
+      .results-table th,
+      .results-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      .results-table th {
+        background-color: #f5f5f5;
+      }
+      .form-container {
+        border-top: 2px solid #eee;
+        padding-top: 5px;
+        max-width: 50%;
+      }
+      .form-group {
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .form-group label {
+        flex: 0 0 120px; /* Fixed width for labels */
+        margin-bottom: 0;
+      }
+      .form-control {
+        flex: 1; /* Take remaining space */
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .submit-button {
+        background-color: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 130px; /* Aligns with input fields */
+      }
+      .submit-button:hover {
+        background-color: #0056b3;
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 5px;
+        color: #007bff;
+        text-decoration: none;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <script>
+      const setupTimeInputs = () => {
+        const DNF_KEYS = ["d", "D", "/", "#"];
+        const DNS_KEYS = ["s", "S", "*"];
+
+        const toInt = (input) => {
+          const int = parseInt(input);
+          return isNaN(int) ? null : int;
+        };
+
+        const toCentiseconds = (input) => {
+          if (input === "") return 0;
+          if (input === "DNF") return -1;
+          if (input === "DNS") return -2;
+          const num = toInt(input.replace(/\D/g, "")) || 0;
+          return (
+            Math.floor(num / 1000000) * 360000 +
+            Math.floor((num % 1000000) / 10000) * 6000 +
+            Math.floor((num % 10000) / 100) * 100 +
+            (num % 100)
+          );
+        };
+
+        const toClockFormat = (centiseconds) => {
+          if (centiseconds === -1) return "DNF";
+          if (centiseconds === -2) return "DNS";
+          if (!Number.isFinite(centiseconds)) {
+            throw new Error(
+              `Invalid centiseconds, expected positive number, got ${centiseconds}.`,
+            );
+          }
+          return new Date(centiseconds * 10)
+            .toISOString()
+            .substr(11, 11)
+            .replace(/^[0:]*(?!\.)/g, "");
+        };
+
+        const reformatInput = (input) => {
+          const number = toInt(input.replace(/\D/g, "")) || 0;
+          if (number === 0) return "";
+          const str = "00000000" + number.toString().slice(0, 8);
+          const match = str.match(/(\d\d)(\d\d)(\d\d)(\d\d)$/);
+          if (!match) return "";
+          const [, hh, mm, ss, cc] = match;
+          return `${hh}:${mm}:${ss}.${cc}`.replace(/^[0:]*(?!\.)/g, "");
+        };
+
+        const handleInput = (event) => {
+          const input = event.target;
+          const key = input.value.slice(-1);
+          const hiddenInput = input.nextElementSibling;
+
+          if (input.value.trim() === "") {
+            hiddenInput.value = 0;
+            input.value = "";
+          } else if (DNF_KEYS.includes(key)) {
+            input.value = "DNF";
+            hiddenInput.value = -1;
+          } else if (DNS_KEYS.includes(key)) {
+            input.value = "DNS";
+            hiddenInput.value = -2;
+          } else {
+            input.value = reformatInput(input.value);
+            hiddenInput.value = toCentiseconds(input.value);
+          }
+        };
+
+        const handleKeydown = (event) => {
+          if (
+            event.key === "Enter" ||
+            event.key === "ArrowDown" ||
+            event.key === "+"
+          ) {
+            event.preventDefault();
+            const inputs = document.querySelectorAll(".time-input");
+            const currentIndex = Array.from(inputs).indexOf(event.target);
+            const nextInput = inputs[currentIndex + 1];
+            if (nextInput) {
+              nextInput.focus();
+            } else {
+              document.querySelector(".submit-button").focus();
+            }
+          } else if (event.key === "ArrowUp" || event.key === "-") {
+            event.preventDefault();
+            const inputs = document.querySelectorAll(".time-input");
+            const currentIndex = Array.from(inputs).indexOf(event.target);
+            const prevInput = inputs[currentIndex - 1];
+            if (prevInput) {
+              prevInput.focus();
+            }
+          }
+        };
+
+        const timeFields = ["time1", "time2", "time3", "time4", "time5"];
+        timeFields.forEach((fieldName) => {
+          const originalInput = document.querySelector(`#id_${fieldName}`);
+          if (!originalInput) return;
+
+          const displayInput = document.createElement("input");
+          displayInput.type = "text";
+          displayInput.className = "form-control time-input";
+          displayInput.placeholder = "Enter time";
+
+          originalInput.type = "hidden";
+          originalInput.value = 0;
+
+          originalInput.parentNode.insertBefore(displayInput, originalInput);
+
+          displayInput.addEventListener("input", handleInput);
+          displayInput.addEventListener("keydown", handleKeydown);
+        });
+      };
+
+      document.addEventListener("DOMContentLoaded", setupTimeInputs);
+    </script>
+  </head>
+  <body>
+    {% load time_filters %}
+    <div>
+      <a href="{% url 'accounts:dashboard' %}" class="back-link"
+        >← Back to Dashboard</a
+      >
+      <h3>{{ competition.name }}</h3>
+      <p>Date: {{ competition.date }}</p>
+
+      <div class="form-container">
+        <h2>Submit Result</h2>
+        <form method="POST">
+          {% csrf_token %} {% for field in form %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+            {{ field }}
+          </div>
+          {% endfor %}
+          <button type="submit" class="submit-button">Submit Result</button>
+        </form>
+      </div>
+
+      <div class="results-list">
+        <h2>Results</h2>
+        {% if results %}
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Event</th>
+              <th>Round</th>
+              <th>Time 1</th>
+              <th>Time 2</th>
+              <th>Time 3</th>
+              <th>Time 4</th>
+              <th>Time 5</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in results %}
+            <tr>
+              <td>{{ result.name }}</td>
+              <td>{{ result.get_event_display }}</td>
+              <td>{{ result.round }}</td>
+              <td>{{ result.time1|format_centiseconds }}</td>
+              <td>{{ result.time2|format_centiseconds }}</td>
+              <td>{{ result.time3|format_centiseconds }}</td>
+              <td>{{ result.time4|format_centiseconds }}</td>
+              <td>{{ result.time5|format_centiseconds }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p>No results submitted yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
