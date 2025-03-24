@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 
 class Competition(models.Model):
@@ -41,7 +40,9 @@ class Result(models.Model):
     time5 = models.IntegerField()
 
     def __str__(self):
-        return f"{self.name}: {self.round} - {self.event} - {self.competition.date}"
+        return (
+            f"{self.name}: Round {self.round} - {self.event} - {self.competition.date}"
+        )
 
     def get_times(self):
         return [
