@@ -54,25 +54,3 @@ def competition_list(_):
     ]
 
     return JsonResponse({"competitions": competitions_data})
-
-
-# def submit_result(req, competition_id=None):
-#     if req.method != "POST":
-#         return JsonResponse({"error": "Method not allowed"}, status=405)
-
-#     if competition_id:
-#         competition = get_object_or_404(Competition, pk=competition_id)
-#     else:
-#         competition = Competition.objects.latest("date")
-
-#     data = req.POST
-
-
-# def create_competition(req):
-#     if req.method != "POST":
-#         return JsonResponse({"error": "Method not allowed"}, status=405)
-
-#     data = req.POST
-#     competition = Competition.objects.create(name=data["name"], date=data["date"])
-
-#     return JsonResponse({"id": competition.id}, status=201)
