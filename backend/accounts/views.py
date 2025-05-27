@@ -37,9 +37,16 @@ class ResultForm(forms.ModelForm):
         }
 
 
+def home_view(request):
+    if request.user.is_authenticated:
+        return redirect("accounts:dashboard")
+
+    return redirect("accounts:login")
+
+
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect("accounts:dashboard")
 
     if request.method == "POST":
         username = request.POST.get("username")

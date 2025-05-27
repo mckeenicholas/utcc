@@ -25,7 +25,7 @@
 		<div class="m-4 flex w-full items-center rounded-md bg-gray-200 shadow-sm">
 			<p class="ms-2 block whitespace-nowrap font-medium">Past competitions:</p>
 			<div class="max-w-full overflow-x-auto whitespace-nowrap">
-				{#each competitionsList.competitions as competition}
+				{#each competitionsList.competitions as competition (competition.id)}
 					<a href={`/results/${competition.id}`} class="inline-block p-2 hover:bg-gray-300">
 						{competition.name}
 					</a>

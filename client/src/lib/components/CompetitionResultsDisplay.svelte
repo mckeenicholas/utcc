@@ -29,9 +29,9 @@
 <div class="mx-4 my-2">
 	<h1 class="mb-4 text-2xl font-bold">{displayTitle}</h1>
 	<div class="w-full space-y-6">
-		{#each sortedResults as { event, rounds }}
+		{#each sortedResults as { event, rounds } (event)}
 			<div class="rounded-lg bg-white p-1 shadow">
-				{#each rounds as { round, results }}
+				{#each rounds as { round, results } (round)}
 					<div>
 						<h2 class="mb-2 ms-2 text-xl font-semibold">
 							{eventNames[event]} - Round {round}
@@ -42,7 +42,7 @@
 									<tr>
 										<th class="px-4 py-2 text-center">#</th>
 										<th class="px-4 py-2 text-center">Name</th>
-										{#each Array.from({ length: eventSolves[event]! }) as _, idx}
+										{#each Array.from({ length: eventSolves[event]! }) as _, idx (idx)}
 											<th class="hidden px-4 py-2 text-center md:table-cell">{idx + 1}</th>
 										{/each}
 										<th class="px-4 py-2 text-center">Average</th>
@@ -50,7 +50,7 @@
 									</tr>
 								</thead>
 								<tbody class="bg-gray-100">
-									{#each results as roundPerson, index}
+									{#each results as roundPerson, index (index)}
 										<tr>
 											{#if index != 0}
 												<td colspan="100">
@@ -69,7 +69,7 @@
 										>
 											<td class="px-4 py-2 text-center">{index + 1}</td>
 											<td class="px-4 py-2 text-center">{roundPerson.name}</td>
-											{#each roundPerson.times as time}
+											{#each roundPerson.times as time, timeIdx (timeIdx)}
 												<td class="hidden px-4 py-2 text-center md:table-cell">
 													{renderTime(time)}
 												</td>
