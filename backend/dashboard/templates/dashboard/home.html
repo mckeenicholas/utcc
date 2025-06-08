@@ -22,9 +22,36 @@
         justify-content: space-between;
         align-items: center;
       }
+      .competition-item a {
+        text-decoration: none;
+        color: #007bff;
+        flex-grow: 1;
+      }
+      .competition-item a:hover .competition-name {
+        text-decoration: underline;
+      }
+      .competition-details {
+        display: flex;
+        flex-direction: column;
+      }
+      .competition-name {
+        font-weight: bold;
+      }
       .competition-date {
         color: #666;
         font-size: 0.9em;
+      }
+      .delete-button {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 15px;
+      }
+      .delete-button:hover {
+        background-color: #c82333;
       }
       h1,
       h2 {
@@ -74,10 +101,16 @@
       <ul class="competition-list">
         {% for competition in competitions %}
         <li class="competition-item">
-          <a href="{% url 'accounts:competition_detail' competition.id %}">
-            <span class="competition-name">{{ competition.name }}</span>
-            <span class="competition-date">{{ competition.date }}</span>
+          <a href="{% url 'dashboard:competition_detail' competition.id %}">
+            <div class="competition-details">
+              <span class="competition-name">{{ competition.name }}</span>
+              <span class="competition-date">{{ competition.date|date:"Y-m-d" }}</span>
+            </div>
           </a>
+          <form method="POST" action="{% url 'dashboard:delete_competition' competition.id %}" style="display: inline;" onsubmit="return confirmDelete('{{ competition.name }}');">
+            {% csrf_token %}
+            <button type="submit" class="delete-button">Delete</button>
+          </form>
         </li>
         {% endfor %}
       </ul>
@@ -101,5 +134,11 @@
         </form>
       </div>
     </div>
+
+    <script>
+      function confirmDelete(competitionName) {
+        return confirm("Are you sure you want to delete the competition '" + competitionName + "'? This will also remove all associated results.");
+      }
+    </script>
   </body>
 </html>

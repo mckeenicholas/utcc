@@ -1,70 +1,20 @@
 <!doctype html>
 <html>
   <head>
-    <title>{{ competition.name }} - Results</title>
+    <title>Edit Result - {{ competition.name }}</title>
     <style>
-      .results-list {
-        margin-bottom: 30px;
-      }
-      .results-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 5px;
-      }
-      .results-table th,
-      .results-table td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-      }
-      .results-table th {
-        background-color: #f5f5f5;
-      }
-      .form-container {
-        border-top: 2px solid #eee;
-        padding-top: 5px;
-        max-width: 50%;
-      }
-      .form-group {
-        margin-bottom: 5px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .form-group label {
-        flex: 0 0 120px;
-        margin-bottom: 0;
-      }
-      .form-control {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      }
-      .submit-button {
-        background-color: #007bff;
-        color: white;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-left: 130px;
-      }
-      .submit-button:hover {
-        background-color: #0056b3;
-      }
-      .back-link {
-        display: inline-block;
-        margin-bottom: 5px;
-        color: #007bff;
-        text-decoration: none;
-      }
-      .back-link:hover {
-        text-decoration: underline;
-      }
+      body { font-family: sans-serif; margin: 20px; }
+      .form-container { border: 1px solid #ccc; padding: 20px; max-width: 600px; }
+      .form-group { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+      .form-group label { flex: 0 0 120px; }
+      .form-control { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+      .submit-button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+      .submit-button:hover { background-color: #218838; }
+      .back-link { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none; }
+      .back-link:hover { text-decoration: underline; }
     </style>
     <script>
-      const setupTimeInputs = () => {
+      document.addEventListener("DOMContentLoaded", () => {
         const DNF_KEYS = ["d", "D", "/", "#"];
         const DNS_KEYS = ["s", "S", "*"];
 
@@ -89,10 +39,8 @@
         const toClockFormat = (centiseconds) => {
           if (centiseconds === -1) return "DNF";
           if (centiseconds === -2) return "DNS";
-          if (!Number.isFinite(centiseconds)) {
-            throw new Error(
-              `Invalid centiseconds, expected positive number, got ${centiseconds}.`,
-            );
+          if (centiseconds == null || !Number.isFinite(centiseconds) || centiseconds < 0) {
+             return "";
           }
           return new Date(centiseconds * 10)
             .toISOString()
@@ -165,77 +113,43 @@
           displayInput.type = "text";
           displayInput.className = "form-control time-input";
           displayInput.placeholder = "Enter time";
+          displayInput.value = toClockFormat(parseInt(originalInput.value));
+
 
           originalInput.type = "hidden";
-          originalInput.value = 0;
 
           originalInput.parentNode.insertBefore(displayInput, originalInput);
 
           displayInput.addEventListener("input", handleInput);
           displayInput.addEventListener("keydown", handleKeydown);
         });
-      };
-
-      document.addEventListener("DOMContentLoaded", setupTimeInputs);
+      });
     </script>
   </head>
   <body>
-    {% load time_filters %}
-    <div>
-      <a href="{% url 'accounts:dashboard' %}" class="back-link"
-        >← Back to Dashboard</a
-      >
-      <h3>{{ competition.name }}</h3>
-      <p>Date: {{ competition.date }}</p>
+    <a href="{% url 'dashboard:competition_detail' competition_id=competition.id %}" class="back-link">
+      ← Back to {{ competition.name }}
+    </a>
+    <h2>Edit Result for {{ result.name }} in {{ competition.name }}</h2>
 
-      <div class="form-container">
-        <h2>Submit Result</h2>
-        <form method="POST">
-          {% csrf_token %} {% for field in form %}
-          <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-            {{ field }}
-          </div>
-          {% endfor %}
-          <button type="submit" class="submit-button">Submit Result</button>
-        </form>
-      </div>
-
-      <div class="results-list">
-        <h2>Results</h2>
-        {% if results %}
-        <table class="results-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Event</th>
-              <th>Round</th>
-              <th>Time 1</th>
-              <th>Time 2</th>
-              <th>Time 3</th>
-              <th>Time 4</th>
-              <th>Time 5</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for result in results %}
-            <tr>
-              <td>{{ result.name }}</td>
-              <td>{{ result.get_event_display }}</td>
-              <td>{{ result.round }}</td>
-              <td>{{ result.time1|format_centiseconds }}</td>
-              <td>{{ result.time2|format_centiseconds }}</td>
-              <td>{{ result.time3|format_centiseconds }}</td>
-              <td>{{ result.time4|format_centiseconds }}</td>
-              <td>{{ result.time5|format_centiseconds }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <p>No results submitted yet.</p>
-        {% endif %}
-      </div>
+    <div class="form-container">
+      <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          {{ field }}
+          {% if field.errors %}
+            <div style="color: red;">
+              {% for error in field.errors %}
+                <small>{{ error }}</small>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="submit-button">Save Changes</button>
+      </form>
     </div>
   </body>
 </html>

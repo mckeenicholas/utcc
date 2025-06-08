@@ -37,16 +37,9 @@ class ResultForm(forms.ModelForm):
         }
 
 
-def home_view(request):
-    if request.user.is_authenticated:
-        return redirect("accounts:dashboard")
-
-    return redirect("accounts:login")
-
-
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("accounts:dashboard")
+        return redirect("dashboard:dashboard")
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -57,40 +50,42 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 print("logged in")
-                return redirect("accounts:dashboard")
+                return redirect("dashboard:dashboard")
             else:
                 return render(
-                    request, "accounts/login.html", {"error": "Invalid credentials"}
+                    request, "dashboard/login.html", {"error": "Invalid credentials"}
                 )
         else:
             return render(
                 request,
-                "accounts/login.html",
+                "dashboard/login.html",
                 {"error": "Please provide both username and password"},
             )
 
-    return render(request, "accounts/login.html")
+    return render(request, "dashboard/login.html")
 
 
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect("accounts:login")
+    return redirect("dashboard:login")
 
 
 @login_required
 def dashboard(request):
     if request.method == "POST":
-        form = CompetitionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("accounts:dashboard")
+        new_competition_form = CompetitionForm(request.POST)
+        if new_competition_form.is_valid():
+            new_competition_form.save()
+            return redirect("dashboard:dashboard")
     else:
-        form = CompetitionForm()
+        new_competition_form = CompetitionForm()
 
     competitions = Competition.objects.all().order_by("-date")
     return render(
-        request, "accounts/dashboard.html", {"competitions": competitions, "form": form}
+        request,
+        "dashboard/home.html",
+        {"competitions": competitions, "form": new_competition_form},
     )
 
 
@@ -99,20 +94,62 @@ def competition_detail(request, competition_id):
     competition = get_object_or_404(Competition, id=competition_id)
 
     if request.method == "POST":
-        form = ResultForm(request.POST)
-        if form.is_valid():
-            result = form.save(commit=False)
+        results_form = ResultForm(request.POST)
+        if results_form.is_valid():
+            result = results_form.save(commit=False)
             result.competition = competition
             result.save()
             return redirect(
-                "accounts:competition_detail", competition_id=competition_id
+                "dashboard:competition_detail", competition_id=competition_id
             )
     else:
-        form = ResultForm()
+        results_form = ResultForm()
 
     results = Result.objects.filter(competition=competition).order_by("event", "round")
     return render(
         request,
-        "accounts/competition_detail.html",
-        {"competition": competition, "form": form, "results": results},
+        "dashboard/competition_detail.html",
+        {"competition": competition, "form": results_form, "results": results},
     )
+
+
+@login_required
+def delete_competition_view(request, competition_id):
+    competition = get_object_or_404(Competition, pk=competition_id)
+    if request.method == "POST":
+        competition.delete()
+
+    return redirect("dashboard:dashboard")
+
+
+@login_required
+def edit_result_view(request, competition_id, result_id):
+    competition = get_object_or_404(Competition, id=competition_id)
+    result = get_object_or_404(Result, id=result_id, competition=competition)
+
+    if request.method == "POST":
+        form = ResultForm(request.POST, instance=result)
+        if form.is_valid():
+            form.save()
+            return redirect(
+                "dashboard:competition_detail", competition_id=competition.id
+            )
+    else:
+        form = ResultForm(instance=result)
+
+    return render(
+        request,
+        "dashboard/edit_result.html",
+        {"form": form, "competition": competition, "result": result},
+    )
+
+
+@login_required
+def delete_result_view(request, competition_id, result_id):
+    competition = get_object_or_404(Competition, id=competition_id)
+    result = get_object_or_404(Result, id=result_id, competition=competition)
+
+    if request.method == "POST":
+        result.delete()
+
+    return redirect("dashboard:competition_detail", competition_id=competition.id)

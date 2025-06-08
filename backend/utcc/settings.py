@@ -17,6 +17,9 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+LOGIN_URL = "dashboard:login"
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -30,9 +33,11 @@ def get_env_or_error(var_name):
     return value
 
 
-SECRET_KEY = get_env_or_error("DJANGO_SECRET_KEY")
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+# SECRET_KEY = get_env_or_error("DJANGO_SECRET_KEY")
+SECRET_KEY = "SECRET_KEY"
+
+DEBUG = True
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -44,7 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "results",
-    "accounts",
+    "dashboard",
     "corsheaders",
 ]
 
@@ -84,14 +89,21 @@ WSGI_APPLICATION = "utcc.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": get_env_or_error("POSTGRES_DB"),
+#         "USER": get_env_or_error("POSTGRES_USER"),
+#         "PASSWORD": get_env_or_error("POSTGRES_PASSWORD"),
+#         "HOST": os.getenv("POSTGRES_HOST", "db"),
+#         "PORT": os.getenv("POSTGRES_PORT", "5432"),
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": get_env_or_error("POSTGRES_DB"),
-        "USER": get_env_or_error("POSTGRES_USER"),
-        "PASSWORD": get_env_or_error("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST", "db"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -140,13 +152,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Add these settings at the bottom of the file
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React default port
-    "http://127.0.0.1:5173",
     "https://utcc.nmckee.org",
 ]
 
 # Optional: Allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org/"]
+CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org", "http://localhost"]
 
 APPEND_SLASH = True

@@ -9,7 +9,10 @@ def results_list(_, competition_id=None):
     if competition_id:
         competition = get_object_or_404(Competition, pk=competition_id)
     else:
-        competition = Competition.objects.latest("date")
+        try:
+            competition = Competition.objects.latest("date")
+        except Competition.DoesNotExist:
+            return JsonResponse({"message": "No competitions exist"})
 
     results = Result.objects.filter(competition=competition).order_by("event", "round")
 
