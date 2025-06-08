@@ -20,6 +20,8 @@ services:
       context: ./client
       dockerfile: Dockerfile
       target: runner
+    depends_on:
+      - backend
     ports:
       - 80:80
     networks:

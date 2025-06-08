@@ -12,31 +12,45 @@ def results_list(_, competition_id=None):
         try:
             competition = Competition.objects.latest("date")
         except Competition.DoesNotExist:
-            return JsonResponse({"message": "No competitions exist"})
+            return JsonResponse(
+                {"message": "No competitions exist"}, status=404
+            )  # Added status
 
     results = Result.objects.filter(competition=competition).order_by("event", "round")
 
+    # Define the event codes for 3-attempt events
+    three_attempt_events = ["666", "777", "333bf", "444bf", "555bf", "333fm"]
+
     # Group results by event
     events_data = []
-    for event, event_results in groupby(results, key=attrgetter("event")):
-        event_results = list(event_results)
+    for event_code, event_results_iterable in groupby(results, key=attrgetter("event")):
+        event_results = list(event_results_iterable)
         rounds_data = []
 
-        # Group by round within each event
-        for round_num, round_results in groupby(event_results, key=attrgetter("round")):
-            round_results = list(round_results)
+        for round_num, round_results_iterable in groupby(
+            event_results, key=attrgetter("round")
+        ):
+            round_results = list(round_results_iterable)
             persons_data = []
 
             for result in round_results:
+                all_times = result.get_times()
+                if result.event in three_attempt_events:
+                    displayed_times = all_times[:3]
+                else:
+                    displayed_times = all_times
+
                 person_data = {
                     "name": result.name,
-                    "times": result.get_times(),
+                    "times": displayed_times,
                 }
                 persons_data.append(person_data)
 
             rounds_data.append({"round": round_num, "results": persons_data})
 
-        events_data.append({"event": event, "rounds": rounds_data})
+        # # Get the display name for the event
+        # event_display_name = dict(Result.EVENT_CHOICES).get(event_code, event_code)
+        events_data.append({"event": event_code, "rounds": rounds_data})
 
     return JsonResponse(
         {

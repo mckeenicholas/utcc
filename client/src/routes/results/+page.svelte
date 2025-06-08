@@ -13,8 +13,6 @@
 			fetch(competitionsURL).then((res) => res.json())
 		]);
 
-		console.log(resultsData);
-
 		competitionResults = resultsData;
 		competitionsList = competitionsData;
 	});

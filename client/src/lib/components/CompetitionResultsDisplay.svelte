@@ -2,10 +2,8 @@
 	import { eventNames, eventSolves, type CompetitionResults, type WCAEvent } from '$lib/types';
 	import { bestTime, calculateWCAAverage, compareTimes, renderTime } from '$lib/utils';
 
-	let {
-		competitionResults,
-		title
-	}: { competitionResults: CompetitionResults; title?: string | null } = $props();
+	let { competitionResults, title }: { competitionResults: CompetitionResults; title?: string } =
+		$props();
 
 	let sortedResults = $derived(
 		competitionResults.results.map(({ event, rounds }) => ({
@@ -42,7 +40,7 @@
 									<tr>
 										<th class="px-4 py-2 text-center">#</th>
 										<th class="px-4 py-2 text-center">Name</th>
-										{#each Array.from({ length: eventSolves[event]! }) as _, idx (idx)}
+										{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
 											<th class="hidden px-4 py-2 text-center md:table-cell">{idx + 1}</th>
 										{/each}
 										<th class="px-4 py-2 text-center">Average</th>
@@ -105,7 +103,12 @@
 			<h3 class="mb-4 text-xl font-semibold">{selectedPerson.name}</h3>
 			<div class="grid grid-cols-2 gap-4">
 				<div class="font-semibold">Attempts</div>
-				<div>{selectedPerson.times.map(renderTime).join(', ')}</div>
+				<div>
+					{selectedPerson.times
+						.filter((time) => time != 0)
+						.map(renderTime)
+						.join(', ')}
+				</div>
 				<div class="font-semibold">Average</div>
 				<div>
 					{renderTime(calculateWCAAverage(selectedEvent as WCAEvent, selectedPerson.times))}
