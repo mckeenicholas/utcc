@@ -73,6 +73,9 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect("dashboard:login")
+
     if request.method == "POST":
         new_competition_form = CompetitionForm(request.POST)
         if new_competition_form.is_valid():
