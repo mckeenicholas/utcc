@@ -5,8 +5,14 @@ register = template.Library()
 
 @register.filter
 def format_centiseconds(value):
-    if value is None:
+    if value is None or value == 0:
         return ""
+
+    if value == -1:
+        return "DNF"
+
+    if value == -2:
+        return "DNS"
 
     minutes = value // 6000
     remaining = value % 6000

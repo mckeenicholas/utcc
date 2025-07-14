@@ -41,7 +41,7 @@ class Result(models.Model):
     time3 = models.IntegerField()
     time4 = models.IntegerField()
     time5 = models.IntegerField()
-    
+
     single = models.IntegerField(
         null=True, blank=True, help_text="Best single time in centiseconds"
     )
@@ -54,6 +54,10 @@ class Result(models.Model):
 
     def get_times(self):
         return [self.time1, self.time2, self.time3, self.time4, self.time5]
+
+    @staticmethod
+    def dnf_aware_sort_key(time):
+        return float("inf") if time < 0 else time
 
     def calculate_single_and_average(self):
         times = self.get_times()
@@ -87,22 +91,10 @@ class Result(models.Model):
             self.average = -1
             return
 
-        times_for_avg = used_times[:]
+        sorted_times = sorted(used_times, key=self.dnf_aware_sort_key)
 
-        if num_dnfs == 1:
-            dnf_value = next(t for t in times_for_avg if t < 0)
-            best_time = min(times_for_avg)
-            times_for_avg.remove(dnf_value)
-            times_for_avg.remove(best_time)
-        else:
-            best_time = min(times_for_avg)
-            worst_time = max(times_for_avg)
-            times_for_avg.remove(best_time)
-            times_for_avg.remove(worst_time)
-
-        average_sum = sum(times_for_avg)
-
-        # This ensures correct rounding
+        trimmed_times = sorted_times[1:-1]
+        average_sum = sum(trimmed_times)
         self.average = int(average_sum / 3 + 0.5)
 
     def save(self, *args, **kwargs):
