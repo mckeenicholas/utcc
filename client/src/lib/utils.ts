@@ -1,10 +1,11 @@
-import { type Person } from './types';
+import { eventSolves, type Person, type WCAEvent } from './types';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost';
 
 export const resultsURL = `${BASE_URL}/api/results/`;
 export const competitionsURL = `${BASE_URL}/api/results/competitions/`;
+export const recordsURL = `${BASE_URL}/api/results/records`;
 
 const compareTime = (time1: number, time2: number) => {
 	if (time1 > 0 && time2 > 0) return time1 - time2;
@@ -46,4 +47,10 @@ export const renderTime = (time: number): string => {
 	}
 
 	return seconds.toFixed(2);
+};
+
+export const getMeanType = (event: WCAEvent) => {
+	if (eventSolves[event] == 3) return 'Mean';
+
+	return 'Average';
 };

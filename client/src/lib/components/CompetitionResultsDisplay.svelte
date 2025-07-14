@@ -1,24 +1,27 @@
 <script lang="ts">
 	import {
+		eventListIdx,
 		eventNames,
 		eventSolves,
 		type CompetitionResults,
 		type Person,
 		type WCAEvent
 	} from '$lib/types';
-	import { compareResults, renderTime } from '$lib/utils';
+	import { compareResults, getMeanType, renderTime } from '$lib/utils';
 
 	let { competitionResults, title }: { competitionResults: CompetitionResults; title?: string } =
 		$props();
 
 	let sortedResults = $derived(
-		competitionResults.results.map(({ event, rounds }) => ({
-			event,
-			rounds: rounds.map(({ round, results }) => ({
-				round,
-				results: results.slice().sort((a, b) => compareResults(a, b))
+		competitionResults.results
+			.map(({ event, rounds }) => ({
+				event,
+				rounds: rounds.map(({ round, results }) => ({
+					round,
+					results: results.slice().sort((a, b) => compareResults(a, b))
+				}))
 			}))
-		}))
+			.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
 	);
 
 	let displayTitle = $derived(title ?? `Results for ${competitionResults.competition.name}`);
@@ -50,7 +53,7 @@
 											<th class="hidden px-4 py-2 text-center md:table-cell">{idx + 1}</th>
 										{/each}
 										<th class="px-4 py-2 text-center">Best</th>
-										<th class="px-4 py-2 text-center">Average</th>
+										<th class="px-4 py-2 text-center">{getMeanType(event)}</th>
 									</tr>
 								</thead>
 								<tbody class="bg-gray-100">
@@ -117,7 +120,7 @@
 				</div>
 				<div class="font-semibold">Best</div>
 				<div>{renderTime(selectedPerson.single)}</div>
-				<div class="font-semibold">Average</div>
+				<div class="font-semibold">{getMeanType(selectedEvent)}</div>
 				<div>
 					{renderTime(selectedPerson.average)}
 				</div>

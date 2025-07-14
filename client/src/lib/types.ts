@@ -54,6 +54,26 @@ export const eventSolves: Partial<Record<WCAEvent, number>> = {
 	'555bf': 3
 } as const;
 
+export const eventListIdx: Record<WCAEvent, number> = {
+	'333': 0,
+	'222': 1,
+	'444': 2,
+	'555': 3,
+	'666': 4,
+	'777': 5,
+	'333bf': 6,
+	'333fm': 7,
+	'333oh': 8,
+	clock: 9,
+	minx: 10,
+	pyram: 11,
+	skewb: 12,
+	sq1: 13,
+	'444bf': 14,
+	'555bf': 15,
+	'333mbf': 16
+} as const;
+
 export interface Person {
 	name: string;
 	times: number[];
@@ -74,4 +94,21 @@ export interface EventResult {
 export interface CompetitionResults {
 	competition: Competition;
 	results: EventResult[];
+}
+
+export interface RecordInstance {
+	result: number;
+	times_list: number[];
+	person: string;
+	competition_name: string;
+	competition_id: number;
+}
+
+export interface EventRecords {
+	single?: RecordInstance;
+	average?: RecordInstance;
+}
+
+export interface RecordsApiResponse {
+	WCAEvent?: EventRecords;
 }
