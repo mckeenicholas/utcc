@@ -149,3 +149,5 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org"]
 
 APPEND_SLASH = True
+
+LOGIN_URL = "dashboard:login"

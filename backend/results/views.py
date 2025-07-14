@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import Competition, Result
+from .models import THREE_ATTEMPT_EVENTS, Competition, Result
 from itertools import groupby
 from operator import attrgetter
 
@@ -18,9 +18,6 @@ def results_list(_, competition_id=None):
 
     results = Result.objects.filter(competition=competition).order_by("event", "round")
 
-    # Define the event codes for 3-attempt events
-    three_attempt_events = ["666", "777", "333bf", "444bf", "555bf", "333fm"]
-
     # Group results by event
     events_data = []
     for event_code, event_results_iterable in groupby(results, key=attrgetter("event")):
@@ -35,7 +32,7 @@ def results_list(_, competition_id=None):
 
             for result in round_results:
                 all_times = result.get_times()
-                if result.event in three_attempt_events:
+                if result.event in THREE_ATTEMPT_EVENTS:
                     displayed_times = all_times[:3]
                 else:
                     displayed_times = all_times
@@ -43,13 +40,13 @@ def results_list(_, competition_id=None):
                 person_data = {
                     "name": result.name,
                     "times": displayed_times,
+                    "single": result.single,
+                    "average": result.average,
                 }
                 persons_data.append(person_data)
 
             rounds_data.append({"round": round_num, "results": persons_data})
 
-        # # Get the display name for the event
-        # event_display_name = dict(Result.EVENT_CHOICES).get(event_code, event_code)
         events_data.append({"event": event_code, "rounds": rounds_data})
 
     return JsonResponse(

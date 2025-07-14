@@ -1,5 +1,7 @@
 from django.db import models
 
+THREE_ATTEMPT_EVENTS = ["666", "777", "333bf", "444bf", "555bf", "333fm"]
+
 
 class Competition(models.Model):
     name = models.CharField(max_length=255)
@@ -33,20 +35,76 @@ class Result(models.Model):
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     event = models.CharField(max_length=10, choices=EVENT_CHOICES)
     round = models.IntegerField()
+
     time1 = models.IntegerField()
     time2 = models.IntegerField()
     time3 = models.IntegerField()
     time4 = models.IntegerField()
     time5 = models.IntegerField()
+    
+    single = models.IntegerField(
+        null=True, blank=True, help_text="Best single time in centiseconds"
+    )
+    average = models.IntegerField(
+        null=True, blank=True, help_text="Attempt average/mean time"
+    )
 
     def __str__(self):
         return f"{self.name}: {self.event} Round {self.round} - {self.competition.date}"
 
     def get_times(self):
-        return [
-            self.time1,
-            self.time2,
-            self.time3,
-            self.time4,
-            self.time5,
-        ]
+        return [self.time1, self.time2, self.time3, self.time4, self.time5]
+
+    def calculate_single_and_average(self):
+        times = self.get_times()
+
+        if all(t == 0 for t in times):
+            self.single = 0
+            self.average = 0
+            return
+
+        non_dnf_times = [t for t in times if t > 0]
+        self.single = min(non_dnf_times) if non_dnf_times else -1
+
+        is_three_attempt = self.event in THREE_ATTEMPT_EVENTS
+        used_times = times[:3] if is_three_attempt else times
+
+        if any(t == 0 for t in used_times):
+            self.average = 0
+            return
+
+        num_dnfs = sum(1 for t in used_times if t < 0)
+
+        if is_three_attempt:
+            if num_dnfs > 0:
+                self.average = -1
+            else:
+                average_sum = sum(used_times)
+                self.average = int(average_sum / 3 + 0.5)
+            return
+
+        if num_dnfs >= 2:
+            self.average = -1
+            return
+
+        times_for_avg = used_times[:]
+
+        if num_dnfs == 1:
+            dnf_value = next(t for t in times_for_avg if t < 0)
+            best_time = min(times_for_avg)
+            times_for_avg.remove(dnf_value)
+            times_for_avg.remove(best_time)
+        else:
+            best_time = min(times_for_avg)
+            worst_time = max(times_for_avg)
+            times_for_avg.remove(best_time)
+            times_for_avg.remove(worst_time)
+
+        average_sum = sum(times_for_avg)
+
+        # This ensures correct rounding
+        self.average = int(average_sum / 3 + 0.5)
+
+    def save(self, *args, **kwargs):
+        self.calculate_single_and_average()
+        super().save(*args, **kwargs)
