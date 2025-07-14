@@ -1,6 +1,12 @@
 <script lang="ts">
-	import { eventNames, eventSolves, type CompetitionResults, type WCAEvent } from '$lib/types';
-	import { bestTime, calculateWCAAverage, compareTimes, renderTime } from '$lib/utils';
+	import {
+		eventNames,
+		eventSolves,
+		type CompetitionResults,
+		type Person,
+		type WCAEvent
+	} from '$lib/types';
+	import { compareResults, renderTime } from '$lib/utils';
 
 	let { competitionResults, title }: { competitionResults: CompetitionResults; title?: string } =
 		$props();
@@ -10,7 +16,7 @@
 			event,
 			rounds: rounds.map(({ round, results }) => ({
 				round,
-				results: results.slice().sort((a, b) => compareTimes(event, a.times, b.times))
+				results: results.slice().sort((a, b) => compareResults(a, b))
 			}))
 		}))
 	);
@@ -18,7 +24,7 @@
 	let displayTitle = $derived(title ?? `Results for ${competitionResults.competition.name}`);
 
 	let innerWidth = $state<number>(0);
-	let selectedPerson = $state<{ name: string; times: number[] } | null>(null);
+	let selectedPerson = $state<Person | null>(null);
 	let selectedEvent = $state<WCAEvent>('333');
 	let showModal = $state<boolean>(false);
 </script>
@@ -43,8 +49,8 @@
 										{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
 											<th class="hidden px-4 py-2 text-center md:table-cell">{idx + 1}</th>
 										{/each}
-										<th class="px-4 py-2 text-center">Average</th>
 										<th class="px-4 py-2 text-center">Best</th>
+										<th class="px-4 py-2 text-center">Average</th>
 									</tr>
 								</thead>
 								<tbody class="bg-gray-100">
@@ -73,10 +79,10 @@
 												</td>
 											{/each}
 											<td class="px-4 py-2 text-center">
-												{renderTime(calculateWCAAverage(event, roundPerson.times))}
+												{renderTime(roundPerson.single)}
 											</td>
 											<td class="px-4 py-2 text-center">
-												{renderTime(bestTime(roundPerson.times))}
+												{renderTime(roundPerson.average)}
 											</td>
 										</tr>
 									{/each}
@@ -109,12 +115,12 @@
 						.map(renderTime)
 						.join(', ')}
 				</div>
+				<div class="font-semibold">Best</div>
+				<div>{renderTime(selectedPerson.single)}</div>
 				<div class="font-semibold">Average</div>
 				<div>
-					{renderTime(calculateWCAAverage(selectedEvent as WCAEvent, selectedPerson.times))}
+					{renderTime(selectedPerson.average)}
 				</div>
-				<div class="font-semibold">Best</div>
-				<div>{renderTime(bestTime(selectedPerson.times))}</div>
 			</div>
 			<button
 				class="mt-4 rounded bg-gray-200 px-4 py-2 hover:bg-gray-300"

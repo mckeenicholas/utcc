@@ -57,6 +57,8 @@ export const eventSolves: Partial<Record<WCAEvent, number>> = {
 export interface Person {
 	name: string;
 	times: number[];
+	single: number;
+	average: number;
 }
 
 export interface Round {
