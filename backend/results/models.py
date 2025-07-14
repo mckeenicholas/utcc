@@ -53,7 +53,10 @@ class Result(models.Model):
         return f"{self.name}: {self.event} Round {self.round} - {self.competition.date}"
 
     def get_times(self):
-        return [self.time1, self.time2, self.time3, self.time4, self.time5]
+        if self.event in THREE_ATTEMPT_EVENTS:
+            return [self.time1, self.time2, self.time3]
+        else:
+            return [self.time1, self.time2, self.time3, self.time4, self.time5]
 
     @staticmethod
     def dnf_aware_sort_key(time):
@@ -71,19 +74,18 @@ class Result(models.Model):
         self.single = min(non_dnf_times) if non_dnf_times else -1
 
         is_three_attempt = self.event in THREE_ATTEMPT_EVENTS
-        used_times = times[:3] if is_three_attempt else times
 
-        if any(t == 0 for t in used_times):
+        if any(t == 0 for t in times):
             self.average = 0
             return
 
-        num_dnfs = sum(1 for t in used_times if t < 0)
+        num_dnfs = sum(1 for t in times if t < 0)
 
         if is_three_attempt:
             if num_dnfs > 0:
                 self.average = -1
             else:
-                average_sum = sum(used_times)
+                average_sum = sum(times)
                 self.average = int(average_sum / 3 + 0.5)
             return
 
@@ -91,7 +93,7 @@ class Result(models.Model):
             self.average = -1
             return
 
-        sorted_times = sorted(used_times, key=self.dnf_aware_sort_key)
+        sorted_times = sorted(times, key=self.dnf_aware_sort_key)
 
         trimmed_times = sorted_times[1:-1]
         average_sum = sum(trimmed_times)

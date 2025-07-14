@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from .models import THREE_ATTEMPT_EVENTS, Competition, Result
+from .models import Competition, Result
 from itertools import groupby
 from operator import attrgetter
 from django.db.models import F, Window
@@ -31,11 +31,7 @@ def results_list(_, competition_id=None):
             persons_data = []
 
             for result in round_results:
-                all_times = result.get_times()
-                if result.event in THREE_ATTEMPT_EVENTS:
-                    displayed_times = all_times[:3]
-                else:
-                    displayed_times = all_times
+                displayed_times = result.get_times()
 
                 person_data = {
                     "name": result.name,
