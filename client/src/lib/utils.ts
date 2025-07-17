@@ -5,7 +5,7 @@ const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost';
 
 export const resultsURL = `${BASE_URL}/api/results/`;
 export const competitionsURL = `${BASE_URL}/api/results/competitions/`;
-export const recordsURL = `${BASE_URL}/api/results/records`;
+export const recordsURL = `${BASE_URL}/api/results/records/`;
 
 const compareTime = (time1: number, time2: number) => {
 	if (time1 > 0 && time2 > 0) return time1 - time2;
