@@ -1,16 +1,11 @@
 export interface Competition {
-	name: string;
-	date: string;
-}
-
-export interface CompetitionListItem {
 	id: number;
 	name: string;
 	date: string;
 }
 
 export interface CompetitionList {
-	competitions: CompetitionListItem[];
+	competitions: Competition[];
 }
 
 export type WCAEvent = keyof typeof eventNames;

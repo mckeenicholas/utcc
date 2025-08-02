@@ -1,9 +1,11 @@
 import { eventSolves, type Person, type WCAEvent } from './types';
 
-const isProduction = process.env.NODE_ENV === 'production';
-const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost';
+// const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = false;
+export const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost';
 
 export const resultsURL = `${BASE_URL}/api/results/`;
+export const latestResultsURL = `${BASE_URL}/api/results/latest/`;
 export const competitionsURL = `${BASE_URL}/api/results/competitions/`;
 export const recordsURL = `${BASE_URL}/api/results/records/`;
 

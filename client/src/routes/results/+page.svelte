@@ -2,14 +2,14 @@
 	import { onMount } from 'svelte';
 	import { type CompetitionList, type CompetitionResults } from '$lib/types';
 	import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-	import { resultsURL, competitionsURL } from '$lib/utils';
+	import { competitionsURL, latestResultsURL } from '$lib/utils';
 
 	let competitionResults = $state<CompetitionResults | null>(null);
 	let competitionsList = $state<CompetitionList | null>(null);
 
 	onMount(async () => {
 		const [resultsData, competitionsData] = await Promise.all([
-			fetch(resultsURL).then((res) => res.json()),
+			fetch(latestResultsURL).then((res) => res.json()),
 			fetch(competitionsURL).then((res) => res.json())
 		]);
 
