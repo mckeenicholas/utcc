@@ -31,7 +31,8 @@ def get_env_or_error(var_name):
 
 
 SECRET_KEY = get_env_or_error("DJANGO_SECRET_KEY")
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+# DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+DEBUG = True
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 # Application definition
@@ -43,9 +44,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
+    "rest_framework",
     "results",
     "dashboard",
-    "corsheaders",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -139,15 +142,25 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Add these settings at the bottom of the file
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React default port
+    "http://localhost:5173",  # Vite default port
     "https://utcc.nmckee.org",
+    "http://localhost",  # For testing with docker
 ]
 
 # Optional: Allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org"]
+CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org", "http://localhost"]
 
 APPEND_SLASH = True
 
 LOGIN_URL = "dashboard:login"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}

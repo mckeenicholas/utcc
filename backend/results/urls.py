@@ -1,13 +1,31 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import (
+    CompetitionViewSet,
+    ResultViewSet,
+    CompetitionResultsAPIView,
+    RecordsListAPIView,
+)
 
-app_name = "results"
+router = DefaultRouter()
+router.register(r"competitions", CompetitionViewSet, basename="competition")
+router.register(r"results", ResultViewSet, basename="result")
 
 urlpatterns = [
-    path("", views.results_list, name="results_list"),
     path(
-        "<int:competition_id>/", views.results_list, name="results_list_by_competition"
+        "results/latest/",
+        CompetitionResultsAPIView.as_view(),
+        name="latest-results-list",
     ),
-    path("competitions/", views.competition_list, name="competition_list"),
-    path("records/", views.records_list, name="records_list"),
+    # /competitions/ (GET, POST)
+    # /competitions/<id>/ (GET, PUT, PATCH, DELETE)
+    # /results/ (GET, POST)
+    # /results/<id>/ (GET, PUT, PATCH, DELETE)
+    path("", include(router.urls)),
+    path(
+        "competitions/<int:competition_id>/results",
+        CompetitionResultsAPIView.as_view(),
+        name="competition-results-list",
+    ),
+    path("records/", RecordsListAPIView.as_view(), name="records-list"),
 ]
