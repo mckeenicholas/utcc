@@ -1,16 +1,18 @@
-export interface Competition {
-	name: string;
-	date: string;
+export interface Paginated<T> {
+	count: number;
+	next: string | null;
+	previous: string | null;
+	results: T[];
 }
 
-export interface CompetitionListItem {
+export interface Competition {
 	id: number;
 	name: string;
 	date: string;
 }
 
 export interface CompetitionList {
-	competitions: CompetitionListItem[];
+	competitions: Competition[];
 }
 
 export type WCAEvent = keyof typeof eventNames;
@@ -74,16 +76,32 @@ export const eventListIdx: Record<WCAEvent, number> = {
 	'333mbf': 16
 } as const;
 
-export interface Person {
+export interface PersonResult {
+	id: number;
 	name: string;
 	times: number[];
 	single: number;
 	average: number;
 }
 
+export interface Result {
+	id: number;
+	name: string;
+	competition: number;
+	event: WCAEvent;
+	round: number;
+	time1: number;
+	time2: number;
+	time3: number;
+	time4: number;
+	time5: number;
+	single: number;
+	average: number;
+}
+
 export interface Round {
 	round: number;
-	results: Person[];
+	results: PersonResult[];
 }
 
 export interface EventResult {

@@ -1,13 +1,34 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import (
+    CompetitionViewSet,
+    ResultViewSet,
+    CompetitionResultsAPIView,
+    RecordsListAPIView,
+)
 
-app_name = "results"
+# Create router for ViewSets
+router = DefaultRouter()
+router.register(r"competitions", CompetitionViewSet, basename="competition")
+router.register(r"results", ResultViewSet, basename="result")
 
 urlpatterns = [
-    path("", views.results_list, name="results_list"),
+    # Custom API endpoints
+    path("records/", RecordsListAPIView.as_view(), name="records-list"),
     path(
-        "<int:competition_id>/", views.results_list, name="results_list_by_competition"
+        "competitions/latest/results/",
+        CompetitionResultsAPIView.as_view(),
+        name="latest-competition-results",
     ),
-    path("competitions/", views.competition_list, name="competition_list"),
-    path("records/", views.records_list, name="records_list"),
+    path(
+        "competitions/<int:competition_id>/results/",
+        CompetitionResultsAPIView.as_view(),
+        name="competition-results-detail",
+    ),
+    # Include router URLs for CRUD operations
+    # This provides:
+    # - GET/POST /competitions/
+    # - GET/PUT/PATCH/DELETE /competitions/{id}/
+    # - POST/GET/PUT/PATCH/DELETE /results/{id}/ (GET /results/ disabled)
+    path("", include(router.urls)),
 ]

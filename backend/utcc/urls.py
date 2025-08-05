@@ -19,7 +19,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # Admin interface
     path("admin/", admin.site.urls),
-    path("api/results/", include("results.urls")),
-    path("dashboard/", include("dashboard.urls", namespace="dashboard")),
+    # API endpoints
+    path("api/users/", include("users.urls")),
+    path("api/", include("results.urls")),
+    # Dashboard (Django templates)
 ]

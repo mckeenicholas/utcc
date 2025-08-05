@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def get_env_or_error(var_name):
     value = os.getenv(var_name)
     if value is None:
-        raise EnvironmentError(f"Set the {var_name} environment variable")
+        raise EnvironmentError(f"{var_name} environment variable must be set!")
     return value
 
 
@@ -43,9 +43,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "results",
-    "dashboard",
     "corsheaders",
+    "rest_framework",
+    "results",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "utcc.urls"
@@ -131,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / STATIC_URL
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -139,15 +142,29 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Add these settings at the bottom of the file
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React default port
+    "http://localhost:5173",  # Vite default port
     "https://utcc.nmckee.org",
+    "http://localhost",  # For testing with docker
 ]
 
 # Optional: Allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://utcc.nmckee.org",
+    "http://localhost",
+    "http://localhost:5173",
+]
 
 APPEND_SLASH = True
 
-LOGIN_URL = "dashboard:login"
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+}
