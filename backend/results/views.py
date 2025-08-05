@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Competition, Result
+from users.models import Person
 from .serializers import (
     CompetitionSerializer,
     FullCompetitionResultsSerializer,
@@ -23,17 +24,47 @@ class CompetitionViewSet(viewsets.ModelViewSet):
     queryset = Competition.objects.all().order_by("-date")
     serializer_class = CompetitionSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # Pagination will use the default settings (PageNumberPagination with page_size=20)
+    # Use the default settings for pagination (PageNumberPagination with page_size=20)
 
 
 class ResultViewSet(viewsets.ModelViewSet):
-    queryset = Result.objects.all().order_by("event", "round")
+    queryset = Result.objects.select_related("person_id").all().order_by("event", "round")
     serializer_class = ResultCreateUpdateSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     # Listing all results is disabled as there can be a lot of them, and it doesn't really make sense with how the data is stored.
     def list(self, request):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Check if a result already exists for this person, event, round, and competition
+        person_id = serializer.validated_data.get('person_id')
+        event = serializer.validated_data.get('event')
+        round_num = serializer.validated_data.get('round')
+        competition = serializer.validated_data.get('competition')
+        
+        existing_result = Result.objects.filter(
+            person_id=person_id,
+            event=event,
+            round=round_num,
+            competition=competition
+        ).first()
+        
+        if existing_result:
+            # Update the existing result
+            for attr, value in serializer.validated_data.items():
+                setattr(existing_result, attr, value)
+            existing_result.save()
+            
+            # Return the updated result
+            response_serializer = self.get_serializer(existing_result)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Create new result as normal
+            return super().create(request, *args, **kwargs)
 
 
 class CompetitionResultsAPIView(APIView):
@@ -50,7 +81,7 @@ class CompetitionResultsAPIView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-        results = Result.objects.filter(competition=competition).order_by(
+        results = Result.objects.filter(competition=competition).select_related("person_id").order_by(
             "event", "round"
         )
 
@@ -79,7 +110,8 @@ class RecordsListAPIView(APIView):
         records = defaultdict(dict)
 
         best_singles = (
-            Result.objects.filter(single__gt=0)
+            Result.objects.select_related("person_id", "competition")
+            .filter(single__gt=0)
             .annotate(
                 row_num=Window(
                     expression=RowNumber(),
@@ -91,7 +123,8 @@ class RecordsListAPIView(APIView):
         )
 
         best_averages = (
-            Result.objects.filter(average__gt=0)
+            Result.objects.select_related("person_id", "competition")
+            .filter(average__gt=0)
             .annotate(
                 row_num=Window(
                     expression=RowNumber(),

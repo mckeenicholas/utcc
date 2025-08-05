@@ -1,7 +1,6 @@
 import { eventSolves, type PersonResult, type WCAEvent } from './types';
 
-// const isProduction = process.env.NODE_ENV === 'production';
-const isProduction = false;
+const isProduction = process.env.NODE_ENV === 'production';
 export const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost:8000';
 
 // Updated URLs to match backend structure

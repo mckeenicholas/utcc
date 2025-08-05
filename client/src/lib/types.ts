@@ -79,7 +79,8 @@ export const eventListIdx: Record<WCAEvent, number> = {
 
 export interface PersonResult {
 	id: number;
-	name: string;
+	person_name: string;
+	person_id: number;
 	times: number[];
 	single: number;
 	average: number;
@@ -87,7 +88,6 @@ export interface PersonResult {
 
 export interface Result {
 	id: number;
-	name: string;
 	competition: number;
 	event: WCAEvent;
 	round: number;
@@ -98,6 +98,8 @@ export interface Result {
 	time5: number;
 	single: number;
 	average: number;
+	person_name: string;
+	person_id: number;
 }
 
 export interface Round {
@@ -118,7 +120,8 @@ export interface CompetitionResults {
 export interface RecordInstance {
 	result: number;
 	times_list: number[];
-	person: string;
+	person_name: string;
+	person_id: number;
 	competition_name: string;
 	competition_id: number;
 }
@@ -130,4 +133,9 @@ export interface EventRecords {
 
 export interface RecordsApiResponse {
 	WCAEvent?: EventRecords;
+}
+
+export interface User {
+	id: number;
+	name: string;
 }

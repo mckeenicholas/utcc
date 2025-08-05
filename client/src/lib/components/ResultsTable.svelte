@@ -95,7 +95,7 @@
 										<tbody>
 											{#each roundResults as result, idx (idx)}
 												<tr class="hover: border-b border-gray-100">
-													<td class="px-4 py-3 text-sm text-gray-900">{result.name}</td>
+													<td class="px-4 py-3 text-sm text-gray-900">{result.person_name}</td>
 													<td class="px-4 py-3 text-right text-sm text-gray-900"
 														>{renderTime(result.time1)}</td
 													>

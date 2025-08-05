@@ -101,13 +101,13 @@
 											>
 										</tr>
 									</thead>
-									<tbody class="divide-y divide-gray-200 bg-white hover:bg-gray-100">
+									<tbody class="divide-y divide-gray-200 bg-white">
 										{#each results as roundPerson, index (index)}
 											{#if index > 0}
 												<tr><td colspan="100" class="h-0 border-t border-gray-100 p-0"></td></tr>
 											{/if}
 											<tr
-												class="hover: transition-colors duration-150 ease-in-out"
+												class="hover: transition-colors duration-150 ease-in-out hover:bg-gray-100"
 												class:cursor-pointer={trimResults}
 												onclick={() => {
 													if (!trimResults) return;
@@ -124,7 +124,7 @@
 												<td
 													class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
 												>
-													{roundPerson.name}
+													{roundPerson.person_name}
 												</td>
 												{#each roundPerson.times as time, timeIdx (timeIdx)}
 													<td
@@ -175,7 +175,7 @@
 			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
 		>
 			<div class="border-b border-gray-200 px-6 py-4">
-				<h3 class="text-lg font-semibold text-gray-900">{selectedPerson.name}</h3>
+				<h3 class="text-lg font-semibold text-gray-900">{selectedPerson.person_name}</h3>
 				<p class="mt-1 text-sm text-gray-600">{eventNames[selectedEvent]} - Details</p>
 			</div>
 			<div class="px-6 py-4">

@@ -33,8 +33,7 @@ class Result(models.Model):
         ("555bf", "5x5x5 Blindfolded"),
     )
 
-    name = models.CharField(max_length=255)
-    person_id = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
+    person_id = models.ForeignKey(Person, on_delete=models.CASCADE)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     event = models.CharField(max_length=10, choices=EVENT_CHOICES)
     round = models.IntegerField()
@@ -53,7 +52,8 @@ class Result(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name}: {self.event} Round {self.round} - {self.competition.date}"
+        person_name = self.person_id.name
+        return f"{person_name}: {self.event} Round {self.round} - {self.competition.date}"
 
     def get_times(self):
         if self.event in THREE_ATTEMPT_EVENTS:

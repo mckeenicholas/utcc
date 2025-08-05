@@ -21,11 +21,14 @@ class CompetitionSerializer(serializers.ModelSerializer):
 
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):
+    person_name = serializers.CharField(source="person_id.name", read_only=True)
+    
     class Meta:
         model = Result
         fields = [
             "id",
-            "name",
+            "person_id",
+            "person_name",
             "competition",
             "event",
             "round",
@@ -37,16 +40,16 @@ class ResultCreateUpdateSerializer(serializers.ModelSerializer):
             "single",
             "average",
         ]
-        # 'id', 'single', and 'average' are not expected in the input payload.
-        read_only_fields = ["id", "single", "average"]
+        read_only_fields = ["id", "single", "average", "person_name"]
 
 
 class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
+    person_name= serializers.CharField(source="person_id.name", read_only=True)
 
     class Meta:
         model = Result
-        fields = ["id", "name", "times", "single", "average"]
+        fields = ["id", "person_id", "times", "single", "average", "person_name"]
 
     def get_times(self, obj):
         return obj.get_times()
@@ -76,7 +79,8 @@ class FullCompetitionResultsSerializer(serializers.Serializer):
 class RecordDetailSerializer(serializers.ModelSerializer):
     result = serializers.SerializerMethodField()
     times_list = serializers.SerializerMethodField()
-    person = serializers.CharField(source="name")
+    person_name = serializers.CharField(source="person_id.name")
+    person_id = serializers.IntegerField(source="person_id.id")
     competition_name = serializers.CharField(source="competition.name")
     competition_id = serializers.IntegerField(source="competition.id")
 
@@ -85,7 +89,8 @@ class RecordDetailSerializer(serializers.ModelSerializer):
         fields = [
             "result",
             "times_list",
-            "person",
+            "person_name",
+            "person_id",
             "competition_name",
             "competition_id",
         ]

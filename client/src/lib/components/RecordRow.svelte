@@ -19,13 +19,13 @@
 
 <tr
 	class="transition-colors duration-100 ease-in-out hover:cursor-pointer hover:bg-gray-100"
-	onclick={() => (window.location.href = `/competition/${record.competition_id}`)}
+	onclick={() => (window.location.href = `/competitions/${record.competition_id}`)}
 >
 	<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
 		{recordType}
 	</td>
 	<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-		{record.person}
+		{record.person_name}
 	</td>
 	<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
 		{record.competition_name}
