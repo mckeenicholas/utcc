@@ -4,13 +4,14 @@
 		eventNames,
 		eventSolves,
 		type CompetitionResults,
-		type Person,
+		type PersonResult,
 		type WCAEvent
 	} from '$lib/types';
 	import { compareResults, getMeanType, renderTime } from '$lib/utils';
 
-	let { competitionResults, title }: { competitionResults: CompetitionResults; title?: string } =
-		$props();
+	const BREAKPOINT = 835;
+
+	let { competitionResults }: { competitionResults: CompetitionResults } = $props();
 
 	let sortedResults = $derived(
 		competitionResults.results
@@ -24,67 +25,97 @@
 			.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
 	);
 
-	let displayTitle = $derived(title ?? `Results for ${competitionResults.competition.name}`);
-
 	let innerWidth = $state<number>(0);
-	let selectedPerson = $state<Person | null>(null);
+	let selectedPerson = $state<PersonResult | null>(null);
 	let selectedEvent = $state<WCAEvent>('333');
 	let showModal = $state<boolean>(false);
+
+	let trimResults = $derived(innerWidth < BREAKPOINT);
 </script>
 
 <svelte:window bind:innerWidth />
-<div class="mx-4 my-2">
-	<h1 class="mb-4 text-2xl font-bold">{displayTitle}</h1>
-	<div class="w-full space-y-6">
+<div class="space-y-6">
+	<div class="space-y-6">
 		{#each sortedResults as { event, rounds } (event)}
-			<div class="rounded-lg bg-white p-1 shadow">
-				{#each rounds as { round, results } (round)}
-					<div>
-						<h2 class="mb-2 ms-2 text-xl font-semibold">
-							{eventNames[event]} - Round {round}
-						</h2>
-						<div class="overflow-x-auto rounded-md">
-							<table class="w-full">
-								<thead class="bg-gray-200">
+			<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+				{#each rounds as { round, results }, roundIndex (round)}
+					<div class="border-b border-gray-200 last:border-b-0">
+						<div class=" border-b border-gray-200 px-4 py-2" class:rounded-t-lg={roundIndex === 0}>
+							<h2 class="text-lg font-semibold text-gray-800">
+								{eventNames[event]} - Round {round}
+							</h2>
+						</div>
+						<div class="overflow-x-auto">
+							<table class="min-w-full divide-y divide-gray-200">
+								<thead class="">
 									<tr>
-										<th class="px-4 py-2 text-center">#</th>
-										<th class="px-4 py-2 text-center">Name</th>
+										<th
+											class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+											>#</th
+										>
+										<th
+											class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+											>Name</th
+										>
 										{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
-											<th class="hidden px-4 py-2 text-center md:table-cell">{idx + 1}</th>
+											<th
+												class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+												class:hidden={trimResults}
+											>
+												Solve {idx + 1}
+											</th>
 										{/each}
-										<th class="px-4 py-2 text-center">Best</th>
-										<th class="px-4 py-2 text-center">{getMeanType(event)}</th>
+										<th
+											class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+											>Best</th
+										>
+										<th
+											class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+											>{getMeanType(event)}</th
+										>
 									</tr>
 								</thead>
-								<tbody class="bg-gray-100">
+								<tbody class="divide-y divide-gray-200 bg-white">
 									{#each results as roundPerson, index (index)}
-										<tr>
-											{#if index != 0}
-												<td colspan="100">
-													<hr />
-												</td>
-											{/if}
-										</tr>
+										{#if index > 0}
+											<tr><td colspan="100" class="h-0 border-t border-gray-100 p-0"></td></tr>
+										{/if}
 										<tr
-											class="hover:bg-gray-50"
+											class="hover: transition-colors duration-150 ease-in-out"
+											class:cursor-pointer={trimResults}
 											onclick={() => {
-												if (innerWidth > 768) return;
+												if (!trimResults) return;
 												selectedPerson = roundPerson;
 												selectedEvent = event;
 												showModal = true;
 											}}
 										>
-											<td class="px-4 py-2 text-center">{index + 1}</td>
-											<td class="px-4 py-2 text-center">{roundPerson.name}</td>
+											<td
+												class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+											>
+												{index + 1}
+											</td>
+											<td
+												class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+											>
+												{roundPerson.name}
+											</td>
 											{#each roundPerson.times as time, timeIdx (timeIdx)}
-												<td class="hidden px-4 py-2 text-center md:table-cell">
+												<td
+													class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm text-gray-700"
+													class:hidden={trimResults}
+												>
 													{renderTime(time)}
 												</td>
 											{/each}
-											<td class="px-4 py-2 text-center">
+											<td
+												class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+											>
 												{renderTime(roundPerson.single)}
 											</td>
-											<td class="px-4 py-2 text-center">
+											<td
+												class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+											>
 												{renderTime(roundPerson.average)}
 											</td>
 										</tr>
@@ -101,36 +132,54 @@
 
 {#if showModal && selectedPerson}
 	<div
-		class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
 		onclick={() => (showModal = false)}
-		onkeydown={(e) => e.key === 'Enter' && (showModal = false)}
+		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
 		aria-label="Close modal"
 		role="button"
 		tabindex="0"
 	>
-		<div class="w-full max-w-lg rounded-lg bg-white p-6" role="dialog" aria-modal="true">
-			<h3 class="mb-4 text-xl font-semibold">{selectedPerson.name}</h3>
-			<div class="grid grid-cols-2 gap-4">
-				<div class="font-semibold">Attempts</div>
-				<div>
-					{selectedPerson.times
-						.filter((time) => time != 0)
-						.map(renderTime)
-						.join(', ')}
-				</div>
-				<div class="font-semibold">Best</div>
-				<div>{renderTime(selectedPerson.single)}</div>
-				<div class="font-semibold">{getMeanType(selectedEvent)}</div>
-				<div>
-					{renderTime(selectedPerson.average)}
+		<div
+			class="w-full max-w-lg rounded-lg bg-white shadow-xl"
+			role="dialog"
+			aria-modal="true"
+			tabindex="0"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+		>
+			<div class="border-b border-gray-200 px-6 py-4">
+				<h3 class="text-lg font-semibold text-gray-900">{selectedPerson.name}</h3>
+				<p class="mt-1 text-sm text-gray-600">{eventNames[selectedEvent]} - Details</p>
+			</div>
+			<div class="px-6 py-4">
+				<div class="space-y-4">
+					<div class="grid grid-cols-2 gap-4">
+						<div class="text-sm font-medium text-gray-700">Attempts:</div>
+						<div class="font-mono text-sm text-gray-900">
+							{selectedPerson.times
+								.filter((time) => time != 0)
+								.map(renderTime)
+								.join(', ')}
+						</div>
+						<div class="text-sm font-medium text-gray-700">Best Single:</div>
+						<div class="font-mono text-sm font-medium text-gray-900">
+							{renderTime(selectedPerson.single)}
+						</div>
+						<div class="text-sm font-medium text-gray-700">{getMeanType(selectedEvent)}:</div>
+						<div class="font-mono text-sm font-medium text-gray-900">
+							{renderTime(selectedPerson.average)}
+						</div>
+					</div>
 				</div>
 			</div>
-			<button
-				class="mt-4 rounded bg-gray-200 px-4 py-2 hover:bg-gray-300"
-				onclick={() => (showModal = false)}
-			>
-				Close
-			</button>
+			<div class="flex justify-end border-t border-gray-200 px-6 py-4">
+				<button
+					class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+					onclick={() => (showModal = false)}
+				>
+					Close
+				</button>
+			</div>
 		</div>
 	</div>
 {/if}

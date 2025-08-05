@@ -18,19 +18,25 @@
 </script>
 
 <tr
-	class="cursor-pointer hover:bg-gray-50"
-	onclick={() => (window.location.href = `/results/${record.competition_id}`)}
+	class="hover: cursor-pointer transition-colors duration-150 ease-in-out"
+	onclick={() => (window.location.href = `/competition/${record.competition_id}`)}
 >
-	<td class="px-4 py-2 text-center font-semibold">{recordType}</td>
-	<td class="px-4 py-2 text-center">{record.person}</td>
-	<td class="px-4 py-2 text-center">
+	<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+		{recordType}
+	</td>
+	<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+		{record.person}
+	</td>
+	<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
 		{record.competition_name}
 	</td>
-	<td class="px-4 py-2 text-center">
+	<td class="whitespace-nowrap px-6 py-4 text-center font-mono text-sm font-bold text-gray-900">
 		{renderTime(record.result)}
 	</td>
 	{#each record.times_list as time, timeIdx (timeIdx)}
-		<td class="hidden px-4 py-2 text-center md:table-cell">
+		<td
+			class="hidden whitespace-nowrap px-6 py-4 text-center font-mono text-sm text-gray-700 md:table-cell"
+		>
 			{renderTime(time)}
 		</td>
 	{/each}

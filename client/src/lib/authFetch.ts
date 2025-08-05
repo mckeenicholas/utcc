@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import { BASE_URL } from './utils';
 
 export const getCsrf = async () => {
-	await fetch(`${BASE_URL}/api/users/csrf/`, {
+	await fetch(`${BASE_URL}/api/users/auth/csrf/`, {
 		credentials: 'include'
 	});
 };
@@ -18,8 +18,8 @@ const authFetch = (url: string, options: RequestInit = {}): Promise<Response> =>
 	const config: RequestInit = {
 		...options,
 		headers: headers,
-		credentials: 'include',
-		mode: 'same-origin'
+		credentials: 'include'
+		// mode: 'same-origin'
 	};
 
 	return fetch(url, config);

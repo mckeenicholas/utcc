@@ -1,13 +1,12 @@
-import { eventSolves, type Person, type WCAEvent } from './types';
+import { eventSolves, type PersonResult, type WCAEvent } from './types';
 
-// const isProduction = process.env.NODE_ENV === 'production';
-const isProduction = false;
-export const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost';
+const isProduction = process.env.NODE_ENV === 'production';
+export const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost:8000';
 
-export const resultsURL = `${BASE_URL}/api/results/`;
-export const latestResultsURL = `${BASE_URL}/api/results/latest/`;
-export const competitionsURL = `${BASE_URL}/api/results/competitions/`;
-export const recordsURL = `${BASE_URL}/api/results/records/`;
+// Updated URLs to match backend structure
+export const latestCompetitionsURL = `${BASE_URL}/api/competitions/`;
+export const latestResultsURL = `${BASE_URL}/api/competitions/latest/results/`;
+export const recordsURL = `${BASE_URL}/api/records/`;
 
 const compareTime = (time1: number, time2: number) => {
 	if (time1 > 0 && time2 > 0) return time1 - time2;
@@ -19,7 +18,7 @@ const compareTime = (time1: number, time2: number) => {
 	return 0;
 };
 
-export const compareResults = (person1: Person, person2: Person): number => {
+export const compareResults = (person1: PersonResult, person2: PersonResult): number => {
 	const averageComparison = compareTime(person1.average, person2.average);
 	if (averageComparison != 0) return averageComparison;
 
@@ -55,4 +54,11 @@ export const getMeanType = (event: WCAEvent) => {
 	if (eventSolves[event] == 3) return 'Mean';
 
 	return 'Average';
+};
+
+export const checkLoginStatus = async () => {
+	const loggedInRes = await fetch(`${BASE_URL}/api/users/auth/status/`, { credentials: 'include' });
+	const loggedInData = await loggedInRes.json();
+
+	return loggedInData.logged_in;
 };
