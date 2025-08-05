@@ -23,6 +23,7 @@ class CompetitionViewSet(viewsets.ModelViewSet):
     queryset = Competition.objects.all().order_by("-date")
     serializer_class = CompetitionSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # Pagination will use the default settings (PageNumberPagination with page_size=20)
 
 
 class ResultViewSet(viewsets.ModelViewSet):
@@ -30,8 +31,14 @@ class ResultViewSet(viewsets.ModelViewSet):
     serializer_class = ResultCreateUpdateSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    # Listing all results is disabled as there can be a lot of them, and it doesn't really make sense with how the data is stored.
+    def list(self, request):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 class CompetitionResultsAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request, competition_id=None, format=None):
         if competition_id:
             competition = get_object_or_404(Competition, pk=competition_id)
@@ -66,6 +73,8 @@ class CompetitionResultsAPIView(APIView):
 
 
 class RecordsListAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request, format=None):
         records = defaultdict(dict)
 

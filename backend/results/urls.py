@@ -7,25 +7,28 @@ from .views import (
     RecordsListAPIView,
 )
 
+# Create router for ViewSets
 router = DefaultRouter()
 router.register(r"competitions", CompetitionViewSet, basename="competition")
 router.register(r"results", ResultViewSet, basename="result")
 
 urlpatterns = [
-    path(
-        "results/latest/",
-        CompetitionResultsAPIView.as_view(),
-        name="latest-results-list",
-    ),
-    # /competitions/ (GET, POST)
-    # /competitions/<id>/ (GET, PUT, PATCH, DELETE)
-    # /results/ (GET, POST)
-    # /results/<id>/ (GET, PUT, PATCH, DELETE)
-    path("", include(router.urls)),
-    path(
-        "competitions/<int:competition_id>/results",
-        CompetitionResultsAPIView.as_view(),
-        name="competition-results-list",
-    ),
+    # Custom API endpoints
     path("records/", RecordsListAPIView.as_view(), name="records-list"),
+    path(
+        "competitions/latest/results/",
+        CompetitionResultsAPIView.as_view(),
+        name="latest-competition-results",
+    ),
+    path(
+        "competitions/<int:competition_id>/results/",
+        CompetitionResultsAPIView.as_view(),
+        name="competition-results-detail",
+    ),
+    # Include router URLs for CRUD operations
+    # This provides:
+    # - GET/POST /competitions/
+    # - GET/PUT/PATCH/DELETE /competitions/{id}/
+    # - POST/GET/PUT/PATCH/DELETE /results/{id}/ (GET /results/ disabled)
+    path("", include(router.urls)),
 ]

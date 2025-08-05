@@ -35,7 +35,7 @@ class ResultPersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Result
-        fields = ["name", "times", "single", "average"]
+        fields = ["id", "name", "times", "single", "average"]
 
     def get_times(self, obj):
         return obj.get_times()

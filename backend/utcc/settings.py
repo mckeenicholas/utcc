@@ -26,13 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def get_env_or_error(var_name):
     value = os.getenv(var_name)
     if value is None:
-        raise EnvironmentError(f"Set the {var_name} environment variable")
+        raise EnvironmentError(f"{var_name} environment variable must be set!")
     return value
 
 
 SECRET_KEY = get_env_or_error("DJANGO_SECRET_KEY")
-# DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 # Application definition
@@ -47,7 +46,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "results",
-    "dashboard",
     "users",
 ]
 
@@ -60,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "utcc.urls"
@@ -134,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / STATIC_URL
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -150,11 +150,13 @@ CORS_ALLOWED_ORIGINS = [
 # Optional: Allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["https://utcc.nmckee.org", "http://localhost"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://utcc.nmckee.org",
+    "http://localhost",
+    "http://localhost:5173",
+]
 
 APPEND_SLASH = True
-
-LOGIN_URL = "dashboard:login"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -163,4 +165,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
 }
