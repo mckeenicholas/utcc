@@ -6,7 +6,6 @@
 
 	interface Props {
 		formData: {
-			name: string;
 			event: WCAEvent;
 			round: number;
 			time1: number;
