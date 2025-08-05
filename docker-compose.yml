@@ -11,6 +11,8 @@ services:
       dockerfile: Dockerfile
     networks:
       - app-network
+    ports:
+      - 8000:8000
 
   client:
     image: utcc-client

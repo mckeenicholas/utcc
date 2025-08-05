@@ -18,7 +18,7 @@
 </script>
 
 <tr
-	class="hover: cursor-pointer transition-colors duration-150 ease-in-out"
+	class="transition-colors duration-100 ease-in-out hover:cursor-pointer hover:bg-gray-100"
 	onclick={() => (window.location.href = `/competition/${record.competition_id}`)}
 >
 	<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">

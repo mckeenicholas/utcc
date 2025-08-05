@@ -36,97 +36,124 @@
 <svelte:window bind:innerWidth />
 <div class="space-y-6">
 	<div class="space-y-6">
-		{#each sortedResults as { event, rounds } (event)}
-			<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-				{#each rounds as { round, results }, roundIndex (round)}
-					<div class="border-b border-gray-200 last:border-b-0">
-						<div class=" border-b border-gray-200 px-4 py-2" class:rounded-t-lg={roundIndex === 0}>
-							<h2 class="text-lg font-semibold text-gray-800">
-								{eventNames[event]} - Round {round}
-							</h2>
-						</div>
-						<div class="overflow-x-auto">
-							<table class="min-w-full divide-y divide-gray-200">
-								<thead class="">
-									<tr>
-										<th
-											class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
-											>#</th
-										>
-										<th
-											class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
-											>Name</th
-										>
-										{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
+		{#if competitionResults.results.length == 0}
+			<div class="px-6 py-8 text-center">
+				<div class="text-gray-500">
+					<svg
+						class="mx-auto h-12 w-12 text-gray-400"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+						/>
+					</svg>
+					<h3 class="mt-2 text-sm font-medium text-gray-900">No Results Entered</h3>
+					<p class="mt-1 text-sm text-gray-500">
+						Results for this round have not been entered yet.
+					</p>
+				</div>
+			</div>
+		{:else}
+			{#each sortedResults as { event, rounds } (event)}
+				<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+					{#each rounds as { round, results }, roundIndex (round)}
+						<div class="border-b border-gray-200 last:border-b-0">
+							<div
+								class=" border-b border-gray-200 px-4 py-2"
+								class:rounded-t-lg={roundIndex === 0}
+							>
+								<h2 class="text-lg font-semibold text-gray-800">
+									{eventNames[event]} - Round {round}
+								</h2>
+							</div>
+							<div class="overflow-x-auto">
+								<table class="min-w-full divide-y divide-gray-200">
+									<thead class="">
+										<tr>
 											<th
-												class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-												class:hidden={trimResults}
+												class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+												>#</th
 											>
-												Solve {idx + 1}
-											</th>
-										{/each}
-										<th
-											class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-											>Best</th
-										>
-										<th
-											class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-											>{getMeanType(event)}</th
-										>
-									</tr>
-								</thead>
-								<tbody class="divide-y divide-gray-200 bg-white">
-									{#each results as roundPerson, index (index)}
-										{#if index > 0}
-											<tr><td colspan="100" class="h-0 border-t border-gray-100 p-0"></td></tr>
-										{/if}
-										<tr
-											class="hover: transition-colors duration-150 ease-in-out"
-											class:cursor-pointer={trimResults}
-											onclick={() => {
-												if (!trimResults) return;
-												selectedPerson = roundPerson;
-												selectedEvent = event;
-												showModal = true;
-											}}
-										>
-											<td
-												class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+											<th
+												class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+												>Name</th
 											>
-												{index + 1}
-											</td>
-											<td
-												class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
-											>
-												{roundPerson.name}
-											</td>
-											{#each roundPerson.times as time, timeIdx (timeIdx)}
-												<td
-													class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm text-gray-700"
+											{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
+												<th
+													class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
 													class:hidden={trimResults}
 												>
-													{renderTime(time)}
-												</td>
+													Solve {idx + 1}
+												</th>
 											{/each}
-											<td
-												class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+											<th
+												class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+												>Best</th
 											>
-												{renderTime(roundPerson.single)}
-											</td>
-											<td
-												class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+											<th
+												class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+												>{getMeanType(event)}</th
 											>
-												{renderTime(roundPerson.average)}
-											</td>
 										</tr>
-									{/each}
-								</tbody>
-							</table>
+									</thead>
+									<tbody class="divide-y divide-gray-200 bg-white hover:bg-gray-100">
+										{#each results as roundPerson, index (index)}
+											{#if index > 0}
+												<tr><td colspan="100" class="h-0 border-t border-gray-100 p-0"></td></tr>
+											{/if}
+											<tr
+												class="hover: transition-colors duration-150 ease-in-out"
+												class:cursor-pointer={trimResults}
+												onclick={() => {
+													if (!trimResults) return;
+													selectedPerson = roundPerson;
+													selectedEvent = event;
+													showModal = true;
+												}}
+											>
+												<td
+													class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+												>
+													{index + 1}
+												</td>
+												<td
+													class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+												>
+													{roundPerson.name}
+												</td>
+												{#each roundPerson.times as time, timeIdx (timeIdx)}
+													<td
+														class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm text-gray-700"
+														class:hidden={trimResults}
+													>
+														{renderTime(time)}
+													</td>
+												{/each}
+												<td
+													class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+												>
+													{renderTime(roundPerson.single)}
+												</td>
+												<td
+													class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+												>
+													{renderTime(roundPerson.average)}
+												</td>
+											</tr>
+										{/each}
+									</tbody>
+								</table>
+							</div>
 						</div>
-					</div>
-				{/each}
-			</div>
-		{/each}
+					{/each}
+				</div>
+			{/each}
+		{/if}
 	</div>
 </div>
 

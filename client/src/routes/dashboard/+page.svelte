@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { BASE_URL, checkLoginStatus } from '$lib/utils';
+	import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from '$lib/utils';
 	import type { Competition, Paginated } from '$lib/types';
 	import authFetch from '$lib/authFetch';
 	import { DatePicker } from 'bits-ui';
 	import { type DateValue } from '@internationalized/date';
 	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-
-	const PAGINATION_SIZE = 20;
 
 	let competitions: Competition[] = $state([]);
 	let loading = $state(true);

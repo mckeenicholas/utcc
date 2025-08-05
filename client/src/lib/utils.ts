@@ -1,12 +1,15 @@
 import { eventSolves, type PersonResult, type WCAEvent } from './types';
 
-const isProduction = process.env.NODE_ENV === 'production';
+// const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = false;
 export const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost:8000';
 
 // Updated URLs to match backend structure
 export const latestCompetitionsURL = `${BASE_URL}/api/competitions/`;
 export const latestResultsURL = `${BASE_URL}/api/competitions/latest/results/`;
 export const recordsURL = `${BASE_URL}/api/records/`;
+
+export const PAGINATION_SIZE = 20;
 
 const compareTime = (time1: number, time2: number) => {
 	if (time1 > 0 && time2 > 0) return time1 - time2;
