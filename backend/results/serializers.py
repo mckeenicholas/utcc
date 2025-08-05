@@ -3,10 +3,21 @@ from .models import Competition, Result
 
 
 class CompetitionSerializer(serializers.ModelSerializer):
+    events = serializers.SerializerMethodField()
+
     class Meta:
         model = Competition
-        fields = ["id", "name", "date"]
-        read_only_fields = ["id"]
+        fields = ["id", "name", "date", "events"]
+        read_only_fields = ["id", "events"]
+
+    def get_events(self, obj):
+        events = (
+            Result.objects.filter(competition=obj)
+            .values_list("event", flat=True)
+            .distinct()
+            .order_by("event")
+        )
+        return list(events)
 
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):

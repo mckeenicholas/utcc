@@ -27,7 +27,7 @@
 	});
 </script>
 
-<Backbutton to="/results" />
+<Backbutton />
 
 {#if loading}
 	<LoadingScreen message="Loading Results" />

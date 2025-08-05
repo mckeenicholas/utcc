@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import Person
+
 THREE_ATTEMPT_EVENTS = ["666", "777", "333bf", "444bf", "555bf", "333fm"]
 
 
@@ -32,6 +34,7 @@ class Result(models.Model):
     )
 
     name = models.CharField(max_length=255)
+    person_id = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     event = models.CharField(max_length=10, choices=EVENT_CHOICES)
     round = models.IntegerField()

@@ -18,7 +18,8 @@
 				]);
 
 			competitionResults = resultsData;
-			competitionsList = competitionsData.results;
+			// Only show the last 10 competitions
+			competitionsList = competitionsData.results.slice(0, 10);
 		} catch (error) {
 			console.error('Failed to fetch data:', error);
 		} finally {
@@ -44,7 +45,7 @@
 					<div class="flex flex-wrap items-center gap-2">
 						<a
 							href="/records"
-							class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 						>
 							<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -54,13 +55,35 @@
 									d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
 								/>
 							</svg>
-							View Records
+							Records
 						</a>
-						<span class="text-sm font-medium text-gray-700">Past competitions:</span>
-						<div class="flex flex-wrap gap-2">
+						<a
+							href="/competitions"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+						>
+							<svg
+								class="mr-2 h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M3 12h.01" />
+								<path d="M3 18h.01" />
+								<path d="M3 6h.01" />
+								<path d="M8 12h13" />
+								<path d="M8 18h13" />
+								<path d="M8 6h13" />
+							</svg>
+							All Competitions
+						</a>
+						<div class="flex flex-wrap items-center gap-2">
+							<span class="text-sm font-medium text-gray-700">Recent competitions:</span>
 							{#each competitionsList as competition (competition.id)}
 								<a
-									href={`/competition/${competition.id}`}
+									href={`/competitions/${competition.id}`}
 									class="inline-block rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
 								>
 									{competition.name}
