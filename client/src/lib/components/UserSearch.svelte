@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { User } from '$lib/types';
+	import { BASE_URL } from '$lib/utils';
 
 	let {
 		value = '',
@@ -27,7 +28,9 @@
 		}
 		loading = true;
 		try {
-			const response = await fetch(`/api/users/persons/search/?name=${encodeURIComponent(query)}`);
+			const response = await fetch(
+				`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`
+			);
 			const data = await response.json();
 			searchResults = data.results || data || [];
 		} catch (error) {

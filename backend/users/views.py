@@ -50,16 +50,12 @@ def is_logged_in(request):
 
 
 class PersonViewSet(viewsets.ModelViewSet):
-    queryset = Person.objects.all().order_by('name')
+    queryset = Person.objects.all().order_by("name")
     serializer_class = PersonSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=False, methods=["get"])
     def search(self, request):
-        """
-        Custom action to search persons by name.
-        Usage: GET /persons/search/?name=searchterm
-        """
         name_query = request.query_params.get("name", None)
         if name_query:
             persons = Person.objects.filter(name__icontains=name_query)

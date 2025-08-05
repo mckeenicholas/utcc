@@ -53,7 +53,9 @@ class Result(models.Model):
 
     def __str__(self):
         person_name = self.person_id.name
-        return f"{person_name}: {self.event} Round {self.round} - {self.competition.date}"
+        return (
+            f"{person_name}: {self.event} Round {self.round} - {self.competition.date}"
+        )
 
     def get_times(self):
         if self.event in THREE_ATTEMPT_EVENTS:

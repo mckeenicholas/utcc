@@ -22,7 +22,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):
     person_name = serializers.CharField(source="person_id.name", read_only=True)
-    
+
     class Meta:
         model = Result
         fields = [
@@ -45,7 +45,7 @@ class ResultCreateUpdateSerializer(serializers.ModelSerializer):
 
 class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
-    person_name= serializers.CharField(source="person_id.name", read_only=True)
+    person_name = serializers.CharField(source="person_id.name", read_only=True)
 
     class Meta:
         model = Result

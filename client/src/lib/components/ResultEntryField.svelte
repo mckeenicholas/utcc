@@ -1,30 +1,20 @@
 <script lang="ts">
-	// Props with bindable value that can be a function tuple [getter, setter] or number
-	let { value = $bindable(0), placeholder = 'Enter time', id, disabled = false } = $props();
+	interface Props {
+		value: number;
+		placeholder?: string;
+		id: string;
+		disabled?: boolean;
+	}
+
+	let { value = $bindable(0), placeholder = 'Enter time', id, disabled = false }: Props = $props();
 
 	const DNF_KEYS = ['d', 'D', '/', '#'];
 	const DNS_KEYS = ['s', 'S', '*'];
 
 	let displayValue = $state('');
 
-	// Helper to get/set value (supports both direct values and custom binding tuples)
-	const getValue = () => {
-		if (Array.isArray(value) && typeof value[0] === 'function') {
-			return value[0]();
-		}
-		return value;
-	};
-
-	const setValue = (newValue: number) => {
-		if (Array.isArray(value) && typeof value[1] === 'function') {
-			value[1](newValue);
-		} else {
-			value = newValue;
-		}
-	};
-
 	$effect(() => {
-		const currentValue = getValue();
+		const currentValue = value;
 		if (currentValue === 0) {
 			displayValue = '';
 		} else {
@@ -79,16 +69,16 @@
 
 		if (inputValue.trim() === '') {
 			displayValue = '';
-			setValue(0);
+			value = 0;
 		} else if (DNF_KEYS.includes(key)) {
 			displayValue = 'DNF';
-			setValue(-1);
+			value = -1;
 		} else if (DNS_KEYS.includes(key)) {
 			displayValue = 'DNS';
-			setValue(-2);
+			value = -2;
 		} else {
 			displayValue = reformatInput(inputValue);
-			setValue(toCentiseconds(displayValue));
+			value = toCentiseconds(displayValue);
 		}
 	};
 

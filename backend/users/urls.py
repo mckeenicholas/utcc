@@ -15,6 +15,6 @@ urlpatterns = [
     # Include router URLs for CRUD operations
     # This provides:
     # - POST/GET/PUT/PATCH/DELETE /persons/{id}/ (GET /persons/ disabled)
-    # - TOOD: GET /persons/search/?name=searchterm
+    # - GET /persons/search/?name=searchterm
     path("", include(router.urls)),
 ]

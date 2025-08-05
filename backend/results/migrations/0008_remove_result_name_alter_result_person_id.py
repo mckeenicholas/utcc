@@ -5,21 +5,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('results', '0007_migrate_result_person_data'),
-        ('users', '0001_initial'),
+        ("results", "0007_migrate_result_person_data"),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='result',
-            name='name',
+            model_name="result",
+            name="name",
         ),
         migrations.AlterField(
-            model_name='result',
-            name='person_id',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='users.person'),
+            model_name="result",
+            name="person_id",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.person",
+            ),
             preserve_default=False,
         ),
     ]
