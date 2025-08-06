@@ -70,6 +70,26 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 							>
+								<path d="M8 2v4" />
+								<path d="M16 2v4" />
+								<rect width="18" height="18" x="3" y="4" rx="2" />
+								<path d="M3 10h18" />
+							</svg>
+							All Competitions
+						</a>
+						<a
+							href="/rankings"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+						>
+							<svg
+								class="mr-2 h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
 								<path d="M3 12h.01" />
 								<path d="M3 18h.01" />
 								<path d="M3 6h.01" />
@@ -77,7 +97,7 @@
 								<path d="M8 18h13" />
 								<path d="M8 6h13" />
 							</svg>
-							All Competitions
+							Rankings
 						</a>
 						<div class="flex flex-wrap items-center gap-2">
 							<span class="text-sm font-medium text-gray-700">Recent competitions:</span>

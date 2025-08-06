@@ -5,10 +5,13 @@ from operator import attrgetter
 from django.db.models import F, Window
 from django.db.models.functions import RowNumber
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from django.conf import settings
 
 from .models import Competition, Result
 from .serializers import (
@@ -148,3 +151,100 @@ class RecordsListAPIView(APIView):
             records[result.event]["single"] = serializer.data
 
         return Response(records)
+
+
+class RankingsAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format=None):
+        # Get query parameters
+        event = request.query_params.get("event")
+        result_format = request.query_params.get("type")  # 'single' or 'average'
+        all_results = request.query_params.get("all", "false").lower() == "true"
+        page = int(request.query_params.get("page", 1))
+
+        print(event, result_format)
+
+        # Validate required parameters
+        if not event:
+            return Response(
+                {"error": "Event parameter is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not result_format or result_format not in ["single", "average"]:
+            return Response(
+                {"error": "Format parameter must be 'single' or 'average'"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Build base queryset
+        queryset = Result.objects.select_related("person_id", "competition").filter(
+            event=event
+        )
+
+        # Filter by format and exclude zero/invalid times
+        if result_format == "single":
+            queryset = queryset.filter(single__gt=0).order_by("single")
+        else:  # average
+            queryset = queryset.filter(average__gt=0).order_by("average")
+
+        # If not showing all results, get only best result per person
+        if not all_results:
+            if result_format == "single":
+                queryset = queryset.annotate(
+                    row_num=Window(
+                        expression=RowNumber(),
+                        partition_by=[F("person_id")],
+                        order_by=F("single").asc(),
+                    )
+                ).filter(row_num=1)
+            else:  # average
+                queryset = queryset.annotate(
+                    row_num=Window(
+                        expression=RowNumber(),
+                        partition_by=[F("person_id")],
+                        order_by=F("average").asc(),
+                    )
+                ).filter(row_num=1)
+
+        # Paginate results
+        paginator = Paginator(queryset, settings.PAGE_SIZE)
+        page_obj = paginator.get_page(page)
+
+        # Build next and previous URLs
+        request_url = request.build_absolute_uri()
+        base_url = request_url.split("?")[0]  # Remove existing query params
+
+        next_url = None
+        if page_obj.has_next():
+            next_params = request.GET.copy()
+            next_params["page"] = page_obj.next_page_number()
+            next_url = f"{base_url}?{next_params.urlencode()}"
+
+        previous_url = None
+        if page_obj.has_previous():
+            prev_params = request.GET.copy()
+            prev_params["page"] = page_obj.previous_page_number()
+            previous_url = f"{base_url}?{prev_params.urlencode()}"
+
+        # Serialize results
+        serialized_results = []
+        for rank, result in enumerate(
+            page_obj.object_list, start=(page - 1) * settings.PAGE_SIZE + 1
+        ):
+            serializer = RecordDetailSerializer(
+                result, context={"record_type": result_format}
+            )
+            result_data = serializer.data
+            result_data["rank"] = rank
+            serialized_results.append(result_data)
+
+        return Response(
+            {
+                "count": paginator.count,
+                "next": next_url,
+                "previous": previous_url,
+                "results": serialized_results,
+            }
+        )

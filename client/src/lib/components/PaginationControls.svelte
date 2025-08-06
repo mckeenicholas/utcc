@@ -37,7 +37,7 @@
 </script>
 
 {#if totalPages > 1}
-	<div class="mt-8 rounded-lg bg-white">
+	<div class="rounded-lg bg-white p-4">
 		<div class="flex items-center justify-between">
 			<div class="text-sm text-gray-600">
 				Showing {startItem} to {endItem} of {totalCount} items

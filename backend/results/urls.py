@@ -5,6 +5,7 @@ from .views import (
     ResultViewSet,
     CompetitionResultsAPIView,
     RecordsListAPIView,
+    RankingsAPIView,
 )
 
 # Create router for ViewSets
@@ -15,6 +16,7 @@ router.register(r"results", ResultViewSet, basename="result")
 urlpatterns = [
     # Custom API endpoints
     path("records/", RecordsListAPIView.as_view(), name="records-list"),
+    path("rankings/", RankingsAPIView.as_view(), name="rankings"),
     path(
         "competitions/latest/results/",
         CompetitionResultsAPIView.as_view(),

@@ -147,7 +147,7 @@
 		</div>
 
 		{#if loading}
-			<LoadingScreen message="Loading Dashboard" />
+			<LoadingScreen message="Loading Competitions" inline />
 		{:else}
 			<!-- Competitions Section -->
 			<div class="mb-8 mt-4">
@@ -163,18 +163,19 @@
 							<DashboardCompetitionCard {competition} onDeleteCompetition={deleteCompetition} />
 						{/each}
 					</div>
-
-					<PaginationControls
-						{currentPage}
-						{totalPages}
-						{hasNext}
-						{hasPrevious}
-						{totalCount}
-						itemsPerPage={PAGINATION_SIZE}
-						onNext={goToNextPage}
-						onPrevious={goToPreviousPage}
-						onPageChange={(pageNo) => fetchCompetitions(pageNo)}
-					/>
+					<div class="mt-4 rounded-md shadow-sm">
+						<PaginationControls
+							{currentPage}
+							{totalPages}
+							{hasNext}
+							{hasPrevious}
+							{totalCount}
+							itemsPerPage={PAGINATION_SIZE}
+							onNext={goToNextPage}
+							onPrevious={goToPreviousPage}
+							onPageChange={(pageNo) => fetchCompetitions(pageNo)}
+						/>
+					</div>
 				{/if}
 			</div>
 		{/if}

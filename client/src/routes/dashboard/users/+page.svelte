@@ -158,7 +158,7 @@
 
 		<AddUserForm onAddUser={handleAddUser} />
 
-		<div class="mt-6 rounded-lg bg-white p-6 shadow-sm">
+		<div class="mt-6 rounded-lg bg-white px-6 pb-2 pt-6 shadow-sm">
 			<h2 class="mb-4 text-xl font-semibold text-gray-800">Users</h2>
 			<div>
 				<label for="search-users" class="block text-sm font-medium text-gray-700"
@@ -187,17 +187,19 @@
 				</div>
 
 				{#if !isSearching}
-					<PaginationControls
-						{currentPage}
-						{totalPages}
-						{totalCount}
-						itemsPerPage={PAGINATION_SIZE}
-						{hasNext}
-						{hasPrevious}
-						onPageChange={loadUsers}
-						onNext={() => loadUsers(currentPage + 1)}
-						onPrevious={() => loadUsers(currentPage - 1)}
-					/>
+					<div class="-mx-4">
+						<PaginationControls
+							{currentPage}
+							{totalPages}
+							{totalCount}
+							itemsPerPage={PAGINATION_SIZE}
+							{hasNext}
+							{hasPrevious}
+							onPageChange={loadUsers}
+							onNext={() => loadUsers(currentPage + 1)}
+							onPrevious={() => loadUsers(currentPage - 1)}
+						/>
+					</div>
 				{/if}
 			{:else if searchTerm.trim()}
 				<div class="py-4 text-center text-gray-500">

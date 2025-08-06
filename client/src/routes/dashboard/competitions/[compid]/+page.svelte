@@ -37,8 +37,8 @@
 		time5: 0
 	});
 
-	const fetchData = async () => {
-		loading = true;
+	const fetchData = async (resetLoading = true) => {
+		loading = resetLoading;
 		try {
 			const compResponse = await fetch(`${BASE_URL}/api/competitions/${compId}/`);
 			competition = await compResponse.json();
@@ -111,6 +111,7 @@
 	const handleClearUser = () => {
 		selectedPersonId = null;
 		selectedPersonName = '';
+		userInputRawValue = '';
 	};
 
 	const handleAddUser = () => {
@@ -144,7 +145,7 @@
 				})
 			});
 			resetForm();
-			await fetchData();
+			await fetchData(false);
 		} catch {
 			errorMessage = 'Failed to submit result.';
 		} finally {
@@ -185,49 +186,48 @@
 	};
 </script>
 
-{#if loading}
-	<LoadingScreen message="Loading Competition" />
-{:else}
-	<div class="min-h-screen py-8">
-		<div class="mx-auto max-w-[1500px] px-4">
-			<PageHeader {competition} />
-			<ErrorMessage message={errorMessage} />
+<div class="min-h-screen py-8">
+	<div class="mx-auto max-w-[1500px] px-4">
+		<PageHeader {competition} />
+		<ErrorMessage message={errorMessage} />
 
-			<div class="grid grid-cols-1 gap-8 lg:grid-cols-4">
-				<div class="lg:col-span-1">
-					<div class="rounded-lg bg-white p-6 shadow-sm">
-						<h3 class="mb-4 text-lg font-semibold">Select User</h3>
-						<UserSearch
-							value={selectedPersonName}
-							onSelect={handleUserSelect}
-							onClear={handleClearUser}
-							onAddUser={handleAddUser}
-							isEditMode={editingResult != null}
-							userSelected={selectedPersonId != null}
-							bind:searchTerm={userInputRawValue}
-						/>
+		<div class="grid grid-cols-1 gap-8 lg:grid-cols-4">
+			<div class="lg:col-span-1">
+				<div class="rounded-lg bg-white p-6 shadow-sm">
+					<h3 class="mb-4 text-lg font-semibold">Select User</h3>
+					<UserSearch
+						value={selectedPersonName}
+						onSelect={handleUserSelect}
+						onClear={handleClearUser}
+						onAddUser={handleAddUser}
+						isEditMode={editingResult != null}
+						userSelected={selectedPersonId != null}
+						bind:searchTerm={userInputRawValue}
+					/>
 
-						<ResultForm
-							bind:formData
-							{editingResult}
-							{submitting}
-							onSubmit={submitResult}
-							onCancel={resetForm}
-						/>
-					</div>
+					<ResultForm
+						bind:formData
+						{editingResult}
+						{submitting}
+						onSubmit={submitResult}
+						onCancel={resetForm}
+					/>
 				</div>
-
-				<div class="lg:col-span-3">
+			</div>
+			<div class="lg:col-span-3">
+				{#if loading}
+					<LoadingScreen message="Loading Competition Data" inline />
+				{:else}
 					<ResultsTable {competitionResults} onEdit={editResult} onDelete={deleteResult} />
-				</div>
+				{/if}
 			</div>
 		</div>
 	</div>
+</div>
 
-	<CreateUserModal
-		show={showCreateUserModal}
-		initialName={newUserName}
-		onClose={() => (showCreateUserModal = false)}
-		onUserCreated={handleUserCreated}
-	/>
-{/if}
+<CreateUserModal
+	show={showCreateUserModal}
+	initialName={newUserName}
+	onClose={() => (showCreateUserModal = false)}
+	onUserCreated={handleUserCreated}
+/>

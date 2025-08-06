@@ -17,10 +17,7 @@
 	});
 </script>
 
-<tr
-	class="transition-colors duration-100 ease-in-out hover:cursor-pointer hover:bg-gray-100"
-	onclick={() => (window.location.href = `/competitions/${record.competition_id}`)}
->
+<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
 	<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
 		{recordType}
 	</td>
@@ -28,7 +25,9 @@
 		{record.person_name}
 	</td>
 	<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-		{record.competition_name}
+		<a class="hover:text-gray-400" href={`/competitions/${record.competition_id}`}>
+			{record.competition_name}</a
+		>
 	</td>
 	<td class="whitespace-nowrap px-6 py-4 text-center font-mono text-sm font-bold text-gray-900">
 		{renderTime(record.result)}

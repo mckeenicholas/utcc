@@ -59,7 +59,7 @@
 						</div>
 						<div class="overflow-x-auto">
 							<table class="min-w-full divide-y divide-gray-200">
-								<thead class="">
+								<thead>
 									<tr>
 										<th
 											class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
