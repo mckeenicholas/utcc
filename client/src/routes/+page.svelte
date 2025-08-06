@@ -9,4 +9,7 @@
 	<div>
 		<a href="/rankings" class="text-blue-500 hover:underline">Rankings</a>
 	</div>
+	<div>
+		<a href="/competitions" class="text-blue-500 hover:underline">Competitions</a>
+	</div>
 </div>

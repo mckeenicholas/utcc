@@ -63,7 +63,7 @@ onMount(async () => {
 					id="username"
 					bind:value={username}
 					onkeydown={(e) => handleKeydown(e, 'password')}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 				/>
 			</div>
 			<div>
@@ -73,14 +73,14 @@ onMount(async () => {
 					id="password"
 					bind:value={password}
 					onkeydown={(e) => handleKeydown(e, 'login-button')}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 				/>
 			</div>
 			<button
 				id="login-button"
 				onclick={logIn}
 				onkeydown={(e) => handleKeydown(e)}
-				class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+				class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 			>
 				Log in
 			</button>

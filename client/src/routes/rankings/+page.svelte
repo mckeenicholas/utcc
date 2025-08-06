@@ -100,25 +100,25 @@ $effect(() => {
 					<thead>
 						<tr>
 							<th
-								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								>#</th
 							>
 							<th
-								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								>Name</th
 							>
 							<th
-								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								class:lg:ps-24={!isAverage}>Result</th
 							>
 							<th
-								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								>Competition</th
 							>
 							{#if isAverage}
 								{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
 									<th
-										class="hidden px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 md:table-cell"
+										class="hidden px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase md:table-cell"
 										>Solve {idx + 1}</th
 									>
 								{/each}
@@ -129,18 +129,18 @@ $effect(() => {
 						{#each results?.results as result, idx (idx)}
 							<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
 								<td
-									class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 									>{(pageNum - 1) * PAGINATION_SIZE + idx + 1}</td
 								>
 								<td
-									class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 									>{result.person_name}</td
 								>
 								<td
-									class="whitespace-nowrap px-6 py-4 text-center font-mono text-sm font-bold text-gray-900"
+									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap text-gray-900"
 									class:lg:ps-24={!isAverage}>{renderTime(result.result)}</td
 								>
-								<td class="whitespace-nowrap px-6 py-4 text-center text-sm text-gray-700">
+								<td class="px-6 py-4 text-center text-sm whitespace-nowrap text-gray-700">
 									<a class="hover:text-gray-400" href={`/competitions/${result.competition_id}`}
 										>{result.competition_name}</a
 									>
@@ -148,7 +148,7 @@ $effect(() => {
 								{#if isAverage}
 									{#each result.times_list as time, timeIdx (timeIdx)}
 										<td
-											class="hidden whitespace-nowrap px-6 py-4 text-center font-mono text-sm text-gray-700 md:table-cell"
+											class="hidden px-6 py-4 text-center font-mono text-sm whitespace-nowrap text-gray-700 md:table-cell"
 											>{renderTime(time)}</td
 										>
 									{/each}

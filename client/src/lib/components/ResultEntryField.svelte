@@ -111,7 +111,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 <input
 	id={id}
 	disabled={disabled}
-	class="time-input block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+	class="time-input block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
 	type="text"
 	bind:value={displayValue}
 	oninput={handleInput}

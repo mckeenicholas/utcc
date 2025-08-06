@@ -19,14 +19,14 @@ let {
 <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
 	<div class="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
 		<!-- Event selector -->
-		<div class="flex flex-wrap space-x-1 rounded-md border p-0.5">
+		<div class="flex flex-wrap space-x-1 rounded-md border border-gray-200 p-0.5">
 			{#each Object.keys(eventNames) as eventIdStr (eventIdStr)}
 				{@const eventId = eventIdStr as WCAEvent}
-				<button
-					onclick={() => (selectedEvent = eventId)}
-					class="{selectedEvent == eventId ? 'bg-gray-300' : 'bg-clear'} rounded-md px-2.5 py-1"
-				>
-					<CubeIcon event={eventId} class="" />
+				<button onclick={() => (selectedEvent = eventId)}>
+					<CubeIcon
+						event={eventId}
+						class="{selectedEvent == eventId ? 'bg-gray-300' : 'bg-clear'}  cursor-pointer rounded-md px-2.5 py-1 "
+					/>
 				</button>
 			{/each}
 		</div>

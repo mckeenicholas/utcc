@@ -70,7 +70,7 @@ onMount(signOut);
 				<p class="text-gray-600">You have been signed out.</p>
 				<button
 					onclick={goToLogin}
-					class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+					class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 				>
 					Return to Login
 				</button>

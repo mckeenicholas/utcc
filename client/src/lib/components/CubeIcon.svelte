@@ -9,11 +9,11 @@ const { event, class: className }: { event: WCAEvent; class?: ClassValue } = $pr
 
 <Tooltip.Provider>
 	<Tooltip.Root delayDuration={200}>
-		<Tooltip.Trigger>
-			<span class="icon cubing-icon event-{event} {className}"></span>
+		<Tooltip.Trigger class={className}>
+			<div class="icon cubing-icon event-{event}"></div>
 		</Tooltip.Trigger>
 		<Tooltip.Content>
-			<div class="rounded-md border bg-white px-2 ease-in-out">
+			<div class="rounded-md border border-gray-300 bg-white px-2 ease-in-out">
 				{eventNames[event]}
 			</div>
 		</Tooltip.Content>

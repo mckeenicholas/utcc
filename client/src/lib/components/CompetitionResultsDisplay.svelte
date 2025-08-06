@@ -76,27 +76,27 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 									<thead class="">
 										<tr>
 											<th
-												class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+												class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 												>#</th
 											>
 											<th
-												class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+												class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 												>Name</th
 											>
 											{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
 												<th
-													class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+													class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase"
 													class:hidden={trimResults}
 												>
 													Solve {idx + 1}
 												</th>
 											{/each}
 											<th
-												class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+												class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase"
 												>Best</th
 											>
 											<th
-												class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+												class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase"
 												>{getMeanType(event)}</th
 											>
 										</tr>
@@ -117,30 +117,30 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 												}}
 											>
 												<td
-													class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+													class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 												>
 													{index + 1}
 												</td>
 												<td
-													class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
+													class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 												>
 													{roundPerson.person_name}
 												</td>
 												{#each roundPerson.times as time, timeIdx (timeIdx)}
 													<td
-														class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm text-gray-700"
+														class="px-6 py-4 text-right font-mono text-sm whitespace-nowrap text-gray-700"
 														class:hidden={trimResults}
 													>
 														{renderTime(time)}
 													</td>
 												{/each}
 												<td
-													class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+													class="px-6 py-4 text-right font-mono text-sm font-medium whitespace-nowrap text-gray-900"
 												>
 													{renderTime(roundPerson.single)}
 												</td>
 												<td
-													class="whitespace-nowrap px-6 py-4 text-right font-mono text-sm font-medium text-gray-900"
+													class="px-6 py-4 text-right font-mono text-sm font-medium whitespace-nowrap text-gray-900"
 												>
 													{renderTime(roundPerson.average)}
 												</td>
@@ -159,7 +159,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 
 {#if showModal && selectedPerson}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+		class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4"
 		onclick={() => (showModal = false)}
 		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
 		aria-label="Close modal"
@@ -201,7 +201,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 			</div>
 			<div class="flex justify-end border-t border-gray-200 px-6 py-4">
 				<button
-					class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+					class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 					onclick={() => (showModal = false)}
 				>
 					Close

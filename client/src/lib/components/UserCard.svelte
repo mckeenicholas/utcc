@@ -44,7 +44,7 @@ const handleSave = () => {
 					<input
 						bind:value={editUserName}
 						onkeydown={(e) => e.key === 'Enter' && handleSave()}
-						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 					/>
 				{:else}
 					<p class="text-sm font-medium text-gray-900">{user.name}</p>

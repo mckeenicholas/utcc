@@ -34,7 +34,7 @@ onMount(async () => {
 	<div class="min-h-screen py-8">
 		<div class="mx-auto max-w-6xl px-4">
 			<!-- Header -->
-			<div class="mb-6 ms-2">
+			<div class="ms-2 mb-6">
 				<h1 class="text-3xl font-bold text-gray-900">UofT Rubik's Cube Club</h1>
 				<p class="mt-2 text-gray-600">Club Meeting Results</p>
 			</div>
@@ -45,7 +45,7 @@ onMount(async () => {
 					<div class="flex flex-wrap items-center gap-2">
 						<a
 							href="/records"
-							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
 						>
 							<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -59,7 +59,7 @@ onMount(async () => {
 						</a>
 						<a
 							href="/competitions"
-							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
 						>
 							<svg
 								class="mr-2 h-4 w-4"
@@ -79,7 +79,7 @@ onMount(async () => {
 						</a>
 						<a
 							href="/rankings"
-							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
 						>
 							<svg
 								class="mr-2 h-4 w-4"
@@ -104,7 +104,7 @@ onMount(async () => {
 							{#each competitionsList as competition (competition.id)}
 								<a
 									href={`/competitions/${competition.id}`}
-									class="inline-block rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+									class="inline-block rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 								>
 									{competition.name}
 								</a>

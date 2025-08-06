@@ -29,14 +29,14 @@ const handleSubmit = async () => {
 				placeholder="Enter name"
 				bind:value={newUserName}
 				onkeydown={(e) => e.key === 'Enter' && handleSubmit()}
-				class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+				class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 			/>
 		</div>
 		<div class="flex items-end">
 			<button
 				onclick={handleSubmit}
 				disabled={!newUserName.trim() || isSubmitting}
-				class="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+				class="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 			>
 				{isSubmitting ? 'Adding...' : 'Add User'}
 			</button>

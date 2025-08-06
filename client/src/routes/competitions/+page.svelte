@@ -78,13 +78,13 @@ const goToPage = (page: number) => {
 				<p class="mt-2 text-red-700">{error}</p>
 				<button
 					onclick={() => window.location.reload()}
-					class="mt-4 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+					class="mt-4 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
 				>
 					Try Again
 				</button>
 			</div>
 		{:else if competitions.length > 0}
-			<h1 class="mb-8 ms-2 text-3xl font-bold text-gray-900">All Competitions</h1>
+			<h1 class="ms-2 mb-8 text-3xl font-bold text-gray-900">All Competitions</h1>
 			<!-- Competitions List -->
 			<div class="space-y-4">
 				{#each competitions as competition (competition.id)}

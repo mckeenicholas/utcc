@@ -158,7 +158,7 @@ const handleDeleteUser = async (userId: number) => {
 
 		<AddUserForm onAddUser={handleAddUser} />
 
-		<div class="mt-6 rounded-lg bg-white px-6 pb-2 pt-6 shadow-sm">
+		<div class="mt-6 rounded-lg bg-white px-6 pt-6 pb-2 shadow-sm">
 			<h2 class="mb-4 text-xl font-semibold text-gray-800">Users</h2>
 			<div>
 				<label for="search-users" class="block text-sm font-medium text-gray-700"
@@ -168,7 +168,7 @@ const handleDeleteUser = async (userId: number) => {
 					id="search-users"
 					placeholder="Type to search users"
 					bind:value={searchTerm}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 				/>
 			</div>
 

@@ -121,7 +121,7 @@ const createCompetition = async () => {
 						id="new-comp-name"
 						placeholder="Enter competition name"
 						bind:value={newCompName}
-						class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+						class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 					/>
 				</div>
 				<div>
@@ -130,7 +130,7 @@ const createCompetition = async () => {
 				<button
 					onclick={createCompetition}
 					disabled={!newCompName || !selectedDate}
-					class="w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+					class="w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 				>
 					Create Competition
 				</button>
@@ -141,8 +141,8 @@ const createCompetition = async () => {
 			<LoadingScreen message="Loading Competitions" inline />
 		{:else}
 			<!-- Competitions Section -->
-			<div class="mb-8 mt-4">
-				<h2 class="mb-4 ms-2 text-2xl font-semibold text-gray-800">Competitions</h2>
+			<div class="mt-4 mb-8">
+				<h2 class="ms-2 mb-4 text-2xl font-semibold text-gray-800">Competitions</h2>
 
 				{#if competitions.length === 0}
 					<div class="rounded-lg bg-white p-6 shadow-sm">

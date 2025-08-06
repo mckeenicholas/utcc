@@ -40,7 +40,7 @@ const createUser = async () => {
 </script>
 
 {#if show}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+	<div class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
 		<div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
 			<h3 class="mb-4 text-lg font-semibold">Add New User</h3>
 			<input

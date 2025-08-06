@@ -62,24 +62,24 @@ let recordsDisplay = $derived.by(() => {
 								<thead>
 									<tr>
 										<th
-											class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+											class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Type</th
 										>
 										<th
-											class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+											class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Name</th
 										>
 										<th
-											class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+											class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Competition</th
 										>
 										<th
-											class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+											class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Result</th
 										>
 										{#each Array.from({ length: eventSolves[eventKey]! }).keys() as idx (idx)}
 											<th
-												class="hidden px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 md:table-cell"
+												class="hidden px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase md:table-cell"
 											>
 												Solve {idx + 1}
 											</th>

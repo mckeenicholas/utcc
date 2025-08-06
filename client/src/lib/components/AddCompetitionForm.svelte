@@ -96,7 +96,7 @@ let { selectedDate = $bindable() }: { selectedDate: DateValue | undefined } = $p
 													class="relative h-9 w-9 p-0 text-center text-sm"
 												>
 													<DatePicker.Day
-														class="data-selected:bg-gray-900 data-selected:text-white data-disabled:text-gray-300 data-disabled:pointer-events-none data-outside-month:pointer-events-none data-outside-month:text-gray-400 data-unavailable:text-gray-300 data-unavailable:line-through inline-flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-md text-sm font-normal text-gray-900 transition-colors hover:bg-gray-100"
+														class="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm font-normal whitespace-nowrap text-gray-900 transition-colors hover:bg-gray-100 data-disabled:pointer-events-none data-disabled:text-gray-300 data-outside-month:pointer-events-none data-outside-month:text-gray-400 data-selected:bg-gray-900 data-selected:text-white data-unavailable:text-gray-300 data-unavailable:line-through"
 													>
 														{date.day}
 													</DatePicker.Day>

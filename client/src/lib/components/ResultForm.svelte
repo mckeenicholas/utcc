@@ -60,7 +60,7 @@ const areRequiredFieldsFilled = $derived(
 		<label for="event" class="mb-2 block text-sm font-medium text-gray-700">Event</label>
 		<Select.Root items={eventOptions} bind:value={formData.event} type="single">
 			<Select.Trigger
-				class="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+				class="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-left shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 				aria-label="Select an event"
 			>
 				<span>{selectedEventLabel}</span>
@@ -86,7 +86,7 @@ const areRequiredFieldsFilled = $derived(
 					<Select.Viewport class="p-1">
 						{#each eventOptions as option (option.value)}
 							<Select.Item
-								class="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-100 data-[disabled]:opacity-50"
+								class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
 								value={option.value}
 								label={option.label}
 							>
@@ -120,7 +120,7 @@ const areRequiredFieldsFilled = $derived(
 			type="number"
 			min="1"
 			bind:value={formData.round}
-			class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+			class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 		/>
 	</div>
 </div>
@@ -183,7 +183,7 @@ const areRequiredFieldsFilled = $derived(
 	<button
 		onclick={onSubmit}
 		disabled={submitting || !areRequiredFieldsFilled}
-		class="submit-button inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+		class="submit-button inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 	>
 		{#if submitting}
 			<svg class="mr-2 h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +203,7 @@ const areRequiredFieldsFilled = $derived(
 		<button
 			onclick={onCancel}
 			disabled={submitting}
-			class="mt-3 inline-flex w-full items-center justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
+			class="mt-3 inline-flex w-full items-center justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
 		>
 			Cancel
 		</button>

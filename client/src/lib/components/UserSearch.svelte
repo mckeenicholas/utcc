@@ -98,7 +98,7 @@ const handleBlur = () => {
 			onfocus={handleFocus}
 			onblur={handleBlur}
 			onkeydown={handleKeyDown}
-			class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+			class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 			autocomplete="off"
 		/>
 	{/if}

@@ -52,7 +52,7 @@ const convertToResult = (
 
 				{#each eventResult.rounds as round (round.round)}
 					{#if round.results.length > 0}
-						<div class="mb-6 ms-4">
+						<div class="ms-4 mb-6">
 							<h4 class="text-md mb-3 font-medium text-gray-700">Round {round.round}</h4>
 							<div class="overflow-x-auto">
 								<table class="w-full table-fixed border-collapse">
