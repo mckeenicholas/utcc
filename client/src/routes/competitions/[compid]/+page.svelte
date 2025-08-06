@@ -1,30 +1,30 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-	import type { CompetitionResults } from '$lib/types';
-	import { BASE_URL } from '$lib/utils';
-	import Backbutton from '$lib/components/Backbutton.svelte';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import { onMount } from 'svelte';
+import { page } from '$app/stores';
+import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
+import type { CompetitionResults } from '$lib/types';
+import { BASE_URL } from '$lib/utils';
+import Backbutton from '$lib/components/Backbutton.svelte';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 
-	let competitionResults = $state<CompetitionResults | null>(null);
-	let loading = $state(true);
+let competitionResults = $state<CompetitionResults | null>(null);
+let loading = $state(true);
 
-	onMount(async () => {
-		try {
-			const compid = parseInt($page.params.compid ?? '0');
-			const url = `${BASE_URL}/api/competitions/${compid}/results/`;
+onMount(async () => {
+	try {
+		const compid = parseInt($page.params.compid ?? '0');
+		const url = `${BASE_URL}/api/competitions/${compid}/results/`;
 
-			const response = await fetch(url);
-			const data: CompetitionResults = await response.json();
+		const response = await fetch(url);
+		const data: CompetitionResults = await response.json();
 
-			competitionResults = data;
-		} catch (error) {
-			console.error('Failed to fetch competition results:', error);
-		} finally {
-			loading = false;
-		}
-	});
+		competitionResults = data;
+	} catch (error) {
+		console.error('Failed to fetch competition results:', error);
+	} finally {
+		loading = false;
+	}
+});
 </script>
 
 <Backbutton />
@@ -45,7 +45,7 @@
 			</div>
 
 			<!-- Results Display -->
-			<CompetitionResultsDisplay {competitionResults} />
+			<CompetitionResultsDisplay competitionResults={competitionResults} />
 		{:else}
 			<div class="rounded-lg bg-white p-12 text-center shadow-sm">
 				<h3 class="text-lg font-medium text-gray-900">Competition Not Found</h3>

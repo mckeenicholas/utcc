@@ -1,81 +1,81 @@
 <script lang="ts">
-	import Backbutton from '$lib/components/Backbutton.svelte';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-	import PaginationControls from '$lib/components/PaginationControls.svelte';
-	import RankingSelector from '$lib/components/RankingSelector.svelte';
-	import {
-		eventNames,
-		eventSolves,
-		type Paginated,
-		type RecordInstance,
-		type WCAEvent
-	} from '$lib/types';
-	import { BASE_URL, PAGINATION_SIZE, renderTime } from '$lib/utils';
+import Backbutton from '$lib/components/Backbutton.svelte';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import PaginationControls from '$lib/components/PaginationControls.svelte';
+import RankingSelector from '$lib/components/RankingSelector.svelte';
+import {
+	eventNames,
+	eventSolves,
+	type Paginated,
+	type RecordInstance,
+	type WCAEvent
+} from '$lib/types';
+import { BASE_URL, PAGINATION_SIZE, renderTime } from '$lib/utils';
 
-	let selectedEvent: WCAEvent = $state('333');
-	let isAverage = $state(false);
-	let showAllResults = $state(false);
-	let pageNum = $state(1);
+let selectedEvent: WCAEvent = $state('333');
+let isAverage = $state(false);
+let showAllResults = $state(false);
+let pageNum = $state(1);
 
-	const eventName = $derived(eventNames[selectedEvent]);
+const eventName = $derived(eventNames[selectedEvent]);
 
-	let results: Paginated<RecordInstance> | null = $state(null);
-	let loading = $state(true);
-	let currentPage = $state(1);
-	let totalPages = $state(1);
-	let hasNext = $state(false);
-	let hasPrevious = $state(false);
-	let totalCount = $state(0);
+let results: Paginated<RecordInstance> | null = $state(null);
+let loading = $state(true);
+let currentPage = $state(1);
+let totalPages = $state(1);
+let hasNext = $state(false);
+let hasPrevious = $state(false);
+let totalCount = $state(0);
 
-	const fetchRankings = async (urlParams: URLSearchParams) => {
-		loading = true;
-		try {
-			const response = await fetch(`${BASE_URL}/api/rankings/?${urlParams.toString()}`);
-			if (!response.ok) throw new Error('Network response was not ok');
+const fetchRankings = async (urlParams: URLSearchParams) => {
+	loading = true;
+	try {
+		const response = await fetch(`${BASE_URL}/api/rankings/?${urlParams.toString()}`);
+		if (!response.ok) throw new Error('Network response was not ok');
 
-			const data: Paginated<RecordInstance> = await response.json();
+		const data: Paginated<RecordInstance> = await response.json();
 
-			results = data;
-			currentPage = pageNum;
-			totalCount = data.count;
-			hasNext = !!data.next;
-			hasPrevious = !!data.previous;
-			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-		} catch (error) {
-			console.error('Failed to fetch rankings:', error);
-			results = null;
-		} finally {
-			loading = false;
-		}
+		results = data;
+		currentPage = pageNum;
+		totalCount = data.count;
+		hasNext = !!data.next;
+		hasPrevious = !!data.previous;
+		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+	} catch (error) {
+		console.error('Failed to fetch rankings:', error);
+		results = null;
+	} finally {
+		loading = false;
+	}
+};
+
+const goToPage = (page: number) => {
+	if (page >= 1 && page <= totalPages) {
+		pageNum = page;
+	}
+};
+
+const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
+const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
+
+$effect(() => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const _ = { selectedEvent, isAverage, showAllResults };
+
+	return () => {
+		pageNum = 1;
 	};
+});
 
-	const goToPage = (page: number) => {
-		if (page >= 1 && page <= totalPages) {
-			pageNum = page;
-		}
-	};
-
-	const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
-	const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
-
-	$effect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const _ = { selectedEvent, isAverage, showAllResults };
-
-		return () => {
-			pageNum = 1;
-		};
+$effect(() => {
+	const urlParams = new URLSearchParams({
+		event: selectedEvent,
+		type: isAverage ? 'average' : 'single',
+		all: showAllResults.toString(),
+		page: pageNum.toString()
 	});
-
-	$effect(() => {
-		const urlParams = new URLSearchParams({
-			event: selectedEvent,
-			type: isAverage ? 'average' : 'single',
-			all: showAllResults.toString(),
-			page: pageNum.toString()
-		});
-		fetchRankings(urlParams);
-	});
+	fetchRankings(urlParams);
+});
 </script>
 
 <Backbutton />
@@ -86,9 +86,13 @@
 			<h1 class="text-3xl font-bold text-gray-900">Rankings for {eventName}</h1>
 		</div>
 
-		<RankingSelector bind:isAverage bind:selectedEvent bind:showAll={showAllResults} />
+		<RankingSelector
+			bind:isAverage={isAverage}
+			bind:selectedEvent={selectedEvent}
+			bind:showAll={showAllResults}
+		/>
 
-		<div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+		<div class="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
 			{#if loading}
 				<LoadingScreen message={`Loading Rankings for ${eventName}`} inline />
 			{:else if results?.results.length}
@@ -96,7 +100,7 @@
 					<thead>
 						<tr>
 							<th
-								class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
 								>#</th
 							>
 							<th
@@ -105,7 +109,7 @@
 							>
 							<th
 								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
-								class:ps-24={!isAverage}>Result</th
+								class:lg:ps-24={!isAverage}>Result</th
 							>
 							<th
 								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -124,7 +128,8 @@
 					<tbody>
 						{#each results?.results as result, idx (idx)}
 							<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
-								<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"
+								<td
+									class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium text-gray-900"
 									>{(pageNum - 1) * PAGINATION_SIZE + idx + 1}</td
 								>
 								<td
@@ -133,7 +138,7 @@
 								>
 								<td
 									class="whitespace-nowrap px-6 py-4 text-center font-mono text-sm font-bold text-gray-900"
-									class:ps-24={!isAverage}>{renderTime(result.result)}</td
+									class:lg:ps-24={!isAverage}>{renderTime(result.result)}</td
 								>
 								<td class="whitespace-nowrap px-6 py-4 text-center text-sm text-gray-700">
 									<a class="hover:text-gray-400" href={`/competitions/${result.competition_id}`}
@@ -154,12 +159,12 @@
 				</table>
 
 				<PaginationControls
-					{currentPage}
-					{totalPages}
-					{totalCount}
+					currentPage={currentPage}
+					totalPages={totalPages}
+					totalCount={totalCount}
 					itemsPerPage={PAGINATION_SIZE}
-					{hasNext}
-					{hasPrevious}
+					hasNext={hasNext}
+					hasPrevious={hasPrevious}
 					onPageChange={goToPage}
 					onNext={goToNextPage}
 					onPrevious={goToPreviousPage}

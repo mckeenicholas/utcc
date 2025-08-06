@@ -1,32 +1,32 @@
 <script lang="ts">
-	import type { User } from '$lib/types';
+import type { User } from '$lib/types';
 
-	interface Props {
-		user: User;
-		ondelete: (id: number) => void;
-		onsave: (id: number, name: string) => void;
-	}
+interface Props {
+	user: User;
+	ondelete: (id: number) => void;
+	onsave: (id: number, name: string) => void;
+}
 
-	let { user, ondelete, onsave }: Props = $props();
+let { user, ondelete, onsave }: Props = $props();
 
-	let isEditing = $state(false);
-	let editUserName = $state(user.name);
+let isEditing = $state(false);
+let editUserName = $state(user.name);
 
-	const startEdit = () => {
-		editUserName = user.name;
-		isEditing = true;
-	};
+const startEdit = () => {
+	editUserName = user.name;
+	isEditing = true;
+};
 
-	const cancelEdit = () => {
+const cancelEdit = () => {
+	isEditing = false;
+};
+
+const handleSave = () => {
+	if (editUserName.trim()) {
+		onsave(user.id, editUserName);
 		isEditing = false;
-	};
-
-	const handleSave = () => {
-		if (editUserName.trim()) {
-			onsave(user.id, editUserName);
-			isEditing = false;
-		}
-	};
+	}
+};
 </script>
 
 <div

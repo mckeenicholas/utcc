@@ -1,42 +1,42 @@
 <script lang="ts">
-	import type { Result, WCAEvent, CompetitionResults, PersonResult } from '$lib/types';
-	import { eventNames, eventSolves } from '$lib/types';
-	import { getMeanType, renderTime } from '$lib/utils';
+import type { Result, WCAEvent, CompetitionResults, PersonResult } from '$lib/types';
+import { eventNames, eventSolves } from '$lib/types';
+import { getMeanType, renderTime } from '$lib/utils';
 
-	interface Props {
-		competitionResults: CompetitionResults | null;
-		onEdit: (result: Result) => void;
-		onDelete: (resultId: number) => void;
-	}
+interface Props {
+	competitionResults: CompetitionResults | null;
+	onEdit: (result: Result) => void;
+	onDelete: (resultId: number) => void;
+}
 
-	let { competitionResults, onEdit, onDelete }: Props = $props();
+let { competitionResults, onEdit, onDelete }: Props = $props();
 
-	const getAttemptCount = (event: WCAEvent): number => {
-		return eventSolves[event] || 5;
+const getAttemptCount = (event: WCAEvent): number => {
+	return eventSolves[event] || 5;
+};
+
+const convertToResult = (
+	personResult: PersonResult,
+	event: WCAEvent,
+	round: number,
+	compId: number
+): Result => {
+	return {
+		id: personResult.id,
+		person_name: personResult.person_name,
+		person_id: personResult.person_id,
+		competition: compId,
+		event,
+		round,
+		time1: personResult.times[0] || 0,
+		time2: personResult.times[1] || 0,
+		time3: personResult.times[2] || 0,
+		time4: personResult.times[3] || 0,
+		time5: personResult.times[4] || 0,
+		single: personResult.single,
+		average: personResult.average
 	};
-
-	const convertToResult = (
-		personResult: PersonResult,
-		event: WCAEvent,
-		round: number,
-		compId: number
-	): Result => {
-		return {
-			id: personResult.id,
-			person_name: personResult.person_name,
-			person_id: personResult.person_id,
-			competition: compId,
-			event,
-			round,
-			time1: personResult.times[0] || 0,
-			time2: personResult.times[1] || 0,
-			time3: personResult.times[2] || 0,
-			time4: personResult.times[3] || 0,
-			time5: personResult.times[4] || 0,
-			single: personResult.single,
-			average: personResult.average
-		};
-	};
+};
 </script>
 
 <div class="rounded-lg bg-white p-6 shadow-sm">
@@ -77,13 +77,15 @@
 												class="px-4 py-3 text-right text-sm font-medium text-gray-700 {eventAttempts ===
 												3
 													? 'text-gray-300'
-													: ''}">Time 4</th
+													: ''}"
+												>Time 4</th
 											>
 											<th
 												class="px-4 py-3 text-right text-sm font-medium text-gray-700 {eventAttempts ===
 												3
 													? 'text-gray-300'
-													: ''}">Time 5</th
+													: ''}"
+												>Time 5</th
 											>
 											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Single</th>
 											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700"

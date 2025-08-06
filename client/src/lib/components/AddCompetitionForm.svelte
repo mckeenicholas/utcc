@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { DatePicker } from 'bits-ui';
-	import { type DateValue } from '@internationalized/date';
+import { DatePicker } from 'bits-ui';
+import { type DateValue } from '@internationalized/date';
 
-	let { selectedDate = $bindable() }: { selectedDate: DateValue | undefined } = $props();
+let { selectedDate = $bindable() }: { selectedDate: DateValue | undefined } = $props();
 </script>
 
 <DatePicker.Root bind:value={selectedDate} weekdayFormat="short" fixedWeeks={true}>
@@ -17,12 +17,12 @@
 				{#each segments as { part, value }, i (part + i)}
 					<div class="-m-0.5 inline-block select-none">
 						{#if part === 'literal'}
-							<DatePicker.Segment {part} class="px-1 text-gray-500">
+							<DatePicker.Segment part={part} class="px-1 text-gray-500">
 								{value}
 							</DatePicker.Segment>
 						{:else}
 							<DatePicker.Segment
-								{part}
+								part={part}
 								class="rounded px-1 py-1 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 focus-visible:ring-0 focus-visible:ring-offset-0 aria-[valuetext=Empty]:text-gray-400"
 							>
 								{value}
@@ -91,7 +91,7 @@
 										<DatePicker.GridRow class="flex w-full">
 											{#each weekDates as date (date)}
 												<DatePicker.Cell
-													{date}
+													date={date}
 													month={month.value}
 													class="relative h-9 w-9 p-0 text-center text-sm"
 												>

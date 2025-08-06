@@ -1,42 +1,42 @@
 <script lang="ts">
-	import authFetch from '$lib/authFetch';
-	import { type User } from '$lib/types';
-	import { BASE_URL } from '$lib/utils';
+import authFetch from '$lib/authFetch';
+import { type User } from '$lib/types';
+import { BASE_URL } from '$lib/utils';
 
-	let {
-		show,
-		initialName = '',
-		onClose,
-		onUserCreated
-	}: {
-		show: boolean;
-		initialName?: string;
-		onClose: () => void;
-		onUserCreated: (user: User) => void;
-	} = $props();
+let {
+	show,
+	initialName = '',
+	onClose,
+	onUserCreated
+}: {
+	show: boolean;
+	initialName?: string;
+	onClose: () => void;
+	onUserCreated: (user: User) => void;
+} = $props();
 
-	let creatingUser = $state(false);
+let creatingUser = $state(false);
 
-	const createUser = async () => {
-		if (!initialName.trim()) return;
-		creatingUser = true;
-		try {
-			const response = await authFetch(`${BASE_URL}/api/users/persons/`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: initialName })
-			});
-			if (response.ok) {
-				const newUser: User = await response.json();
-				onUserCreated(newUser);
-				onClose();
-			}
-		} catch (error) {
-			console.error('Failed to create user:', error);
-		} finally {
-			creatingUser = false;
+const createUser = async () => {
+	if (!initialName.trim()) return;
+	creatingUser = true;
+	try {
+		const response = await authFetch(`${BASE_URL}/api/users/persons/`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ name: initialName })
+		});
+		if (response.ok) {
+			const newUser: User = await response.json();
+			onUserCreated(newUser);
+			onClose();
 		}
-	};
+	} catch (error) {
+		console.error('Failed to create user:', error);
+	} finally {
+		creatingUser = false;
+	}
+};
 </script>
 
 {#if show}

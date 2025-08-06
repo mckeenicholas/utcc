@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { checkLoginStatus } from '$lib/utils';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-	import DashboardHeader from '$lib/components/DashboardHeader.svelte';
+import { goto } from '$app/navigation';
+import { onMount } from 'svelte';
+import { checkLoginStatus } from '$lib/utils';
+import DashboardHeader from '$lib/components/DashboardHeader.svelte';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 
-	let loading = $state(true);
+let loading = $state(true);
 
-	onMount(async () => {
-		const loggedIn = await checkLoginStatus();
+onMount(async () => {
+	const loggedIn = await checkLoginStatus();
 
-		if (!loggedIn) {
-			goto('/dashboard/signin');
-			return;
-		}
+	if (!loggedIn) {
+		goto('/dashboard/signin');
+		return;
+	}
 
-		loading = false;
-	});
+	loading = false;
+});
 </script>
 
 {#if loading}

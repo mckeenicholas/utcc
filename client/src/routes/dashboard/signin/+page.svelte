@@ -1,53 +1,53 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import authFetch, { getCsrf } from '$lib/authFetch';
-	import { BASE_URL, checkLoginStatus } from '$lib/utils';
-	import { onMount } from 'svelte';
+import { goto } from '$app/navigation';
+import authFetch, { getCsrf } from '$lib/authFetch';
+import { BASE_URL, checkLoginStatus } from '$lib/utils';
+import { onMount } from 'svelte';
 
-	let username = $state('');
-	let password = $state('');
+let username = $state('');
+let password = $state('');
 
-	let errrorMsg = $state('');
+let errrorMsg = $state('');
 
-	const logIn = async () => {
-		const response = await authFetch(`${BASE_URL}/api/users/auth/login/`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ username, password })
-		});
-
-		if (response.ok) {
-			goto('/dashboard');
-		} else {
-			const data = await response.json();
-			errrorMsg = data.error || 'Login failed';
-			password = '';
-		}
-	};
-
-	const handleKeydown = (event: KeyboardEvent, nextElementId?: string) => {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			if (nextElementId) {
-				const nextElement = document.getElementById(nextElementId);
-				nextElement?.focus();
-			} else {
-				// If no next element (login button), submit the form
-				logIn();
-			}
-		}
-	};
-
-	onMount(async () => {
-		getCsrf();
-
-		const loggedIn = await checkLoginStatus();
-		if (loggedIn) {
-			goto('/dashboard');
-		}
+const logIn = async () => {
+	const response = await authFetch(`${BASE_URL}/api/users/auth/login/`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ username, password })
 	});
+
+	if (response.ok) {
+		goto('/dashboard');
+	} else {
+		const data = await response.json();
+		errrorMsg = data.error || 'Login failed';
+		password = '';
+	}
+};
+
+const handleKeydown = (event: KeyboardEvent, nextElementId?: string) => {
+	if (event.key === 'Enter') {
+		event.preventDefault();
+		if (nextElementId) {
+			const nextElement = document.getElementById(nextElementId);
+			nextElement?.focus();
+		} else {
+			// If no next element (login button), submit the form
+			logIn();
+		}
+	}
+};
+
+onMount(async () => {
+	getCsrf();
+
+	const loggedIn = await checkLoginStatus();
+	if (loggedIn) {
+		goto('/dashboard');
+	}
+});
 </script>
 
 <div class="flex min-h-screen items-center justify-center">

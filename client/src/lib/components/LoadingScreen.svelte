@@ -1,11 +1,11 @@
 <script lang="ts">
-	interface Props {
-		message: string;
-		inline?: boolean;
-		minHeight?: string;
-	}
+interface Props {
+	message: string;
+	inline?: boolean;
+	minHeight?: string;
+}
 
-	const { message, inline = false, minHeight = '20rem' }: Props = $props();
+const { message, inline = false, minHeight = '20rem' }: Props = $props();
 </script>
 
 {#if inline}

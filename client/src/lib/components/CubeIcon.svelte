@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { eventNames, type WCAEvent } from '$lib/types';
-	import type { ClassValue } from 'svelte/elements';
-	import '../icons.css';
-	import { Tooltip } from 'bits-ui';
+import { eventNames, type WCAEvent } from '$lib/types';
+import type { ClassValue } from 'svelte/elements';
+import '../icons.css';
+import { Tooltip } from 'bits-ui';
 
-	const { event, class: className }: { event: WCAEvent; class?: ClassValue } = $props();
+const { event, class: className }: { event: WCAEvent; class?: ClassValue } = $props();
 </script>
 
 <Tooltip.Provider>

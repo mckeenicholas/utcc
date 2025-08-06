@@ -1,92 +1,92 @@
 <script lang="ts">
-	import type { User } from '$lib/types';
-	import { BASE_URL } from '$lib/utils';
+import type { User } from '$lib/types';
+import { BASE_URL } from '$lib/utils';
 
-	interface Props {
-		value: string;
-		onSelect: (user: User) => void;
-		onClear: () => void;
-		onAddUser: () => void;
-		isEditMode: boolean;
-		userSelected: boolean;
-		searchTerm?: string;
+interface Props {
+	value: string;
+	onSelect: (user: User) => void;
+	onClear: () => void;
+	onAddUser: () => void;
+	isEditMode: boolean;
+	userSelected: boolean;
+	searchTerm?: string;
+}
+
+let {
+	value = $bindable(''),
+	onSelect,
+	onClear,
+	onAddUser,
+	isEditMode,
+	userSelected,
+	searchTerm = $bindable('')
+}: Props = $props();
+
+let searchResults: User[] = $state([]);
+let loading = $state(false);
+let selectedIndex = $state(-1);
+let showDropdown = $state(false);
+let timeout: number | null = null;
+
+const searchUsers = async (query: string) => {
+	if (!query.trim()) {
+		searchResults = [];
+		return;
 	}
 
-	let {
-		value = $bindable(''),
-		onSelect,
-		onClear,
-		onAddUser,
-		isEditMode,
-		userSelected,
-		searchTerm = $bindable('')
-	}: Props = $props();
+	try {
+		const response = await fetch(
+			`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`
+		);
+		const data = await response.json();
+		searchResults = data.results || data || [];
+	} catch (error) {
+		console.error('User search failed:', error);
+		searchResults = [];
+	}
 
-	let searchResults: User[] = $state([]);
-	let loading = $state(false);
-	let selectedIndex = $state(-1);
-	let showDropdown = $state(false);
-	let timeout: number | null = null;
+	loading = false;
+};
 
-	const searchUsers = async (query: string) => {
-		if (!query.trim()) {
-			searchResults = [];
-			return;
-		}
+const debouncedSearch = (query: string) => {
+	if (timeout) clearTimeout(timeout);
+	timeout = setTimeout(() => searchUsers(query), 300);
+};
 
-		try {
-			const response = await fetch(
-				`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`
-			);
-			const data = await response.json();
-			searchResults = data.results || data || [];
-		} catch (error) {
-			console.error('User search failed:', error);
-			searchResults = [];
-		}
+$effect(() => {
+	loading = true;
+	debouncedSearch(searchTerm);
+});
 
-		loading = false;
-	};
-
-	const debouncedSearch = (query: string) => {
-		if (timeout) clearTimeout(timeout);
-		timeout = setTimeout(() => searchUsers(query), 300);
-	};
-
-	$effect(() => {
-		loading = true;
-		debouncedSearch(searchTerm);
-	});
-
-	const handleKeyDown = (event: KeyboardEvent) => {
-		const totalItems = searchResults.length + (searchTerm.trim() ? 1 : 0);
-		if (event.key === 'ArrowDown') {
-			event.preventDefault();
-			selectedIndex = (selectedIndex + 1) % totalItems;
-		} else if (event.key === 'ArrowUp') {
-			event.preventDefault();
-			selectedIndex = (selectedIndex - 1 + totalItems) % totalItems;
-		} else if (event.key === 'Enter') {
-			event.preventDefault();
-			if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
-				onSelect(searchResults[selectedIndex]);
-				showDropdown = false;
-			} else if (selectedIndex === searchResults.length) {
-				onAddUser();
-				showDropdown = false;
-			}
-		} else if (event.key === 'Escape') {
+const handleKeyDown = (event: KeyboardEvent) => {
+	const totalItems = searchResults.length + (searchTerm.trim() ? 1 : 0);
+	if (event.key === 'ArrowDown') {
+		event.preventDefault();
+		selectedIndex = (selectedIndex + 1) % totalItems;
+	} else if (event.key === 'ArrowUp') {
+		event.preventDefault();
+		selectedIndex = (selectedIndex - 1 + totalItems) % totalItems;
+	} else if (event.key === 'Enter') {
+		event.preventDefault();
+		if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
+			onSelect(searchResults[selectedIndex]);
+			showDropdown = false;
+		} else if (selectedIndex === searchResults.length) {
+			onAddUser();
 			showDropdown = false;
 		}
-	};
+	} else if (event.key === 'Escape') {
+		showDropdown = false;
+	}
+};
 
-	const handleFocus = () => {
-		showDropdown = true;
-	};
+const handleFocus = () => {
+	showDropdown = true;
+};
 
-	const handleBlur = () => {
-		setTimeout(() => (showDropdown = false), 200);
-	};
+const handleBlur = () => {
+	setTimeout(() => (showDropdown = false), 200);
+};
 </script>
 
 <div class="relative">

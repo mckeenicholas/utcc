@@ -1,31 +1,31 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { type Competition, type CompetitionResults, type Paginated } from '$lib/types';
-	import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-	import { latestCompetitionsURL, latestResultsURL } from '$lib/utils';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import { onMount } from 'svelte';
+import { type Competition, type CompetitionResults, type Paginated } from '$lib/types';
+import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
+import { latestCompetitionsURL, latestResultsURL } from '$lib/utils';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 
-	let competitionResults = $state<CompetitionResults | null>(null);
-	let competitionsList = $state<Competition[] | null>(null);
-	let loading = $state(true);
+let competitionResults = $state<CompetitionResults | null>(null);
+let competitionsList = $state<Competition[] | null>(null);
+let loading = $state(true);
 
-	onMount(async () => {
-		try {
-			const [resultsData, competitionsData]: [CompetitionResults, Paginated<Competition>] =
-				await Promise.all([
-					fetch(latestResultsURL).then((res) => res.json()),
-					fetch(latestCompetitionsURL).then((res) => res.json())
-				]);
+onMount(async () => {
+	try {
+		const [resultsData, competitionsData]: [CompetitionResults, Paginated<Competition>] =
+			await Promise.all([
+				fetch(latestResultsURL).then((res) => res.json()),
+				fetch(latestCompetitionsURL).then((res) => res.json())
+			]);
 
-			competitionResults = resultsData;
-			// Only show the last 10 competitions
-			competitionsList = competitionsData.results.slice(0, 10);
-		} catch (error) {
-			console.error('Failed to fetch data:', error);
-		} finally {
-			loading = false;
-		}
-	});
+		competitionResults = resultsData;
+		// Only show the last 10 competitions
+		competitionsList = competitionsData.results.slice(0, 10);
+	} catch (error) {
+		console.error('Failed to fetch data:', error);
+	} finally {
+		loading = false;
+	}
+});
 </script>
 
 {#if loading}
@@ -128,7 +128,7 @@
 						</p>
 					</div>
 					<div class="p-6">
-						<CompetitionResultsDisplay {competitionResults} />
+						<CompetitionResultsDisplay competitionResults={competitionResults} />
 					</div>
 				</div>
 			{:else}

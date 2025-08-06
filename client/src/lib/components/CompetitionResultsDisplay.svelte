@@ -1,39 +1,39 @@
 <script lang="ts">
-	import {
-		eventListIdx,
-		eventNames,
-		eventSolves,
-		type CompetitionResults,
-		type PersonResult,
-		type WCAEvent
-	} from '$lib/types';
-	import { compareResults, getMeanType, renderTime } from '$lib/utils';
+import {
+	eventListIdx,
+	eventNames,
+	eventSolves,
+	type CompetitionResults,
+	type PersonResult,
+	type WCAEvent
+} from '$lib/types';
+import { compareResults, getMeanType, renderTime } from '$lib/utils';
 
-	const BREAKPOINT = 835;
+const BREAKPOINT = 835;
 
-	let { competitionResults }: { competitionResults: CompetitionResults } = $props();
+let { competitionResults }: { competitionResults: CompetitionResults } = $props();
 
-	let sortedResults = $derived(
-		competitionResults.results
-			.map(({ event, rounds }) => ({
-				event,
-				rounds: rounds.map(({ round, results }) => ({
-					round,
-					results: results.slice().sort((a, b) => compareResults(a, b))
-				}))
+let sortedResults = $derived(
+	competitionResults.results
+		.map(({ event, rounds }) => ({
+			event,
+			rounds: rounds.map(({ round, results }) => ({
+				round,
+				results: results.slice().sort((a, b) => compareResults(a, b))
 			}))
-			.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
-	);
+		}))
+		.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
+);
 
-	let innerWidth = $state<number>(0);
-	let selectedPerson = $state<PersonResult | null>(null);
-	let selectedEvent = $state<WCAEvent>('333');
-	let showModal = $state<boolean>(false);
+let innerWidth = $state<number>(0);
+let selectedPerson = $state<PersonResult | null>(null);
+let selectedEvent = $state<WCAEvent>('333');
+let showModal = $state<boolean>(false);
 
-	let trimResults = $derived(innerWidth < BREAKPOINT);
+let trimResults = $derived(innerWidth < BREAKPOINT);
 </script>
 
-<svelte:window bind:innerWidth />
+<svelte:window bind:innerWidth={innerWidth} />
 <div class="space-y-6">
 	<div class="space-y-6">
 		{#if competitionResults.results.length == 0}

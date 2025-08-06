@@ -1,39 +1,39 @@
 <script lang="ts">
-	interface PaginationControlsProps {
-		currentPage: number;
-		totalPages: number;
-		totalCount: number;
-		itemsPerPage: number;
-		hasNext: boolean;
-		hasPrevious: boolean;
-		onPageChange: (page: number) => void;
-		onNext: () => void;
-		onPrevious: () => void;
-	}
+interface PaginationControlsProps {
+	currentPage: number;
+	totalPages: number;
+	totalCount: number;
+	itemsPerPage: number;
+	hasNext: boolean;
+	hasPrevious: boolean;
+	onPageChange: (page: number) => void;
+	onNext: () => void;
+	onPrevious: () => void;
+}
 
-	let {
-		currentPage,
-		totalPages,
-		totalCount,
-		itemsPerPage,
-		hasNext,
-		hasPrevious,
-		onPageChange,
-		onNext,
-		onPrevious
-	}: PaginationControlsProps = $props();
+let {
+	currentPage,
+	totalPages,
+	totalCount,
+	itemsPerPage,
+	hasNext,
+	hasPrevious,
+	onPageChange,
+	onNext,
+	onPrevious
+}: PaginationControlsProps = $props();
 
-	const visiblePages = $derived.by(() => {
-		const maxVisiblePages = 5;
-		const startPage = Math.max(1, currentPage - 2);
-		return Array.from(
-			{ length: Math.min(maxVisiblePages, totalPages) },
-			(_, i) => startPage + i
-		).filter((page) => page <= totalPages);
-	});
+const visiblePages = $derived.by(() => {
+	const maxVisiblePages = 5;
+	const startPage = Math.max(1, currentPage - 2);
+	return Array.from(
+		{ length: Math.min(maxVisiblePages, totalPages) },
+		(_, i) => startPage + i
+	).filter((page) => page <= totalPages);
+});
 
-	const startItem = $derived((currentPage - 1) * itemsPerPage + 1);
-	const endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
+const startItem = $derived((currentPage - 1) * itemsPerPage + 1);
+const endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
 
 {#if totalPages > 1}

@@ -1,52 +1,52 @@
 <script lang="ts">
-	import type { WCAEvent, Result } from '$lib/types';
-	import { eventNames, eventSolves } from '$lib/types';
-	import { Select } from 'bits-ui';
-	import ResultEntryField from './ResultEntryField.svelte';
+import type { WCAEvent, Result } from '$lib/types';
+import { eventNames, eventSolves } from '$lib/types';
+import { Select } from 'bits-ui';
+import ResultEntryField from './ResultEntryField.svelte';
 
-	interface Props {
-		formData: {
-			event: WCAEvent;
-			round: number;
-			time1: number;
-			time2: number;
-			time3: number;
-			time4: number;
-			time5: number;
-		};
-		editingResult: Result | null;
-		submitting: boolean;
-		onSubmit: () => void;
-		onCancel: () => void;
-		additionalValidation?: boolean;
-	}
-
-	let {
-		formData = $bindable(),
-		editingResult,
-		submitting,
-		onSubmit,
-		onCancel,
-		additionalValidation = true
-	}: Props = $props();
-
-	const getAttemptCount = (event: WCAEvent): number => {
-		return eventSolves[event] || 5;
+interface Props {
+	formData: {
+		event: WCAEvent;
+		round: number;
+		time1: number;
+		time2: number;
+		time3: number;
+		time4: number;
+		time5: number;
 	};
+	editingResult: Result | null;
+	submitting: boolean;
+	onSubmit: () => void;
+	onCancel: () => void;
+	additionalValidation?: boolean;
+}
 
-	const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
-		value: key,
-		label: name
-	}));
+let {
+	formData = $bindable(),
+	editingResult,
+	submitting,
+	onSubmit,
+	onCancel,
+	additionalValidation = true
+}: Props = $props();
 
-	const selectedEventLabel = $derived.by(() => {
-		const selected = eventOptions.find((option) => option.value === formData.event);
-		return selected ? selected.label : 'Select an event';
-	});
+const getAttemptCount = (event: WCAEvent): number => {
+	return eventSolves[event] || 5;
+};
 
-	const areRequiredFieldsFilled = $derived(
-		formData.event && formData.round > 0 && additionalValidation
-	);
+const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
+	value: key,
+	label: name
+}));
+
+const selectedEventLabel = $derived.by(() => {
+	const selected = eventOptions.find((option) => option.value === formData.event);
+	return selected ? selected.label : 'Select an event';
+});
+
+const areRequiredFieldsFilled = $derived(
+	formData.event && formData.round > 0 && additionalValidation
+);
 </script>
 
 <div class="my-4 flex items-center justify-between">

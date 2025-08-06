@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import type { Competition } from '$lib/types';
+import { goto } from '$app/navigation';
+import type { Competition } from '$lib/types';
 
-	interface Props {
-		competition: Competition;
-		onDeleteCompetition: (id: number) => unknown;
-	}
+interface Props {
+	competition: Competition;
+	onDeleteCompetition: (id: number) => unknown;
+}
 
-	const { competition, onDeleteCompetition = () => null }: Props = $props();
+const { competition, onDeleteCompetition = () => null }: Props = $props();
 </script>
 
 <div class="rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md">

@@ -1,60 +1,60 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import authFetch from '$lib/authFetch';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-	import type { Competition } from '$lib/types';
-	import { BASE_URL } from '$lib/utils';
-	import { onMount } from 'svelte';
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
+import authFetch from '$lib/authFetch';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import type { Competition } from '$lib/types';
+import { BASE_URL } from '$lib/utils';
+import { onMount } from 'svelte';
 
-	const id = $page.params.compid;
+const id = $page.params.compid;
 
-	let competitionData: Competition | null = $state(null);
-	let isLoading = $state(true);
-	let errorMessage = $state<string | null>(null);
+let competitionData: Competition | null = $state(null);
+let isLoading = $state(true);
+let errorMessage = $state<string | null>(null);
 
-	onMount(async () => {
-		try {
-			const response = await fetch(`${BASE_URL}/api/competitions/${id}/`);
-			if (!response.ok) {
-				throw new Error('Failed to fetch competition data.');
-			}
-			competitionData = await response.json();
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-			console.error(error);
-		} finally {
-			isLoading = false;
+onMount(async () => {
+	try {
+		const response = await fetch(`${BASE_URL}/api/competitions/${id}/`);
+		if (!response.ok) {
+			throw new Error('Failed to fetch competition data.');
 		}
-	});
+		competitionData = await response.json();
+	} catch (error) {
+		errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+		console.error(error);
+	} finally {
+		isLoading = false;
+	}
+});
 
-	const updateCompetitionData = async () => {
-		if (!competitionData) return;
+const updateCompetitionData = async () => {
+	if (!competitionData) return;
 
-		errorMessage = null;
+	errorMessage = null;
 
-		try {
-			const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(competitionData)
-			});
+	try {
+		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(competitionData)
+		});
 
-			if (!response.ok) {
-				const errorData = await response
-					.json()
-					.catch(() => ({ message: 'Failed to update competition.' }));
-				throw new Error(errorData.message);
-			}
-
-			goto('/dashboard');
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'An update error occurred.';
-			console.error(error);
+		if (!response.ok) {
+			const errorData = await response
+				.json()
+				.catch(() => ({ message: 'Failed to update competition.' }));
+			throw new Error(errorData.message);
 		}
-	};
+
+		goto('/dashboard');
+	} catch (error) {
+		errorMessage = error instanceof Error ? error.message : 'An update error occurred.';
+		console.error(error);
+	}
+};
 </script>
 
 {#if isLoading}

@@ -1,41 +1,41 @@
 <script lang="ts">
-	import type { EventRecords, RecordsApiResponse, WCAEvent } from '$lib/types';
-	import { recordsURL } from '$lib/utils';
-	import { eventListIdx, eventSolves, eventNames } from '$lib/types';
-	import { onMount } from 'svelte';
-	import RecordRow from '$lib/components/RecordRow.svelte';
-	import Backbutton from '$lib/components/Backbutton.svelte';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import type { EventRecords, RecordsApiResponse, WCAEvent } from '$lib/types';
+import { recordsURL } from '$lib/utils';
+import { eventListIdx, eventSolves, eventNames } from '$lib/types';
+import { onMount } from 'svelte';
+import RecordRow from '$lib/components/RecordRow.svelte';
+import Backbutton from '$lib/components/Backbutton.svelte';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 
-	let recordsAPIResponse = $state<RecordsApiResponse | null>(null);
-	let loading = $state(true);
+let recordsAPIResponse = $state<RecordsApiResponse | null>(null);
+let loading = $state(true);
 
-	onMount(async () => {
-		try {
-			const response = await fetch(recordsURL);
-			const data: RecordsApiResponse = await response.json();
-			recordsAPIResponse = data;
-		} catch (error) {
-			console.error('Failed to fetch records:', error);
-		} finally {
-			loading = false;
-		}
-	});
+onMount(async () => {
+	try {
+		const response = await fetch(recordsURL);
+		const data: RecordsApiResponse = await response.json();
+		recordsAPIResponse = data;
+	} catch (error) {
+		console.error('Failed to fetch records:', error);
+	} finally {
+		loading = false;
+	}
+});
 
-	let recordsDisplay = $derived.by(() => {
-		if (!recordsAPIResponse) {
-			return null;
-		}
+let recordsDisplay = $derived.by(() => {
+	if (!recordsAPIResponse) {
+		return null;
+	}
 
-		const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
-		recordEntries.sort((a, b) => {
-			const eventA = a[0] as WCAEvent;
-			const eventB = b[0] as WCAEvent;
-			return eventListIdx[eventA] - eventListIdx[eventB];
-		}) as [WCAEvent, EventRecords][];
+	const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
+	recordEntries.sort((a, b) => {
+		const eventA = a[0] as WCAEvent;
+		const eventB = b[0] as WCAEvent;
+		return eventListIdx[eventA] - eventListIdx[eventB];
+	}) as [WCAEvent, EventRecords][];
 
-		return recordEntries;
-	});
+	return recordEntries;
+});
 </script>
 
 <Backbutton />
@@ -88,10 +88,10 @@
 								</thead>
 								<tbody class="divide-y divide-gray-200 bg-white">
 									{#if eventRecords.single}
-										<RecordRow record={eventRecords.single} {eventKey} type="Single" />
+										<RecordRow record={eventRecords.single} eventKey={eventKey} type="Single" />
 									{/if}
 									{#if eventRecords.average}
-										<RecordRow record={eventRecords.average} {eventKey} type="Average" />
+										<RecordRow record={eventRecords.average} eventKey={eventKey} type="Average" />
 									{/if}
 								</tbody>
 							</table>

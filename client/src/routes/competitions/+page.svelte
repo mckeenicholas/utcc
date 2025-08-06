@@ -1,60 +1,60 @@
 <script lang="ts">
-	import type { Competition, Paginated } from '$lib/types';
-	import { BASE_URL, PAGINATION_SIZE } from '$lib/utils';
-	import { onMount } from 'svelte';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-	import CompetitionCard from '$lib/components/CompetitionCard.svelte';
-	import Backbutton from '$lib/components/Backbutton.svelte';
-	import PaginationControls from '$lib/components/PaginationControls.svelte';
+import type { Competition, Paginated } from '$lib/types';
+import { BASE_URL, PAGINATION_SIZE } from '$lib/utils';
+import { onMount } from 'svelte';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import CompetitionCard from '$lib/components/CompetitionCard.svelte';
+import Backbutton from '$lib/components/Backbutton.svelte';
+import PaginationControls from '$lib/components/PaginationControls.svelte';
 
-	let competitions: Competition[] = $state([]);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
-	let currentPage = $state(1);
-	let totalPages = $state(1);
-	let hasNext = $state(false);
-	let hasPrevious = $state(false);
-	let totalCount = $state(0);
+let competitions: Competition[] = $state([]);
+let loading = $state(true);
+let error = $state<string | null>(null);
+let currentPage = $state(1);
+let totalPages = $state(1);
+let hasNext = $state(false);
+let hasPrevious = $state(false);
+let totalCount = $state(0);
 
-	const fetchCompetitions = async (page: number = 1) => {
-		loading = true;
-		error = null;
+const fetchCompetitions = async (page: number = 1) => {
+	loading = true;
+	error = null;
 
-		try {
-			const response = await fetch(`${BASE_URL}/api/competitions?page=${page}`);
+	try {
+		const response = await fetch(`${BASE_URL}/api/competitions?page=${page}`);
 
-			if (!response.ok) {
-				throw new Error('Failed to fetch competitions');
-			}
-
-			const data: Paginated<Competition> = await response.json();
-
-			competitions = data.results;
-			currentPage = page;
-			totalCount = data.count;
-			hasNext = !!data.next;
-			hasPrevious = !!data.previous;
-			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-		} catch (err) {
-			console.error('Error fetching competitions:', err);
-			error = 'Failed to load competitions. Please try again later.';
-		} finally {
-			loading = false;
+		if (!response.ok) {
+			throw new Error('Failed to fetch competitions');
 		}
-	};
 
-	onMount(() => {
-		fetchCompetitions(1);
-	});
+		const data: Paginated<Competition> = await response.json();
 
-	const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
-	const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
+		competitions = data.results;
+		currentPage = page;
+		totalCount = data.count;
+		hasNext = !!data.next;
+		hasPrevious = !!data.previous;
+		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+	} catch (err) {
+		console.error('Error fetching competitions:', err);
+		error = 'Failed to load competitions. Please try again later.';
+	} finally {
+		loading = false;
+	}
+};
 
-	const goToPage = (page: number) => {
-		if (page >= 1 && page <= totalPages) {
-			fetchCompetitions(page);
-		}
-	};
+onMount(() => {
+	fetchCompetitions(1);
+});
+
+const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
+const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
+
+const goToPage = (page: number) => {
+	if (page >= 1 && page <= totalPages) {
+		fetchCompetitions(page);
+	}
+};
 </script>
 
 <Backbutton />
@@ -88,18 +88,18 @@
 			<!-- Competitions List -->
 			<div class="space-y-4">
 				{#each competitions as competition (competition.id)}
-					<CompetitionCard {competition} />
+					<CompetitionCard competition={competition} />
 				{/each}
 			</div>
 
 			<div class="mt-4 rounded-md shadow">
 				<PaginationControls
-					{currentPage}
-					{totalPages}
-					{totalCount}
+					currentPage={currentPage}
+					totalPages={totalPages}
+					totalCount={totalCount}
 					itemsPerPage={PAGINATION_SIZE}
-					{hasNext}
-					{hasPrevious}
+					hasNext={hasNext}
+					hasPrevious={hasPrevious}
 					onPageChange={goToPage}
 					onNext={goToNextPage}
 					onPrevious={goToPreviousPage}

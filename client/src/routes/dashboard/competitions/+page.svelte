@@ -1,107 +1,107 @@
 <script lang="ts">
-	import DashboardCompetitionCard from '$lib/components/DashboardCompetitionCard.svelte';
+import DashboardCompetitionCard from '$lib/components/DashboardCompetitionCard.svelte';
 
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from '$lib/utils';
-	import type { Competition, Paginated } from '$lib/types';
-	import authFetch from '$lib/authFetch';
-	import { type DateValue } from '@internationalized/date';
-	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-	import AddCompetitionForm from '$lib/components/AddCompetitionForm.svelte';
-	import DashboardHeader from '$lib/components/DashboardHeader.svelte';
-	import PaginationControls from '$lib/components/PaginationControls.svelte';
+import { goto } from '$app/navigation';
+import { onMount } from 'svelte';
+import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from '$lib/utils';
+import type { Competition, Paginated } from '$lib/types';
+import authFetch from '$lib/authFetch';
+import { type DateValue } from '@internationalized/date';
+import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import AddCompetitionForm from '$lib/components/AddCompetitionForm.svelte';
+import DashboardHeader from '$lib/components/DashboardHeader.svelte';
+import PaginationControls from '$lib/components/PaginationControls.svelte';
 
-	let competitions: Competition[] = $state([]);
-	let loading = $state(true);
-	let newCompName = $state('');
-	let selectedDate = $state<DateValue | undefined>(undefined);
-	let currentPage = $state(1);
-	let totalPages = $state(1);
-	let hasNext = $state(false);
-	let hasPrevious = $state(false);
-	let totalCount = $state(0);
+let competitions: Competition[] = $state([]);
+let loading = $state(true);
+let newCompName = $state('');
+let selectedDate = $state<DateValue | undefined>(undefined);
+let currentPage = $state(1);
+let totalPages = $state(1);
+let hasNext = $state(false);
+let hasPrevious = $state(false);
+let totalCount = $state(0);
 
-	const fetchCompetitions = async (page: number = 1) => {
-		const competitionRes = await authFetch(`${BASE_URL}/api/competitions/?page=${page}`);
+const fetchCompetitions = async (page: number = 1) => {
+	const competitionRes = await authFetch(`${BASE_URL}/api/competitions/?page=${page}`);
 
-		if (competitionRes.ok) {
-			const compResJSON: Paginated<Competition> = await competitionRes.json();
-			competitions = compResJSON.results.sort(
-				(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-			);
+	if (competitionRes.ok) {
+		const compResJSON: Paginated<Competition> = await competitionRes.json();
+		competitions = compResJSON.results.sort(
+			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+		);
 
-			// Update pagination state
-			currentPage = page;
-			totalCount = compResJSON.count;
-			hasNext = !!compResJSON.next;
-			hasPrevious = !!compResJSON.previous;
-			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+		// Update pagination state
+		currentPage = page;
+		totalCount = compResJSON.count;
+		hasNext = !!compResJSON.next;
+		hasPrevious = !!compResJSON.previous;
+		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 
-			loading = false;
-		} else if (competitionRes.status === 401) {
-			goto('/dashboard/signin');
-		}
-	};
+		loading = false;
+	} else if (competitionRes.status === 401) {
+		goto('/dashboard/signin');
+	}
+};
 
-	onMount(async () => {
-		const loggedIn = await checkLoginStatus();
+onMount(async () => {
+	const loggedIn = await checkLoginStatus();
 
-		if (!loggedIn) {
-			goto('/dashboard/signin');
-			return;
-		}
+	if (!loggedIn) {
+		goto('/dashboard/signin');
+		return;
+	}
 
-		await fetchCompetitions(1);
-	});
+	await fetchCompetitions(1);
+});
 
-	const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
-	const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
+const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
+const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
 
-	const deleteCompetition = async (id: number) => {
-		if (confirm('Are you sure you want to delete this competition?')) {
-			const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-
-			if (response.ok) {
-				competitions = competitions.filter((c) => c.id !== id);
-			} else {
-				alert('Failed to delete competition');
-			}
-		}
-	};
-
-	const createCompetition = async () => {
-		if (!selectedDate) {
-			alert('Please select a date');
-			return;
-		}
-
-		const dateString = selectedDate.toString();
-
-		const response = await authFetch(`${BASE_URL}/api/competitions/`, {
-			method: 'POST',
+const deleteCompetition = async (id: number) => {
+	if (confirm('Are you sure you want to delete this competition?')) {
+		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
+			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ name: newCompName, date: dateString })
+			}
 		});
 
 		if (response.ok) {
-			const newCompetition: Competition = await response.json();
-			// Reset form
-			newCompName = '';
-			selectedDate = undefined;
-			// Navigate directly to the new competition
-			goto(`/dashboard/competitions/${newCompetition.id}`);
+			competitions = competitions.filter((c) => c.id !== id);
 		} else {
-			alert('Failed to create competition');
+			alert('Failed to delete competition');
 		}
-	};
+	}
+};
+
+const createCompetition = async () => {
+	if (!selectedDate) {
+		alert('Please select a date');
+		return;
+	}
+
+	const dateString = selectedDate.toString();
+
+	const response = await authFetch(`${BASE_URL}/api/competitions/`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ name: newCompName, date: dateString })
+	});
+
+	if (response.ok) {
+		const newCompetition: Competition = await response.json();
+		// Reset form
+		newCompName = '';
+		selectedDate = undefined;
+		// Navigate directly to the new competition
+		goto(`/dashboard/competitions/${newCompetition.id}`);
+	} else {
+		alert('Failed to create competition');
+	}
+};
 </script>
 
 <div class="min-h-screen py-8">
@@ -125,7 +125,7 @@
 					/>
 				</div>
 				<div>
-					<AddCompetitionForm bind:selectedDate />
+					<AddCompetitionForm bind:selectedDate={selectedDate} />
 				</div>
 				<button
 					onclick={createCompetition}
@@ -151,16 +151,19 @@
 				{:else}
 					<div class="grid gap-4">
 						{#each competitions as competition (competition.id)}
-							<DashboardCompetitionCard {competition} onDeleteCompetition={deleteCompetition} />
+							<DashboardCompetitionCard
+								competition={competition}
+								onDeleteCompetition={deleteCompetition}
+							/>
 						{/each}
 					</div>
 					<div class="mt-4 rounded-md shadow-sm">
 						<PaginationControls
-							{currentPage}
-							{totalPages}
-							{hasNext}
-							{hasPrevious}
-							{totalCount}
+							currentPage={currentPage}
+							totalPages={totalPages}
+							hasNext={hasNext}
+							hasPrevious={hasPrevious}
+							totalCount={totalCount}
 							itemsPerPage={PAGINATION_SIZE}
 							onNext={goToNextPage}
 							onPrevious={goToPreviousPage}
