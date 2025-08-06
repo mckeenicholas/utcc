@@ -47,17 +47,8 @@
 		fetchCompetitions(1);
 	});
 
-	const goToNextPage = () => {
-		if (hasNext) {
-			fetchCompetitions(currentPage + 1);
-		}
-	};
-
-	const goToPreviousPage = () => {
-		if (hasPrevious) {
-			fetchCompetitions(currentPage - 1);
-		}
-	};
+	const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
+	const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
 
 	const goToPage = (page: number) => {
 		if (page >= 1 && page <= totalPages) {

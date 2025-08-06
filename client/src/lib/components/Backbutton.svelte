@@ -1,6 +1,31 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	const goBack = () => {
-		window.history.back();
+		// Check if there's history and if the previous page is on the same origin
+		if (document.referrer && new URL(document.referrer).origin === window.location.origin) {
+			window.history.back();
+		} else {
+			// Navigate to parent page based on current path
+			const currentPath = window.location.pathname;
+
+			if (currentPath.startsWith('/competitions/') && currentPath !== '/competitions') {
+				goto('/competitions');
+			} else if (currentPath.startsWith('/dashboard/')) {
+				if (currentPath === '/dashboard' || currentPath === '/dashboard/') {
+					goto('/');
+				} else {
+					goto('/dashboard');
+				}
+			} else if (currentPath.startsWith('/records')) {
+				goto('/');
+			} else if (currentPath.startsWith('/rankings')) {
+				goto('/');
+			} else {
+				// Default fallback to home
+				goto('/');
+			}
+		}
 	};
 </script>
 

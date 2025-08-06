@@ -163,8 +163,6 @@ class RankingsAPIView(APIView):
         all_results = request.query_params.get("all", "false").lower() == "true"
         page = int(request.query_params.get("page", 1))
 
-        print(event, result_format)
-
         # Validate required parameters
         if not event:
             return Response(

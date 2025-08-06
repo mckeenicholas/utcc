@@ -6,4 +6,7 @@
 	<div>
 		<a href="/records" class="text-blue-500 hover:underline">Records</a>
 	</div>
+	<div>
+		<a href="/rankings" class="text-blue-500 hover:underline">Rankings</a>
+	</div>
 </div>

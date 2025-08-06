@@ -21,25 +21,18 @@
 
 	let results: Paginated<RecordInstance> | null = $state(null);
 	let loading = $state(true);
-
-	// Pagination state
 	let currentPage = $state(1);
 	let totalPages = $state(1);
 	let hasNext = $state(false);
 	let hasPrevious = $state(false);
 	let totalCount = $state(0);
 
-	const fetchRankings = async () => {
+	const fetchRankings = async (urlParams: URLSearchParams) => {
 		loading = true;
-		const urlParams = new URLSearchParams({
-			event: selectedEvent,
-			type: isAverage ? 'average' : 'single',
-			all: showAllResults.toString(),
-			page: pageNum.toString()
-		});
-
 		try {
 			const response = await fetch(`${BASE_URL}/api/rankings/?${urlParams.toString()}`);
+			if (!response.ok) throw new Error('Network response was not ok');
+
 			const data: Paginated<RecordInstance> = await response.json();
 
 			results = data;
@@ -62,35 +55,26 @@
 		}
 	};
 
-	const goToNextPage = () => {
-		if (hasNext) {
-			pageNum = currentPage + 1;
-		}
-	};
-
-	const goToPreviousPage = () => {
-		if (hasPrevious) {
-			pageNum = currentPage - 1;
-		}
-	};
+	const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
+	const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
 	$effect(() => {
-		// When filters change, reset to page 1
-		selectedEvent; // eslint-disable-line  @typescript-eslint/no-unused-expressions
-		isAverage; // eslint-disable-line  @typescript-eslint/no-unused-expressions
-		showAllResults; // eslint-disable-line  @typescript-eslint/no-unused-expressions
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const _ = { selectedEvent, isAverage, showAllResults };
 
-		// Reset page to 1 when filters change
-		pageNum = 1;
+		return () => {
+			pageNum = 1;
+		};
 	});
 
 	$effect(() => {
-		// Fetch data when page number changes
-		pageNum; // eslint-disable-line  @typescript-eslint/no-unused-expressions
-
-		$effect.pre(() => {
-			fetchRankings();
+		const urlParams = new URLSearchParams({
+			event: selectedEvent,
+			type: isAverage ? 'average' : 'single',
+			all: showAllResults.toString(),
+			page: pageNum.toString()
 		});
+		fetchRankings(urlParams);
 	});
 </script>
 
@@ -120,8 +104,8 @@
 								>Name</th
 							>
 							<th
-								class="py-3 pe-6 ps-24 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
-								>Result</th
+								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
+								class:ps-24={!isAverage}>Result</th
 							>
 							<th
 								class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -148,8 +132,8 @@
 									>{result.person_name}</td
 								>
 								<td
-									class="whitespace-nowrap py-4 pe-6 ps-24 text-center font-mono text-sm font-bold text-gray-900"
-									>{renderTime(result.result)}</td
+									class="whitespace-nowrap px-6 py-4 text-center font-mono text-sm font-bold text-gray-900"
+									class:ps-24={!isAverage}>{renderTime(result.result)}</td
 								>
 								<td class="whitespace-nowrap px-6 py-4 text-center text-sm text-gray-700">
 									<a class="hover:text-gray-400" href={`/competitions/${result.competition_id}`}
