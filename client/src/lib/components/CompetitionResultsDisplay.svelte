@@ -109,8 +109,10 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 											<tr
 												class="hover: transition-colors duration-150 ease-in-out hover:bg-gray-100"
 												class:cursor-pointer={trimResults}
-												onclick={() => {
+												onclick={(e) => {
 													if (!trimResults) return;
+													// Don't open modal if clicking on a link
+													if (e.target instanceof Element && e.target.closest('a')) return;
 													selectedPerson = roundPerson;
 													selectedEvent = event;
 													showModal = true;
@@ -124,11 +126,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 												<td
 													class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 												>
-													<a
-														href="/persons/{roundPerson.person_id}"
-														class="hover:text-gray-400"
-														onclick={(e) => e.stopPropagation()}
-													>
+													<a href="/persons/{roundPerson.person_id}" class="hover:text-gray-400">
 														{roundPerson.person_name}
 													</a>
 												</td>

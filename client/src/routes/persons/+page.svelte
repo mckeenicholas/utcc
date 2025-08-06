@@ -121,19 +121,21 @@ $effect(() => {
 				</div>
 
 				{#if !isSearching}
-					<div>
-						<PaginationControls
-							currentPage={currentPage}
-							totalPages={totalPages}
-							totalCount={totalCount}
-							itemsPerPage={PAGINATION_SIZE}
-							hasNext={hasNext}
-							hasPrevious={hasPrevious}
-							onPageChange={loadUsers}
-							onNext={() => loadUsers(currentPage + 1)}
-							onPrevious={() => loadUsers(currentPage - 1)}
-						/>
-					</div>
+					{#if totalPages > 1}
+						<div>
+							<PaginationControls
+								currentPage={currentPage}
+								totalPages={totalPages}
+								totalCount={totalCount}
+								itemsPerPage={PAGINATION_SIZE}
+								hasNext={hasNext}
+								hasPrevious={hasPrevious}
+								onPageChange={loadUsers}
+								onNext={() => loadUsers(currentPage + 1)}
+								onPrevious={() => loadUsers(currentPage - 1)}
+							/>
+						</div>
+					{/if}
 				{/if}
 			{:else if searchTerm.trim()}
 				<div class="py-8 text-center text-gray-500">

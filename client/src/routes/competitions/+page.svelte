@@ -92,19 +92,21 @@ const goToPage = (page: number) => {
 				{/each}
 			</div>
 
-			<div class="mt-4 rounded-md bg-white p-4 shadow">
-				<PaginationControls
-					currentPage={currentPage}
-					totalPages={totalPages}
-					totalCount={totalCount}
-					itemsPerPage={PAGINATION_SIZE}
-					hasNext={hasNext}
-					hasPrevious={hasPrevious}
-					onPageChange={goToPage}
-					onNext={goToNextPage}
-					onPrevious={goToPreviousPage}
-				/>
-			</div>
+			{#if totalPages > 1}
+				<div class="mt-4 rounded-md bg-white p-4 shadow">
+					<PaginationControls
+						currentPage={currentPage}
+						totalPages={totalPages}
+						totalCount={totalCount}
+						itemsPerPage={PAGINATION_SIZE}
+						hasNext={hasNext}
+						hasPrevious={hasPrevious}
+						onPageChange={goToPage}
+						onNext={goToNextPage}
+						onPrevious={goToPreviousPage}
+					/>
+				</div>
+			{/if}
 		{:else}
 			<!-- Empty State -->
 			<div class="rounded-lg bg-white p-12 text-center shadow-sm">

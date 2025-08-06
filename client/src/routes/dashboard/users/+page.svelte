@@ -187,19 +187,21 @@ const handleDeleteUser = async (userId: number) => {
 				</div>
 
 				{#if !isSearching}
-					<div class="mt-4">
-						<PaginationControls
-							currentPage={currentPage}
-							totalPages={totalPages}
-							totalCount={totalCount}
-							itemsPerPage={PAGINATION_SIZE}
-							hasNext={hasNext}
-							hasPrevious={hasPrevious}
-							onPageChange={loadUsers}
-							onNext={() => loadUsers(currentPage + 1)}
-							onPrevious={() => loadUsers(currentPage - 1)}
-						/>
-					</div>
+					{#if totalPages > 1}
+						<div class="mt-4">
+							<PaginationControls
+								currentPage={currentPage}
+								totalPages={totalPages}
+								totalCount={totalCount}
+								itemsPerPage={PAGINATION_SIZE}
+								hasNext={hasNext}
+								hasPrevious={hasPrevious}
+								onPageChange={loadUsers}
+								onNext={() => loadUsers(currentPage + 1)}
+								onPrevious={() => loadUsers(currentPage - 1)}
+							/>
+						</div>
+					{/if}
 				{/if}
 			{:else if searchTerm.trim()}
 				<div class="py-4 text-center text-gray-500">

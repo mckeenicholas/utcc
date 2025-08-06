@@ -157,19 +157,21 @@ const createCompetition = async () => {
 							/>
 						{/each}
 					</div>
-					<div class="mt-4 rounded-md bg-white p-4 shadow-sm">
-						<PaginationControls
-							currentPage={currentPage}
-							totalPages={totalPages}
-							hasNext={hasNext}
-							hasPrevious={hasPrevious}
-							totalCount={totalCount}
-							itemsPerPage={PAGINATION_SIZE}
-							onNext={goToNextPage}
-							onPrevious={goToPreviousPage}
-							onPageChange={(pageNo) => fetchCompetitions(pageNo)}
-						/>
-					</div>
+					{#if totalPages > 1}
+						<div class="mt-4 rounded-md bg-white p-4 shadow-sm">
+							<PaginationControls
+								currentPage={currentPage}
+								totalPages={totalPages}
+								hasNext={hasNext}
+								hasPrevious={hasPrevious}
+								totalCount={totalCount}
+								itemsPerPage={PAGINATION_SIZE}
+								onNext={goToNextPage}
+								onPrevious={goToPreviousPage}
+								onPageChange={(pageNo) => fetchCompetitions(pageNo)}
+							/>
+						</div>
+					{/if}
 				{/if}
 			</div>
 		{/if}

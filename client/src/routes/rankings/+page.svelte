@@ -161,19 +161,21 @@ $effect(() => {
 					</tbody>
 				</table>
 
-				<div class="px-4 pt-2 pb-4">
-					<PaginationControls
-						currentPage={currentPage}
-						totalPages={totalPages}
-						totalCount={totalCount}
-						itemsPerPage={PAGINATION_SIZE}
-						hasNext={hasNext}
-						hasPrevious={hasPrevious}
-						onPageChange={goToPage}
-						onNext={goToNextPage}
-						onPrevious={goToPreviousPage}
-					/>
-				</div>
+				{#if totalPages > 1}
+					<div class="px-4 pt-2 pb-4">
+						<PaginationControls
+							currentPage={currentPage}
+							totalPages={totalPages}
+							totalCount={totalCount}
+							itemsPerPage={PAGINATION_SIZE}
+							hasNext={hasNext}
+							hasPrevious={hasPrevious}
+							onPageChange={goToPage}
+							onNext={goToNextPage}
+							onPrevious={goToPreviousPage}
+						/>
+					</div>
+				{/if}
 			{:else}
 				<div class="p-8 text-center text-gray-500">
 					<h2 class="text-xl font-semibold">No results found for {eventName}</h2>
