@@ -1,6 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import LoginView, LogoutView, get_csrf, is_logged_in, PersonViewSet
+from .views import (
+    LoginView,
+    LogoutView,
+    PersonResultsAPIView,
+    get_csrf,
+    is_logged_in,
+    PersonViewSet,
+)
 
 # Create router for CRUD operations
 router = DefaultRouter()
@@ -12,6 +19,11 @@ urlpatterns = [
     path("auth/logout/", LogoutView.as_view(), name="logout"),
     path("auth/csrf/", get_csrf, name="get_csrf"),
     path("auth/status/", is_logged_in, name="check_login"),
+    path(
+        "<int:person_id>/results/",
+        PersonResultsAPIView.as_view(),
+        name="profile_results",
+    ),
     # Include router URLs for CRUD operations
     # This provides:
     # - POST/GET/PUT/PATCH/DELETE /persons/{id}/ (GET /persons/ disabled)

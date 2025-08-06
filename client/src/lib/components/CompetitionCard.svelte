@@ -1,5 +1,4 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
 import type { Competition } from '$lib/types';
 import CubeIcon from './CubeIcon.svelte';
 
@@ -34,12 +33,11 @@ let { competition }: Props = $props();
 	</div>
 	<div class="pb-4">
 		<div class="text-sm">
-			<button
-				onclick={() => goto(`/competitions/${competition.id}`)}
-				class="font-medium text-blue-600 hover:text-blue-500"
-			>
-				View results<span class="sr-only"> {competition.name}</span>
-			</button>
+			<a href="/competitions/{competition.id}">
+				<div class="font-medium text-blue-600 hover:text-blue-500">
+					View results<span class="sr-only"> {competition.name}</span>
+				</div>
+			</a>
 		</div>
 	</div>
 </div>

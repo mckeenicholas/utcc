@@ -94,7 +94,7 @@ $effect(() => {
 
 		<div class="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
 			{#if loading}
-				<LoadingScreen message={`Loading Rankings for ${eventName}`} inline />
+				<LoadingScreen message="Loading Rankings for {eventName}" inline />
 			{:else if results?.results.length}
 				<table class="min-w-full divide-y divide-gray-200">
 					<thead>
@@ -134,14 +134,17 @@ $effect(() => {
 								>
 								<td
 									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
-									>{result.person_name}</td
+								>
+									<a href="/persons/{result.person_id}" class="hover:text-gray-400">
+										{result.person_name}
+									</a></td
 								>
 								<td
 									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap text-gray-900"
 									class:lg:ps-24={!isAverage}>{renderTime(result.result)}</td
 								>
 								<td class="px-6 py-4 text-center text-sm whitespace-nowrap text-gray-700">
-									<a class="hover:text-gray-400" href={`/competitions/${result.competition_id}`}
+									<a class="hover:text-gray-400" href="/competitions/{result.competition_id}"
 										>{result.competition_name}</a
 									>
 								</td>
@@ -158,17 +161,19 @@ $effect(() => {
 					</tbody>
 				</table>
 
-				<PaginationControls
-					currentPage={currentPage}
-					totalPages={totalPages}
-					totalCount={totalCount}
-					itemsPerPage={PAGINATION_SIZE}
-					hasNext={hasNext}
-					hasPrevious={hasPrevious}
-					onPageChange={goToPage}
-					onNext={goToNextPage}
-					onPrevious={goToPreviousPage}
-				/>
+				<div class="px-4 pt-2 pb-4">
+					<PaginationControls
+						currentPage={currentPage}
+						totalPages={totalPages}
+						totalCount={totalCount}
+						itemsPerPage={PAGINATION_SIZE}
+						hasNext={hasNext}
+						hasPrevious={hasPrevious}
+						onPageChange={goToPage}
+						onNext={goToNextPage}
+						onPrevious={goToPreviousPage}
+					/>
+				</div>
 			{:else}
 				<div class="p-8 text-center text-gray-500">
 					<h2 class="text-xl font-semibold">No results found for {eventName}</h2>

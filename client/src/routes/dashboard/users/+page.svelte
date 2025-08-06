@@ -187,7 +187,7 @@ const handleDeleteUser = async (userId: number) => {
 				</div>
 
 				{#if !isSearching}
-					<div class="-mx-4">
+					<div class="mt-4">
 						<PaginationControls
 							currentPage={currentPage}
 							totalPages={totalPages}

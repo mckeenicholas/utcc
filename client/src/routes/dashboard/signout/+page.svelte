@@ -5,8 +5,8 @@ import { BASE_URL } from '$lib/utils';
 import { onMount } from 'svelte';
 
 let errorMsg = $state('');
-let isLoading = $state(true);
-let showFallback = $state(false);
+let isLoading = $state(false);
+let showFallback = $state(true);
 
 const signOut = async () => {
 	try {
@@ -39,10 +39,6 @@ const signOut = async () => {
 	}, 3000);
 };
 
-const goToLogin = () => {
-	goto('/dashboard/signin');
-};
-
 onMount(signOut);
 </script>
 
@@ -68,12 +64,13 @@ onMount(signOut);
 		{#if showFallback}
 			<div class="space-y-3">
 				<p class="text-gray-600">You have been signed out.</p>
-				<button
-					onclick={goToLogin}
-					class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
-				>
-					Return to Login
-				</button>
+				<a href="/dashboard/signin">
+					<div
+						class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
+					>
+						Return to Login
+					</div>
+				</a>
 			</div>
 		{/if}
 	</div>

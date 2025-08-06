@@ -99,11 +99,29 @@ onMount(async () => {
 							</svg>
 							Rankings
 						</a>
+						<a
+							href="/persons"
+							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+						>
+							<svg
+								class="mr-2 h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+								<circle cx="12" cy="7" r="4" />
+							</svg>
+							Persons
+						</a>
 						<div class="flex flex-wrap items-center gap-2">
 							<span class="text-sm font-medium text-gray-700">Recent competitions:</span>
 							{#each competitionsList as competition (competition.id)}
 								<a
-									href={`/competitions/${competition.id}`}
+									href="/competitions/{competition.id}"
 									class="inline-block rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 								>
 									{competition.name}
@@ -119,7 +137,9 @@ onMount(async () => {
 				<div class="rounded-lg bg-white shadow-sm">
 					<div class="border-b border-gray-200 px-6 py-4">
 						<h2 class="text-xl font-semibold text-gray-800">
-							Most Recent Results: {competitionResults.competition.name}
+							<a href="/competitions/{competitionResults.competition.id}">
+								Most Recent Results: {competitionResults.competition.name}
+							</a>
 						</h2>
 						<p class="mt-1 text-sm text-gray-600">
 							Latest competition results from {new Date(

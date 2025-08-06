@@ -77,17 +77,19 @@ export const eventListIdx: Record<WCAEvent, number> = {
 	'333mbf': 16
 } as const;
 
-export interface PersonResult {
+export interface BaseResult {
 	id: number;
-	person_name: string;
-	person_id: number;
-	times: number[];
 	single: number;
 	average: number;
+	person_name: string;
+	person_id: number;
 }
 
-export interface Result {
-	id: number;
+export interface PersonResult extends BaseResult {
+	times: number[];
+}
+
+export interface Result extends BaseResult {
 	competition: number;
 	event: WCAEvent;
 	round: number;
@@ -96,10 +98,6 @@ export interface Result {
 	time3: number;
 	time4: number;
 	time5: number;
-	single: number;
-	average: number;
-	person_name: string;
-	person_id: number;
 }
 
 export interface Round {
@@ -138,4 +136,25 @@ export interface RecordsApiResponse {
 export interface User {
 	id: number;
 	name: string;
+}
+
+export type ProfileRecordDetail = Pick<BaseResult, 'single' | 'average'>;
+
+export interface ProfileRoundResult
+	extends Pick<Round, 'round'>,
+		Pick<PersonResult, 'times' | 'single' | 'average'> {}
+
+export interface ProfileEventCompetition extends Omit<Competition, 'events'> {
+	rounds: ProfileRoundResult[];
+}
+
+export interface ProfileEventResult {
+	event: WCAEvent;
+	competitions: ProfileEventCompetition[];
+}
+
+export interface ProfileResponse {
+	person: User;
+	records: Partial<Record<WCAEvent, ProfileRecordDetail>>;
+	results: ProfileEventResult[];
 }

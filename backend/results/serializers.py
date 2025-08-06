@@ -68,7 +68,8 @@ class EventSerializer(serializers.Serializer):
 class CompetitionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
-        fields = ["name", "date"]
+        fields = ["name", "date", "id"]
+        read_only_fields = ["id"]
 
 
 class FullCompetitionResultsSerializer(serializers.Serializer):

@@ -124,7 +124,13 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 												<td
 													class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 												>
-													{roundPerson.person_name}
+													<a
+														href="/persons/{roundPerson.person_id}"
+														class="hover:text-gray-400"
+														onclick={(e) => e.stopPropagation()}
+													>
+														{roundPerson.person_name}
+													</a>
 												</td>
 												{#each roundPerson.times as time, timeIdx (timeIdx)}
 													<td
@@ -159,7 +165,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 
 {#if showModal && selectedPerson}
 	<div
-		class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4"
+		class="bg-opacity-50 backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
 		onclick={() => (showModal = false)}
 		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
 		aria-label="Close modal"
@@ -210,3 +216,9 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 		</div>
 	</div>
 {/if}
+
+<style>
+.backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+</style>

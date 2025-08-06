@@ -12,4 +12,7 @@
 	<div>
 		<a href="/competitions" class="text-blue-500 hover:underline">Competitions</a>
 	</div>
+	<div>
+		<a href="/persons" class="text-blue-500 hover:underline">Competitors</a>
+	</div>
 </div>

@@ -37,8 +37,8 @@ let formData = $state({
 	time5: 0
 });
 
-const fetchData = async (resetLoading = true) => {
-	loading = resetLoading;
+const fetchData = async (background = true) => {
+	loading = background;
 	try {
 		const compResponse = await fetch(`${BASE_URL}/api/competitions/${compId}/`);
 		competition = await compResponse.json();
@@ -165,7 +165,7 @@ const deleteResult = async (resultId: number) => {
 	if (!confirm('Are you sure?')) return;
 	try {
 		await authFetch(`${BASE_URL}/api/results/${resultId}/`, { method: 'DELETE' });
-		await fetchData();
+		await fetchData(true);
 	} catch {
 		errorMessage = 'Failed to delete result.';
 	}

@@ -157,7 +157,7 @@ const createCompetition = async () => {
 							/>
 						{/each}
 					</div>
-					<div class="mt-4 rounded-md shadow-sm">
+					<div class="mt-4 rounded-md bg-white p-4 shadow-sm">
 						<PaginationControls
 							currentPage={currentPage}
 							totalPages={totalPages}

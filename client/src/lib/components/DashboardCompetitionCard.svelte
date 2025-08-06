@@ -1,5 +1,4 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
 import type { Competition } from '$lib/types';
 
 interface Props {
@@ -19,18 +18,16 @@ const { competition, onDeleteCompetition = () => null }: Props = $props();
 			</p>
 		</div>
 		<div class="flex space-x-2">
-			<a
-				href={`/dashboard/competitions/${competition.id}`}
-				class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200"
-			>
-				Add Results
+			<a href="/dashboard/competitions/{competition.id}">
+				<div class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200">
+					Add Results
+				</div>
 			</a>
-			<button
-				onclick={() => goto(`/dashboard/competitions/${competition.id}/edit`)}
-				class="rounded-md bg-yellow-100 px-3 py-1 text-sm text-yellow-800 hover:bg-yellow-200"
-			>
-				Edit Info
-			</button>
+			<a href="/dashboard/competitions/{competition.id}/edit">
+				<div class="rounded-md bg-yellow-100 px-3 py-1 text-sm text-yellow-800 hover:bg-yellow-200">
+					Edit Info
+				</div>
+			</a>
 			<button
 				onclick={() => onDeleteCompetition(competition.id)}
 				class="rounded-md bg-red-100 px-3 py-1 text-sm text-red-800 hover:bg-red-200"

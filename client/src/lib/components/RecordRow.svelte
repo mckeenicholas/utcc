@@ -21,11 +21,12 @@ let recordType = $derived.by(() => {
 	<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
 		{recordType}
 	</td>
+
 	<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
-		{record.person_name}
+		<a href="/persons/{record.person_id}" class="hover:text-gray-400">{record.person_name}</a>
 	</td>
 	<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
-		<a class="hover:text-gray-400" href={`/competitions/${record.competition_id}`}>
+		<a class="hover:text-gray-400" href="/competitions/{record.competition_id}">
 			{record.competition_name}</a
 		>
 	</td>
