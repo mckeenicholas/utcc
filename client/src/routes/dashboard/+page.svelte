@@ -32,7 +32,7 @@ onMount(async () => {
 				<!-- Competition Management Card -->
 				<a
 					href="/dashboard/competitions"
-					class="group mb-4 block rounded-lg bg-white p-6 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md"
+					class="group mb-4 block rounded-lg bg-white p-6 shadow-sm transition-all transition-colors duration-100 ease-in-out hover:bg-gray-100 hover:shadow-md"
 				>
 					<div class="flex items-center space-x-3">
 						<div>
@@ -62,7 +62,7 @@ onMount(async () => {
 				<!-- User Management Card -->
 				<a
 					href="/dashboard/users"
-					class="group block rounded-lg bg-white p-6 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md"
+					class="group block rounded-lg bg-white p-6 shadow-sm transition-all transition-colors duration-100 ease-in-out hover:bg-gray-100 hover:shadow-md"
 				>
 					<div class="flex items-center space-x-3">
 						<div>

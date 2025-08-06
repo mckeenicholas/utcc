@@ -157,7 +157,7 @@ const personalRecords = $derived.by(() => {
 						</thead>
 						<tbody class="divide-y divide-gray-200 bg-white">
 							{#each recordDisplayObj as [eventName, data] (eventName)}
-								<tr class="hover:bg-gray-50">
+								<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
 									<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
 										{eventNames[eventName as WCAEvent]}
 									</td>
@@ -222,7 +222,7 @@ const personalRecords = $derived.by(() => {
 							<tbody class="divide-y divide-gray-200 bg-white">
 								{#each shownResults.competitions as competition (competition.id)}
 									{#each competition.rounds as round, roundIndex (round.round)}
-										<tr class="hover:bg-gray-50">
+										<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
 											<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
 												{#if roundIndex == 0}
 													<a href="/competitions/{competition.id}" class="hover:text-gray-400">
