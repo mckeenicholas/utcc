@@ -15,17 +15,16 @@
 		onUserCreated: (user: User) => void;
 	} = $props();
 
-	let newUserName = $state(initialName);
 	let creatingUser = $state(false);
 
 	const createUser = async () => {
-		if (!newUserName.trim()) return;
+		if (!initialName.trim()) return;
 		creatingUser = true;
 		try {
 			const response = await authFetch(`${BASE_URL}/api/users/persons/`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: newUserName })
+				body: JSON.stringify({ name: initialName })
 			});
 			if (response.ok) {
 				const newUser: User = await response.json();
@@ -46,7 +45,7 @@
 			<h3 class="mb-4 text-lg font-semibold">Add New User</h3>
 			<input
 				type="text"
-				bind:value={newUserName}
+				bind:value={initialName}
 				placeholder="Enter user name"
 				class="w-full rounded-md border border-gray-300 px-3 py-2"
 			/>
@@ -54,7 +53,7 @@
 				<button onclick={onClose} class="rounded-md bg-gray-200 px-4 py-2">Cancel</button>
 				<button
 					onclick={createUser}
-					disabled={creatingUser || !newUserName.trim()}
+					disabled={creatingUser || !initialName.trim()}
 					class="rounded-md bg-green-600 px-4 py-2 text-white disabled:bg-gray-400"
 				>
 					{creatingUser ? 'Creating...' : 'Create User'}

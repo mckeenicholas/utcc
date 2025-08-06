@@ -2,19 +2,26 @@
 	import type { User } from '$lib/types';
 	import { BASE_URL } from '$lib/utils';
 
-	let {
-		value = '',
-		onSelect,
-		onClear,
-		onAddUser
-	}: {
+	interface Props {
 		value: string;
 		onSelect: (user: User) => void;
 		onClear: () => void;
 		onAddUser: () => void;
-	} = $props();
+		isEditMode: boolean;
+		userSelected: boolean;
+		searchTerm?: string;
+	}
 
-	let searchTerm = $state(value);
+	let {
+		value = $bindable(''),
+		onSelect,
+		onClear,
+		onAddUser,
+		isEditMode,
+		userSelected,
+		searchTerm = $bindable('')
+	}: Props = $props();
+
 	let searchResults: User[] = $state([]);
 	let loading = $state(false);
 	let selectedIndex = $state(-1);
@@ -26,7 +33,7 @@
 			searchResults = [];
 			return;
 		}
-		loading = true;
+
 		try {
 			const response = await fetch(
 				`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`
@@ -36,9 +43,9 @@
 		} catch (error) {
 			console.error('User search failed:', error);
 			searchResults = [];
-		} finally {
-			loading = false;
 		}
+
+		loading = false;
 	};
 
 	const debouncedSearch = (query: string) => {
@@ -47,6 +54,7 @@
 	};
 
 	$effect(() => {
+		loading = true;
 		debouncedSearch(searchTerm);
 	});
 
@@ -82,18 +90,20 @@
 </script>
 
 <div class="relative">
-	<input
-		type="text"
-		placeholder="Type to search users..."
-		bind:value={searchTerm}
-		onfocus={handleFocus}
-		onblur={handleBlur}
-		onkeydown={handleKeyDown}
-		class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-		autocomplete="off"
-	/>
+	{#if !userSelected}
+		<input
+			type="text"
+			placeholder="Type to search users..."
+			bind:value={searchTerm}
+			onfocus={handleFocus}
+			onblur={handleBlur}
+			onkeydown={handleKeyDown}
+			class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+			autocomplete="off"
+		/>
+	{/if}
 
-	{#if showDropdown}
+	{#if showDropdown && searchTerm.trim()}
 		<div
 			class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg"
 		>
@@ -137,9 +147,24 @@
 	{/if}
 
 	{#if value}
-		<div class="mt-2 flex items-center justify-between rounded-md bg-green-50 px-3 py-2">
-			<span class="text-sm text-green-800">{value}</span>
-			<button type="button" onclick={onClear} class="text-green-600 hover:text-green-800">
+		<div
+			class="mt-2 flex items-center justify-between rounded-md px-3 py-2 {isEditMode
+				? 'bg-blue-50'
+				: 'bg-green-50'}"
+		>
+			<span class={isEditMode ? 'text-blue-800' : 'text-green-80'}
+				>{isEditMode ? 'Editing:' : ''} {value}</span
+			>
+			<button
+				type="button"
+				onclick={() => {
+					searchTerm = '';
+					onClear();
+				}}
+				class={isEditMode
+					? 'text-blue-600 hover:text-blue-800'
+					: 'text-green-600 hover:text-green-800'}
+			>
 				&times;
 			</button>
 		</div>

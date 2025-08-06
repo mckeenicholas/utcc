@@ -15,13 +15,14 @@
 	const compId = $page.params.compid;
 
 	let competition: Competition | null = $state(null);
-	let results: Result[] = $state([]);
+	let competitionResults: CompetitionResults | null = $state(null);
 	let loading = $state(true);
 	let submitting = $state(false);
 	let errorMessage = $state<string | null>(null);
 	let editingResult: Result | null = $state(null);
 	let showCreateUserModal = $state(false);
 	let newUserName = $state('');
+	let userInputRawValue = $state('');
 
 	let selectedPersonId: number | null = $state(null);
 	let selectedPersonName = $state('');
@@ -43,26 +44,7 @@
 			competition = await compResponse.json();
 
 			const resultsResponse = await fetch(`${BASE_URL}/api/competitions/${compId}/results/`);
-			const resultsData: CompetitionResults = await resultsResponse.json();
-			results = (resultsData.results || []).flatMap((eventResult) =>
-				eventResult.rounds.flatMap((round) =>
-					round.results.map((person) => ({
-						id: person.id,
-						person_name: person.person_name,
-						person_id: person.person_id,
-						competition: Number(compId),
-						event: eventResult.event,
-						round: round.round,
-						time1: person.times[0] || 0,
-						time2: person.times[1] || 0,
-						time3: person.times[2] || 0,
-						time4: person.times[3] || 0,
-						time5: person.times[4] || 0,
-						single: person.single,
-						average: person.average
-					}))
-				)
-			);
+			competitionResults = await resultsResponse.json();
 		} catch {
 			errorMessage = 'Failed to load competition data.';
 		} finally {
@@ -72,23 +54,49 @@
 
 	onMount(fetchData);
 
+	// Helper function to find a specific result in the structured data
+	const findResult = (personId: number, event: WCAEvent, round: number) => {
+		if (!competitionResults) return null;
+
+		const eventResult = competitionResults.results.find((er) => er.event === event);
+		if (!eventResult) return null;
+
+		const roundResult = eventResult.rounds.find((r) => r.round === round);
+		if (!roundResult) return null;
+
+		return roundResult.results.find((r) => r.person_id === personId);
+	};
+
 	$effect(() => {
-		if (!selectedPersonId) {
+		if (!selectedPersonId || !competitionResults) {
 			resetFormTimes();
 			editingResult = null;
 			return;
 		}
-		const existing = results.find(
-			(r) =>
-				r.person_id === selectedPersonId && r.event === formData.event && r.round === formData.round
-		);
+
+		const existing = findResult(selectedPersonId, formData.event, formData.round);
 		if (existing) {
-			formData.time1 = existing.time1;
-			formData.time2 = existing.time2;
-			formData.time3 = existing.time3;
-			formData.time4 = existing.time4;
-			formData.time5 = existing.time5;
-			editingResult = existing;
+			formData.time1 = existing.times[0] || 0;
+			formData.time2 = existing.times[1] || 0;
+			formData.time3 = existing.times[2] || 0;
+			formData.time4 = existing.times[3] || 0;
+			formData.time5 = existing.times[4] || 0;
+			// Convert to the Result format for editing
+			editingResult = {
+				id: existing.id,
+				person_name: existing.person_name,
+				person_id: existing.person_id,
+				competition: Number(compId),
+				event: formData.event,
+				round: formData.round,
+				time1: existing.times[0] || 0,
+				time2: existing.times[1] || 0,
+				time3: existing.times[2] || 0,
+				time4: existing.times[3] || 0,
+				time5: existing.times[4] || 0,
+				single: existing.single,
+				average: existing.average
+			};
 		} else {
 			resetFormTimes();
 			editingResult = null;
@@ -106,6 +114,7 @@
 	};
 
 	const handleAddUser = () => {
+		newUserName = userInputRawValue;
 		showCreateUserModal = true;
 	};
 
@@ -193,14 +202,10 @@
 							onSelect={handleUserSelect}
 							onClear={handleClearUser}
 							onAddUser={handleAddUser}
+							isEditMode={editingResult != null}
+							userSelected={selectedPersonId != null}
+							bind:searchTerm={userInputRawValue}
 						/>
-
-						{#if editingResult}
-							<div class="mt-4">
-								<p>Editing: {editingResult.person_name}</p>
-								<button onclick={resetForm}>Cancel Edit</button>
-							</div>
-						{/if}
 
 						<ResultForm
 							bind:formData
@@ -213,7 +218,7 @@
 				</div>
 
 				<div class="lg:col-span-3">
-					<ResultsTable {results} onEdit={editResult} onDelete={deleteResult} />
+					<ResultsTable {competitionResults} onEdit={editResult} onDelete={deleteResult} />
 				</div>
 			</div>
 		</div>

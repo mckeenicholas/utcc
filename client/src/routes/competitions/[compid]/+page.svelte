@@ -12,7 +12,7 @@
 
 	onMount(async () => {
 		try {
-			const compid = parseInt($page.params.compid);
+			const compid = parseInt($page.params.compid ?? '0');
 			const url = `${BASE_URL}/api/competitions/${compid}/results/`;
 
 			const response = await fetch(url);
