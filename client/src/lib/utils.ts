@@ -3,7 +3,6 @@ import {
 	eventSolves,
 	type PersonalRecords,
 	type PersonResult,
-	type ProfileEventCompetition,
 	type ProfileEventResult,
 	type ProfileRoundResult,
 	type WCAEvent
@@ -72,56 +71,51 @@ export const processPersonalRecords = (records: PersonalRecords) => {
 	return recordEntries;
 };
 
-// Calculates PRs to highlight and formats data for results table
+// Calculates PRs to highlight and formats data for the results table
 export const generateRecordsForEvent = (results: ProfileEventResult) => {
 	const processedResults = results.competitions
-		.map((comp: ProfileEventCompetition) => ({
+		.map((comp) => ({
 			...comp,
-			rounds: [...comp.rounds]
-				.sort((a, b) => a.round - b.round)
-				.map((round) => ({ ...round, singleRecord: false, averageRecord: false }))
+			rounds: comp.rounds.map((round) => ({
+				...round,
+				singleRecord: false,
+				averageRecord: false
+			}))
 		}))
-		.sort(
-			(a: ProfileEventCompetition, b: ProfileEventCompetition) =>
-				new Date(a.date).getTime() - new Date(b.date).getTime()
-		);
+		.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
 	let singleRecordTime = Infinity;
 	let averageRecordTime = Infinity;
 
 	for (const competition of processedResults) {
-		const validAverages = competition.rounds
-			.map((r: ProfileRoundResult) => r.average)
-			.filter((a: number) => a > 0);
+		const bestSingleRound = competition.rounds.reduce(
+			(best, current) => {
+				if (current.single > 0 && current.single < (best?.single || Infinity)) {
+					return current;
+				}
+				return best;
+			},
+			null as ProfileRoundResult | null
+		);
 
-		const compBestSingle = Math.min(...competition.rounds.map((r: ProfileRoundResult) => r.single));
-		const compBestAverage =
-			validAverages.length > 0
-				? Math.min(
-						...competition.rounds
-							.map((r: ProfileRoundResult) => r.average)
-							.filter((a: number) => a > 0)
-					)
-				: Infinity;
+		const bestAverageRound = competition.rounds.reduce(
+			(best, current) => {
+				if (current.average > 0 && current.average < (best?.average || Infinity)) {
+					return current;
+				}
+				return best;
+			},
+			null as ProfileRoundResult | null
+		);
 
-		if (compBestSingle < singleRecordTime) {
-			singleRecordTime = compBestSingle;
-			const recordRound = competition.rounds.find(
-				(r: ProfileRoundResult) => r.single === singleRecordTime
-			);
-			if (recordRound) {
-				recordRound.singleRecord = true;
-			}
+		if (bestSingleRound && bestSingleRound.single < singleRecordTime) {
+			singleRecordTime = bestSingleRound.single;
+			bestSingleRound.singleRecord = true;
 		}
 
-		if (compBestAverage < averageRecordTime) {
-			averageRecordTime = compBestAverage;
-			const recordRound = competition.rounds.find(
-				(r: ProfileRoundResult) => r.average === averageRecordTime
-			);
-			if (recordRound) {
-				recordRound.averageRecord = true;
-			}
+		if (bestAverageRound && bestAverageRound.average < averageRecordTime) {
+			averageRecordTime = bestAverageRound.average;
+			bestAverageRound.averageRecord = true;
 		}
 	}
 
