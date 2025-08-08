@@ -12,10 +12,6 @@ export interface Competition {
 	events: WCAEvent[];
 }
 
-export interface CompetitionList {
-	competitions: Competition[];
-}
-
 export type WCAEvent = keyof typeof eventNames;
 
 export const eventNames = {
@@ -138,13 +134,24 @@ export interface User {
 	name: string;
 }
 
-export type ProfileRecordDetail = Pick<BaseResult, 'single' | 'average'>;
+export interface ProfileRecordDetail {
+	single: number;
+	average: number;
+}
 
-export interface ProfileRoundResult
-	extends Pick<Round, 'round'>,
-		Pick<PersonResult, 'times' | 'single' | 'average'> {}
+export interface ProfileRoundResult {
+	round: number;
+	times: number[];
+	single: number;
+	average: number;
+	singleRecord?: boolean;
+	averageRecord?: boolean;
+}
 
-export interface ProfileEventCompetition extends Omit<Competition, 'events'> {
+export interface ProfileEventCompetition {
+	id: number;
+	name: string;
+	date: string;
 	rounds: ProfileRoundResult[];
 }
 
@@ -153,8 +160,10 @@ export interface ProfileEventResult {
 	competitions: ProfileEventCompetition[];
 }
 
+export type PersonalRecords = Partial<Record<WCAEvent, ProfileRecordDetail>>;
+
 export interface ProfileResponse {
 	person: User;
-	records: Partial<Record<WCAEvent, ProfileRecordDetail>>;
+	records: PersonalRecords;
 	results: ProfileEventResult[];
 }

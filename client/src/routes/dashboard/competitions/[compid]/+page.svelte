@@ -40,11 +40,18 @@ let formData = $state({
 const fetchData = async (background = true) => {
 	loading = background;
 	try {
-		const compResponse = await fetch(`${BASE_URL}/api/competitions/${compId}/`);
-		competition = await compResponse.json();
+		const [compResponse, resultsResponse] = await Promise.all([
+			fetch(`${BASE_URL}/api/competitions/${compId}/`),
+			fetch(`${BASE_URL}/api/competitions/${compId}/results/`)
+		]);
 
-		const resultsResponse = await fetch(`${BASE_URL}/api/competitions/${compId}/results/`);
-		competitionResults = await resultsResponse.json();
+		const [compData, resultsData] = await Promise.all([
+			compResponse.json(),
+			resultsResponse.json()
+		]);
+
+		competition = compData;
+		competitionResults = resultsData;
 	} catch {
 		errorMessage = 'Failed to load competition data.';
 	} finally {
@@ -188,7 +195,11 @@ const resetFormTimes = () => {
 
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-[1500px] px-4">
-		<PageHeader competition={competition} />
+		<PageHeader
+			competition={competition}
+			backText="Back to competitions"
+			backUrl="/dashboard/competitions"
+		/>
 		<ErrorMessage message={errorMessage} />
 
 		<div class="grid grid-cols-1 gap-8 lg:grid-cols-4">

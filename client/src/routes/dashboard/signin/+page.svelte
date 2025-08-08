@@ -6,7 +6,6 @@ import { onMount } from 'svelte';
 
 let username = $state('');
 let password = $state('');
-
 let errrorMsg = $state('');
 
 const logIn = async () => {

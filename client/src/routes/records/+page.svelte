@@ -2,32 +2,16 @@
 import type { EventRecords, RecordsApiResponse, WCAEvent } from '$lib/types';
 import { recordsURL } from '$lib/utils';
 import { eventListIdx, eventSolves, eventNames } from '$lib/types';
-import { onMount } from 'svelte';
 import RecordRow from '$lib/components/RecordRow.svelte';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import { createQuery } from '@tanstack/svelte-query';
 
-let recordsAPIResponse = $state<RecordsApiResponse | null>(null);
-let loading = $state(true);
+const fetchRecords = async () => {
+	const response = await fetch(recordsURL);
+	const data: RecordsApiResponse = await response.json();
 
-onMount(async () => {
-	try {
-		const response = await fetch(recordsURL);
-		const data: RecordsApiResponse = await response.json();
-		recordsAPIResponse = data;
-	} catch (error) {
-		console.error('Failed to fetch records:', error);
-	} finally {
-		loading = false;
-	}
-});
-
-let recordsDisplay = $derived.by(() => {
-	if (!recordsAPIResponse) {
-		return null;
-	}
-
-	const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
+	const recordEntries = Object.entries(data) as [WCAEvent, EventRecords][];
 	recordEntries.sort((a, b) => {
 		const eventA = a[0] as WCAEvent;
 		const eventB = b[0] as WCAEvent;
@@ -35,14 +19,13 @@ let recordsDisplay = $derived.by(() => {
 	}) as [WCAEvent, EventRecords][];
 
 	return recordEntries;
-});
+};
+
+const query = createQuery({ queryKey: ['records'], queryFn: fetchRecords });
 </script>
 
 <Backbutton />
-
-{#if loading}
-	<LoadingScreen message="Loading Records" />
-{:else if recordsDisplay}
+{#if $query.isSuccess && $query.data}
 	<div class="min-h-screen py-8">
 		<div class="mx-auto max-w-6xl px-4">
 			<!-- Header -->
@@ -52,7 +35,7 @@ let recordsDisplay = $derived.by(() => {
 			</div>
 
 			<div class="space-y-6">
-				{#each recordsDisplay as [eventKey, eventRecords] (eventKey)}
+				{#each $query.data as [eventKey, eventRecords] (eventKey)}
 					<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
 						<div class=" rounded-t-lg border-b border-gray-200 px-4 py-2">
 							<h2 class="text-lg font-semibold text-gray-800">{eventNames[eventKey]}</h2>
@@ -87,12 +70,8 @@ let recordsDisplay = $derived.by(() => {
 									</tr>
 								</thead>
 								<tbody class="divide-y divide-gray-200 bg-white">
-									{#if eventRecords.single}
-										<RecordRow record={eventRecords.single} eventKey={eventKey} type="Single" />
-									{/if}
-									{#if eventRecords.average}
-										<RecordRow record={eventRecords.average} eventKey={eventKey} type="Average" />
-									{/if}
+									<RecordRow record={eventRecords.single} eventKey={eventKey} type="Single" />
+									<RecordRow record={eventRecords.average} eventKey={eventKey} type="Average" />
 								</tbody>
 							</table>
 						</div>
@@ -101,7 +80,7 @@ let recordsDisplay = $derived.by(() => {
 			</div>
 		</div>
 	</div>
-{:else}
+{:else if $query.isSuccess}
 	<div class="min-h-screen py-8">
 		<div class="mx-auto max-w-6xl px-4">
 			<div class="rounded-lg bg-white p-6 text-center shadow-sm">
@@ -120,4 +99,6 @@ let recordsDisplay = $derived.by(() => {
 			</div>
 		</div>
 	</div>
+{:else}
+	<LoadingScreen message="Loading Records" />
 {/if}
