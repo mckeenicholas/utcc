@@ -18,17 +18,19 @@ let {
 	selectedEvent: WCAEvent;
 } = $props();
 
+const validEvents = $derived(results.map((result) => result.event));
+
 let selectedEventData = $derived(
 	results.find((event) => event.event === selectedEvent)?.results ?? []
 );
 </script>
 
 <div class="overflow-hidden rounded-lg bg-white shadow-sm">
-	<div class="my-4 flex justify-center">
-		<EventPicker bind:selectedEvent={selectedEvent} />
-	</div>
+	{#if results.length > 0}
+		<div class="my-4 flex justify-center">
+			<EventPicker bind:selectedEvent={selectedEvent} events={validEvents} />
+		</div>
 
-	{#if selectedEventData.length > 0}
 		<div class="border-b border-gray-200 px-6 pb-4">
 			<h2 class="text-xl font-semibold text-gray-800">
 				Results for {eventNames[selectedEvent]}
@@ -106,10 +108,7 @@ let selectedEventData = $derived(
 		</div>
 	{:else}
 		<div class="rounded-lg bg-white p-8 text-center shadow-sm">
-			<h3 class="text-lg font-medium text-gray-900">
-				No results for {eventNames[selectedEvent]}
-			</h3>
-			<p class="mt-2 text-gray-600">This person hasn't competed in this event yet.</p>
+			<h3 class="text-lg font-medium text-gray-900">This person hasn't competed yet.</h3>
 		</div>
 	{/if}
 </div>

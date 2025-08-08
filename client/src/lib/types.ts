@@ -34,6 +34,8 @@ export const eventNames = {
 	'333mbf': '3x3x3 Multi-Blind'
 } as const;
 
+export const WCAEventList = Object.keys(eventNames) as WCAEvent[];
+
 export const eventSolves: Partial<Record<WCAEvent, number>> = {
 	'333': 5,
 	'222': 5,

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { WCAEvent } from '$lib/types';
+import { type WCAEvent } from '$lib/types';
 import EventPicker from './EventPicker.svelte';
 
 import ToggleButton from './ToggleButton.svelte';

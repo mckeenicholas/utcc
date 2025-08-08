@@ -1,17 +1,17 @@
 <script lang="ts">
-import { eventNames, type WCAEvent } from '$lib/types';
+import { WCAEventList, type WCAEvent } from '$lib/types';
 import CubeIcon from './CubeIcon.svelte';
 
 interface Props {
 	selectedEvent: WCAEvent;
+	events?: WCAEvent[];
 }
 
-let { selectedEvent = $bindable() }: Props = $props();
+let { selectedEvent = $bindable(), events = WCAEventList }: Props = $props();
 </script>
 
 <div class="flex flex-wrap space-x-1 rounded-md border border-gray-200 p-0.5">
-	{#each Object.keys(eventNames) as eventIdStr (eventIdStr)}
-		{@const eventId = eventIdStr as WCAEvent}
+	{#each events as eventId (eventId)}
 		<button onclick={() => (selectedEvent = eventId)}>
 			<CubeIcon
 				event={eventId}

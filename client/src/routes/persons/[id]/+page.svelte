@@ -50,7 +50,6 @@ const query = createQuery({
 				<h1 class="text-3xl font-bold text-gray-900">{$query.data.name}</h1>
 				<p class="mt-2 text-gray-600">Competition Profile</p>
 			</div>
-
 			<!-- Personal Records -->
 			<PersonalRecordsTable records={$query.data.records} />
 			<!-- Competition Results -->
