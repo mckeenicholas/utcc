@@ -49,7 +49,7 @@ const updateCompetitionData = async () => {
 			throw new Error(errorData.message);
 		}
 
-		goto('/dashboard');
+		goto('/dashboard/competitions');
 	} catch (error) {
 		errorMessage = error instanceof Error ? error.message : 'An update error occurred.';
 		console.error(error);
