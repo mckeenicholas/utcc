@@ -35,17 +35,17 @@ export const compareResults = (person1: PersonResult, person2: PersonResult): nu
 	return compareTime(person1.single, person2.single);
 };
 
-export const renderTime = (time: number): string => {
+export const renderTime = (time: number | null): string => {
+	if (!time) {
+		return '';
+	}
+
 	if (time == -2) {
 		return 'DNS';
 	}
 
 	if (time == -1) {
 		return 'DNF';
-	}
-
-	if (time == 0) {
-		return '';
 	}
 
 	const seconds = time / 100;

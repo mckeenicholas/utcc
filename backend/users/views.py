@@ -5,14 +5,12 @@ from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from django.db.models import Min
+from django.db.models import Min, Case, When, IntegerField
 from .models import Person
 from .serializers import PersonSerializer
 from results.models import Result
 from itertools import groupby
 from django.shortcuts import get_object_or_404
-
-# Create your views here.
 
 
 class LoginView(APIView):
@@ -73,15 +71,22 @@ class PersonViewSet(viewsets.ModelViewSet):
 
 
 class PersonResultsAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, person_id, format=None):
         person = get_object_or_404(Person, id=person_id)
 
         records_qs = (
-            Result.objects.filter(person_id=person.id, average__gt=0)
+            Result.objects.filter(person_id=person.id)
             .values("event")
-            .annotate(best_single=Min("single"), best_average=Min("average"))
+            .annotate(
+                best_single=Min("single"),
+                best_average=Min(
+                    Case(
+                        When(average__gt=0, then="average"), output_field=IntegerField()
+                    )
+                ),
+            )
         )
 
         best_times = {

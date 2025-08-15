@@ -138,7 +138,7 @@ export interface User {
 
 export interface ProfileRecordDetail {
 	single: number;
-	average: number;
+	average: number | null;
 }
 
 export interface ProfileRoundResult {
