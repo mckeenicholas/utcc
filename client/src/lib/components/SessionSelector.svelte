@@ -17,7 +17,7 @@ let {
 
 let sessions = $derived([
 	{ value: '-1', label: defaultMessage },
-	...sessionData.map((s) => ({ value: s.id.toString(), label: s.name }))
+	...(sessionData?.map((s) => ({ value: s.id.toString(), label: s.name })) ?? [])
 ]);
 
 const selectedLabel = $derived(

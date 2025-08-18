@@ -15,7 +15,6 @@ const goBack = () => {
 	if (!browser) return;
 
 	const currentNavigationCount = $navigationCount;
-	console.log(currentNavigationCount);
 
 	if (currentNavigationCount > 1) {
 		decrementNavigationCount(2);

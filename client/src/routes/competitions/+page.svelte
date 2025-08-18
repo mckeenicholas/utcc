@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Competition, Paginated } from '$lib/types';
+import type { Competition, Paginated, Session } from '$lib/types';
 import { BASE_URL, fetchJson, PAGINATION_SIZE } from '$lib/utils';
 import { onMount } from 'svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
@@ -7,6 +7,7 @@ import CompetitionCard from '$lib/components/CompetitionCard.svelte';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import PaginationControls from '$lib/components/PaginationControls.svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
+import { fetchSessions } from '$lib/competitionSessionService';
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);
@@ -16,6 +17,7 @@ let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
+let allSessions: Session[] = $state([]);
 let selectedSession: string = $state('-1');
 
 $effect(() => {
@@ -29,7 +31,7 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 	error = null;
 
 	try {
-		let url = `${BASE_URL}/api/competitions?page=${page}`;
+		let url = `${BASE_URL}/api/competitions/?page=${page}`;
 		if (sessionId !== -1) {
 			url += `&session_id=${sessionId}`;
 		}
@@ -50,8 +52,8 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 	}
 };
 
-onMount(() => {
-	fetchCompetitions(1, parseInt(selectedSession));
+onMount(async () => {
+	allSessions = await fetchSessions();
 });
 
 const goToNextPage = () => {
@@ -81,7 +83,7 @@ const goToPage = (page: number) => {
 				<h1 class="text-3xl font-bold text-gray-900">All Competitions</h1>
 				<p class="mt-2 text-gray-600">Browse club-sanctioned competitions</p>
 			</div>
-			<SessionSelector bind:value={selectedSession} class="shadow-sm" />
+			<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="shadow-sm" />
 		</div>
 
 		{#if loading}

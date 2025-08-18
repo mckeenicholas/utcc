@@ -36,7 +36,6 @@ const fetchRecords = async (sessionId: number) => {
 };
 
 onMount(async () => {
-	fetchRecords(parseInt(selectedSession));
 	sessions = await fetchSessions();
 });
 
