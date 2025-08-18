@@ -11,11 +11,13 @@ import {
 	type WCAEvent
 } from '$lib/types';
 import { BASE_URL, PAGINATION_SIZE, renderTime } from '$lib/utils';
+import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 let selectedEvent: WCAEvent = $state('333');
 let isAverage = $state(false);
 let showAllResults = $state(false);
 let pageNum = $state(1);
+let selectedSession: string = $state('-1');
 
 const eventName = $derived(eventNames[selectedEvent]);
 
@@ -56,24 +58,29 @@ const goToPage = (page: number) => {
 };
 
 const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
+
 const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
 $effect(() => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const _ = { selectedEvent, isAverage, showAllResults };
-
-	return () => {
-		pageNum = 1;
-	};
+	const _ = { selectedEvent, isAverage, showAllResults, selectedSession };
+	pageNum = 1;
 });
 
 $effect(() => {
-	const urlParams = new URLSearchParams({
+	if (!selectedSession) return;
+
+	const urlParams = new SvelteURLSearchParams({
 		event: selectedEvent,
 		type: isAverage ? 'average' : 'single',
 		all: showAllResults.toString(),
 		page: pageNum.toString()
 	});
+
+	if (selectedSession !== '-1') {
+		urlParams.append('session_id', selectedSession);
+	}
+
 	fetchRankings(urlParams);
 });
 </script>
@@ -85,13 +92,12 @@ $effect(() => {
 		<div class="mb-8">
 			<h1 class="text-3xl font-bold text-gray-900">Rankings for {eventName}</h1>
 		</div>
-
 		<RankingSelector
 			bind:isAverage={isAverage}
 			bind:selectedEvent={selectedEvent}
 			bind:showAll={showAllResults}
+			bind:session={selectedSession}
 		/>
-
 		<div class="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
 			{#if loading}
 				<LoadingScreen message="Loading Rankings for {eventName}" inline />
@@ -160,7 +166,6 @@ $effect(() => {
 						{/each}
 					</tbody>
 				</table>
-
 				{#if totalPages > 1}
 					<div class="px-4 pt-2 pb-4">
 						<PaginationControls

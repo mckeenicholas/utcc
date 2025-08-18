@@ -32,7 +32,9 @@ let { competition, backUrl = '/dashboard', backText = 'Back to Dashboard' }: Pro
 		{#if competition}
 			<div>
 				<h1 class="text-3xl font-bold text-gray-900">{competition.name}</h1>
-				<p class="text-gray-600">Date: {formatCompetitionDate(competition.date)}</p>
+				<p class="text-gray-600">
+					{competition.session_name ? `${competition.session_name} Session - ` : ""}Date: {formatCompetitionDate(competition.date)}
+				</p>
 			</div>
 		{/if}
 	</div>

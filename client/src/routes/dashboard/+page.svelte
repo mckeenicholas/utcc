@@ -32,7 +32,7 @@ onMount(async () => {
 				<!-- Competition Management Card -->
 				<a
 					href="/dashboard/competitions"
-					class="group mb-4 block rounded-lg bg-white p-6 shadow-sm transition-colors duration-100 ease-in-out hover:bg-gray-100 hover:shadow-md"
+					class="group block rounded-lg bg-white p-6 shadow-sm transition-colors duration-100 ease-in-out hover:bg-gray-100 hover:shadow-md"
 				>
 					<div class="flex items-center space-x-3">
 						<div>
@@ -78,6 +78,36 @@ onMount(async () => {
 						class="mt-4 flex items-center text-green-600 transition-colors group-hover:text-green-700"
 					>
 						<span class="text-sm font-medium">Manage Users</span>
+						<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M9 5l7 7-7 7"
+							/>
+						</svg>
+					</div>
+				</a>
+
+				<!-- Session Management Card -->
+				<a
+					href="/dashboard/sessions"
+					class="group block rounded-lg bg-white p-6 shadow-sm transition-colors duration-100 ease-in-out hover:bg-gray-100 hover:shadow-md"
+				>
+					<div class="flex items-center space-x-3">
+						<div>
+							<h2
+								class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-orange-400"
+							>
+								Session Management
+							</h2>
+							<p class="mt-1 text-sm text-gray-600">Add, edit, and manage academic sessions</p>
+						</div>
+					</div>
+					<div
+						class="mt-4 flex items-center text-orange-400 transition-colors group-hover:text-orange-500"
+					>
+						<span class="text-sm font-medium">Manage Sessions</span>
 						<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"

@@ -1,16 +1,17 @@
 <script lang="ts">
 import DashboardCompetitionCard from '$lib/components/DashboardCompetitionCard.svelte';
-
 import { goto } from '$app/navigation';
 import { onMount } from 'svelte';
 import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from '$lib/utils';
-import type { Competition, Paginated } from '$lib/types';
+import type { Competition, Paginated, Session } from '$lib/types';
 import authFetch from '$lib/authFetch';
 import { type DateValue } from '@internationalized/date';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import AddCompetitionForm from '$lib/components/AddCompetitionForm.svelte';
+import DateForm from '$lib/components/DateForm.svelte';
 import DashboardHeader from '$lib/components/DashboardHeader.svelte';
 import PaginationControls from '$lib/components/PaginationControls.svelte';
+import SessionSelector from '$lib/components/SessionSelector.svelte';
+import { fetchSessions } from '$lib/competitionSessionService';
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);
@@ -21,9 +22,25 @@ let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
+let selectedSession = $state('-1');
+let createCompSession = $state('-1');
+let allSessions: Session[] = $state([]);
 
-const fetchCompetitions = async (page: number = 1) => {
-	const competitionRes = await authFetch(`${BASE_URL}/api/competitions/?page=${page}`);
+$effect(() => {
+	if (selectedSession) {
+		fetchCompetitions(currentPage, parseInt(selectedSession));
+	}
+});
+
+const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
+	loading = true;
+
+	let url = `${BASE_URL}/api/competitions/?page=${page}`;
+	if (sessionId !== -1) {
+		url += `&session_id=${sessionId}`;
+	}
+
+	const competitionRes = await authFetch(url);
 
 	if (competitionRes.ok) {
 		const compResJSON: Paginated<Competition> = await competitionRes.json();
@@ -31,7 +48,6 @@ const fetchCompetitions = async (page: number = 1) => {
 			(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 		);
 
-		// Update pagination state
 		currentPage = page;
 		totalCount = compResJSON.count;
 		hasNext = !!compResJSON.next;
@@ -41,6 +57,9 @@ const fetchCompetitions = async (page: number = 1) => {
 		loading = false;
 	} else if (competitionRes.status === 401) {
 		goto('/dashboard/signin');
+	} else {
+		console.error('Failed to fetch competitions:', competitionRes.statusText);
+		loading = false;
 	}
 };
 
@@ -52,11 +71,26 @@ onMount(async () => {
 		return;
 	}
 
-	await fetchCompetitions(1);
+	allSessions = await fetchSessions();
 });
 
-const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
-const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
+const goToNextPage = () => {
+	if (hasNext) {
+		fetchCompetitions(currentPage + 1, parseInt(selectedSession));
+	}
+};
+
+const goToPreviousPage = () => {
+	if (hasPrevious) {
+		fetchCompetitions(currentPage - 1, parseInt(selectedSession));
+	}
+};
+
+const goToPage = (pageNo: number) => {
+	if (pageNo >= 1 && pageNo <= totalPages) {
+		fetchCompetitions(pageNo, parseInt(selectedSession));
+	}
+};
 
 const deleteCompetition = async (id: number) => {
 	if (confirm('Are you sure you want to delete this competition?')) {
@@ -69,6 +103,7 @@ const deleteCompetition = async (id: number) => {
 
 		if (response.ok) {
 			competitions = competitions.filter((c) => c.id !== id);
+			fetchCompetitions(currentPage, parseInt(selectedSession));
 		} else {
 			alert('Failed to delete competition');
 		}
@@ -83,12 +118,14 @@ const createCompetition = async () => {
 
 	const dateString = selectedDate.toString();
 
+	const sessionIdToSubmit = createCompSession === '-1' ? null : parseInt(createCompSession);
+
 	const response = await authFetch(`${BASE_URL}/api/competitions/`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ name: newCompName, date: dateString })
+		body: JSON.stringify({ name: newCompName, date: dateString, session: sessionIdToSubmit })
 	});
 
 	if (response.ok) {
@@ -96,7 +133,7 @@ const createCompetition = async () => {
 		// Reset form
 		newCompName = '';
 		selectedDate = undefined;
-		// Navigate directly to the new competition
+		createCompSession = '-1';
 		goto(`/dashboard/competitions/${newCompetition.id}`);
 	} else {
 		alert('Failed to create competition');
@@ -106,11 +143,9 @@ const createCompetition = async () => {
 
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-4xl px-4">
-		<!-- Header -->
 		<DashboardHeader title="Competitions" showBack />
 
-		<!-- Add New Competition Section -->
-		<div class="rounded-lg bg-white p-6 shadow-sm">
+		<div class="mb-8 rounded-lg bg-white p-6 shadow-sm">
 			<h2 class="mb-4 text-xl font-semibold text-gray-800">Add New Competition</h2>
 			<div class="space-y-4">
 				<div>
@@ -125,8 +160,15 @@ const createCompetition = async () => {
 					/>
 				</div>
 				<div>
-					<AddCompetitionForm bind:selectedDate={selectedDate} />
+					<DateForm bind:selectedDate={selectedDate} />
 				</div>
+				<div class="mb-1 block text-sm font-medium text-gray-700">Academic Session</div>
+				<SessionSelector
+					bind:value={createCompSession}
+					sessionData={allSessions}
+					defaultMessage="No Session"
+					class="mt-0"
+				/>
 				<button
 					onclick={createCompetition}
 					disabled={!newCompName || !selectedDate}
@@ -140,13 +182,19 @@ const createCompetition = async () => {
 		{#if loading}
 			<LoadingScreen message="Loading Competitions" inline />
 		{:else}
-			<!-- Competitions Section -->
 			<div class="mt-4 mb-8">
-				<h2 class="ms-2 mb-4 text-2xl font-semibold text-gray-800">Competitions</h2>
+				<div class="mb-4 flex items-center justify-between">
+					<h2 class="ms-2 text-2xl font-semibold text-gray-800">All Competitions</h2>
+					<SessionSelector
+						bind:value={selectedSession}
+						sessionData={allSessions}
+						class="shadow-sm"
+					/>
+				</div>
 
 				{#if competitions.length === 0}
 					<div class="rounded-lg bg-white p-6 shadow-sm">
-						<p class="text-center text-gray-500">No competitions added yet</p>
+						<p class="text-center text-gray-500">No competitions found for the selected filter.</p>
 					</div>
 				{:else}
 					<div class="grid gap-4">
@@ -168,7 +216,7 @@ const createCompetition = async () => {
 								itemsPerPage={PAGINATION_SIZE}
 								onNext={goToNextPage}
 								onPrevious={goToPreviousPage}
-								onPageChange={(pageNo) => fetchCompetitions(pageNo)}
+								onPageChange={goToPage}
 							/>
 						</div>
 					{/if}

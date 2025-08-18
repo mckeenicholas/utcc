@@ -34,7 +34,8 @@ const query = createQuery<CompetitionResults>({
 					{$query.data.competition.name}
 				</h1>
 				<p class="mt-2 text-gray-600">
-					Competition held on {formatCompetitionDate($query.data.competition.date)}
+					{$query.data.competition.session_name ? `${$query.data.competition.session_name} Session - ` : ""}
+					Date {formatCompetitionDate($query.data.competition.date)}
 				</p>
 			</div>
 			<CompetitionResultsDisplay competitionResults={$query.data} />

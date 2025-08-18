@@ -1,19 +1,19 @@
 <script lang="ts">
-import type { User } from '$lib/types';
+import type { Session } from '$lib/types';
 
 interface Props {
-	user: User;
-	ondelete: (id: number) => void;
-	onsave: (id: number, name: string) => void;
+	session: Session;
+	onDelete: (id: number) => void;
+	onSave: (id: number, name: string) => void;
 }
 
-let { user, ondelete, onsave }: Props = $props();
+let { session, onDelete, onSave }: Props = $props();
 
 let isEditing = $state(false);
-let editUserName = $state(user.name);
+let editSessionName = $state(session.name);
 
 const startEdit = () => {
-	editUserName = user.name;
+	editSessionName = session.name;
 	isEditing = true;
 };
 
@@ -22,8 +22,10 @@ const cancelEdit = () => {
 };
 
 const handleSave = () => {
-	if (editUserName.trim()) {
-		onsave(user.id, editUserName);
+	if (editSessionName.trim() && editSessionName.trim() !== session.name) {
+		onSave(session.id, editSessionName.trim());
+		isEditing = false;
+	} else {
 		isEditing = false;
 	}
 };
@@ -37,27 +39,27 @@ const handleSave = () => {
 			<div
 				class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg font-medium text-blue-600"
 			>
-				{user.name.charAt(0).toUpperCase()}
+				{session.name.charAt(0).toUpperCase()}
 			</div>
 			<div>
 				{#if isEditing}
 					<input
-						bind:value={editUserName}
+						bind:value={editSessionName}
 						onkeydown={(e) => e.key === 'Enter' && handleSave()}
 						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 					/>
 				{:else}
-					<p class="text-sm font-medium text-gray-900">{user.name}</p>
+					<p class="text-sm font-medium text-gray-900">{session.name}</p>
 				{/if}
-				<p class="text-xs text-gray-500">ID: {user.id}</p>
+				<p class="text-xs text-gray-500">ID: {session.id}</p>
 			</div>
 		</div>
 		<div class="flex space-x-2">
 			{#if isEditing}
 				<button
 					onclick={handleSave}
-					disabled={!editUserName.trim()}
-					class="rounded-md bg-green-100 px-3 py-1 text-sm text-green-800 hover:bg-green-200 disabled:cursor-not-allowed! disabled:bg-gray-100 disabled:text-gray-800 disabled:hover:bg-gray-200"
+					disabled={!editSessionName.trim()}
+					class="rounded-md bg-green-100 px-3 py-1 text-sm text-green-800 hover:bg-green-200 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-800 disabled:hover:bg-gray-200"
 				>
 					Save
 				</button>
@@ -75,7 +77,7 @@ const handleSave = () => {
 					Edit
 				</button>
 				<button
-					onclick={() => ondelete(user.id)}
+					onclick={() => onDelete(session.id)}
 					class="rounded-md bg-red-100 px-3 py-1 text-sm text-red-800 hover:bg-red-200"
 				>
 					Delete

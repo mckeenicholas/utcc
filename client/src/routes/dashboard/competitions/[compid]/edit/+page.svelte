@@ -2,9 +2,12 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import authFetch from '$lib/authFetch';
+import DateForm from '$lib/components/DateForm.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+import SessionSelector from '$lib/components/SessionSelector.svelte';
 import type { Competition } from '$lib/types';
 import { BASE_URL } from '$lib/utils';
+import { parseDate } from '@internationalized/date';
 import { onMount } from 'svelte';
 
 const id = $page.params.compid;
@@ -12,6 +15,7 @@ const id = $page.params.compid;
 let competitionData: Competition | null = $state(null);
 let isLoading = $state(true);
 let errorMessage = $state<string | null>(null);
+let selectedEditSession: string = $state('-1');
 
 onMount(async () => {
 	try {
@@ -19,7 +23,10 @@ onMount(async () => {
 		if (!response.ok) {
 			throw new Error('Failed to fetch competition data.');
 		}
-		competitionData = await response.json();
+		const data: Competition = await response.json();
+		competitionData = data;
+
+		selectedEditSession = competitionData.session ? competitionData.session.toString() : '-1';
 	} catch (error) {
 		errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
 		console.error(error);
@@ -34,19 +41,30 @@ const updateCompetitionData = async () => {
 	errorMessage = null;
 
 	try {
+		const sessionIdToSubmit = selectedEditSession === '-1' ? null : parseInt(selectedEditSession);
+
+		const payload = {
+			name: competitionData.name,
+			date: competitionData.date,
+			session: sessionIdToSubmit
+		};
+
 		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(competitionData)
+			body: JSON.stringify(payload)
 		});
 
 		if (!response.ok) {
-			const errorData = await response
-				.json()
-				.catch(() => ({ message: 'Failed to update competition.' }));
-			throw new Error(errorData.message);
+			const errorData = await response.json().catch(() => ({}));
+
+			const errorMessage = Object.entries(errorData).reduce(
+				(prev, [field, msg]) => `${prev}\n${field}: ${msg}`,
+				''
+			);
+			throw new Error(errorMessage);
 		}
 
 		goto('/dashboard/competitions');
@@ -62,7 +80,6 @@ const updateCompetitionData = async () => {
 {:else}
 	<div class="min-h-screen py-8">
 		<div class="mx-auto max-w-2xl px-4">
-			<!-- Header with Navigation -->
 			<div class="mb-8 flex items-center justify-between">
 				<div class="flex items-center space-x-4">
 					<a href="/dashboard/competitions">
@@ -98,7 +115,7 @@ const updateCompetitionData = async () => {
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									stroke-width="2"
-									d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+									d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 								/>
 							</svg>
 						</div>
@@ -113,7 +130,6 @@ const updateCompetitionData = async () => {
 			{/if}
 
 			{#if competitionData}
-				<!-- Edit Form -->
 				<div class="rounded-lg bg-white p-6 shadow-sm">
 					<h2 class="mb-6 text-xl font-semibold text-gray-800">Competition Details</h2>
 
@@ -135,12 +151,16 @@ const updateCompetitionData = async () => {
 							<label for="compdate" class="mb-2 block text-sm font-medium text-gray-700">
 								Competition Date
 							</label>
-							<input
-								id="compdate"
-								type="date"
-								bind:value={competitionData.date}
-								class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+							<DateForm
+								bind:selectedDate={() => parseDate(competitionData!.date), (newDate) => {
+								competitionData = { ...competitionData!, date: newDate.toString()}
+							}}
 							/>
+						</div>
+
+						<div>
+							<div class="mb-2 block text-sm font-medium text-gray-700">Academic Session</div>
+							<SessionSelector bind:value={selectedEditSession} defaultMessage="No Session" />
 						</div>
 
 						<!-- Action Buttons -->

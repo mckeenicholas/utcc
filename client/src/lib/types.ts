@@ -10,6 +10,8 @@ export interface Competition {
 	name: string;
 	date: string;
 	events: WCAEvent[];
+	session: number | null;
+	session_name: string | null;
 }
 
 export type WCAEvent = keyof typeof eventNames;
@@ -168,4 +170,9 @@ export interface ProfileResponse {
 	person: User;
 	records: PersonalRecords;
 	results: ProfileEventResult[];
+}
+
+export interface Session {
+	id: number;
+	name: string;
 }

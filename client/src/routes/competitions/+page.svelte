@@ -6,6 +6,7 @@ import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import CompetitionCard from '$lib/components/CompetitionCard.svelte';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import PaginationControls from '$lib/components/PaginationControls.svelte';
+import SessionSelector from '$lib/components/SessionSelector.svelte';
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);
@@ -15,13 +16,25 @@ let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
+let selectedSession: string = $state('-1');
 
-const fetchCompetitions = async (page: number = 1) => {
+$effect(() => {
+	if (selectedSession) {
+		fetchCompetitions(currentPage, parseInt(selectedSession));
+	}
+});
+
+const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 	loading = true;
 	error = null;
 
 	try {
-		const response = await fetch(`${BASE_URL}/api/competitions?page=${page}`);
+		let url = `${BASE_URL}/api/competitions?page=${page}`;
+		if (sessionId !== -1) {
+			url += `&session_id=${sessionId}`;
+		}
+
+		const response = await fetch(url);
 
 		if (!response.ok) {
 			throw new Error('Failed to fetch competitions');
@@ -44,15 +57,24 @@ const fetchCompetitions = async (page: number = 1) => {
 };
 
 onMount(() => {
-	fetchCompetitions(1);
+	fetchCompetitions(1, parseInt(selectedSession));
 });
 
-const goToNextPage = () => hasNext && fetchCompetitions(currentPage + 1);
-const goToPreviousPage = () => hasPrevious && fetchCompetitions(currentPage - 1);
+const goToNextPage = () => {
+	if (hasNext) {
+		fetchCompetitions(currentPage + 1, parseInt(selectedSession));
+	}
+};
+
+const goToPreviousPage = () => {
+	if (hasPrevious) {
+		fetchCompetitions(currentPage - 1, parseInt(selectedSession));
+	}
+};
 
 const goToPage = (page: number) => {
 	if (page >= 1 && page <= totalPages) {
-		fetchCompetitions(page);
+		fetchCompetitions(page, parseInt(selectedSession));
 	}
 };
 </script>
@@ -60,6 +82,14 @@ const goToPage = (page: number) => {
 <Backbutton />
 <div class="min-h-screen bg-gray-50 py-8">
 	<div class="mx-auto max-w-6xl px-4">
+		<div class="mb-8 flex items-start justify-between">
+			<div>
+				<h1 class="text-3xl font-bold text-gray-900">All Competitions</h1>
+				<p class="mt-2 text-gray-600">Browse club-sanctioned competitions</p>
+			</div>
+			<SessionSelector bind:value={selectedSession} class="shadow-sm" />
+		</div>
+
 		{#if loading}
 			<LoadingScreen message="Loading Competitions" />
 		{:else if error}
@@ -84,7 +114,6 @@ const goToPage = (page: number) => {
 				</button>
 			</div>
 		{:else if competitions.length > 0}
-			<h1 class="ms-2 mb-8 text-3xl font-bold text-gray-900">All Competitions</h1>
 			<!-- Competitions List -->
 			<div class="space-y-4">
 				{#each competitions as competition (competition.id)}

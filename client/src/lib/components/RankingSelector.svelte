@@ -1,6 +1,7 @@
 <script lang="ts">
 import { type WCAEvent } from '$lib/types';
 import EventPicker from './EventPicker.svelte';
+import SessionSelector from './SessionSelector.svelte';
 
 import ToggleButton from './ToggleButton.svelte';
 
@@ -8,12 +9,14 @@ interface Props {
 	isAverage: boolean;
 	selectedEvent: WCAEvent;
 	showAll: boolean;
+	session: string;
 }
 
 let {
 	isAverage = $bindable(),
 	selectedEvent = $bindable(),
-	showAll = $bindable()
+	showAll = $bindable(),
+	session = $bindable()
 }: Props = $props();
 </script>
 
@@ -28,4 +31,5 @@ let {
 			<ToggleButton bind:value={showAll} leftLabel="Persons" rightLabel="Results" />
 		</div>
 	</div>
+	<SessionSelector bind:value={session} class="mt-2" />
 </div>
