@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { User } from '$lib/types';
-import { BASE_URL } from '$lib/utils';
+import { searchUsersByName } from '$lib/userService';
 
 interface Props {
 	value: string;
@@ -35,11 +35,7 @@ const searchUsers = async (query: string) => {
 	}
 
 	try {
-		const response = await fetch(
-			`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`
-		);
-		const data = await response.json();
-		searchResults = data.results || data || [];
+		searchResults = await searchUsersByName(query);
 	} catch (error) {
 		console.error('User search failed:', error);
 		searchResults = [];

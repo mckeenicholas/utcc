@@ -1,8 +1,6 @@
 <script lang="ts">
-import { fetchSessions } from '$lib/competitionSessionService';
 import type { Session } from '$lib/types';
 import { Select } from 'bits-ui';
-import { onMount } from 'svelte';
 import type { ClassValue } from 'svelte/elements';
 
 let {
@@ -14,25 +12,13 @@ let {
 	value: string;
 	defaultMessage?: string;
 	class?: ClassValue;
-	sessionData?: Session[];
+	sessionData: Session[];
 } = $props();
 
-let selfFetchedSessions: Session[] = $state([]);
-
-let sessions = $derived.by(() => {
-	const fetchedSessions = sessionData != undefined ? sessionData : selfFetchedSessions;
-
-	return [
-		{ value: '-1', label: defaultMessage },
-		...fetchedSessions.map((s) => ({ value: s.id.toString(), label: s.name }))
-	];
-});
-
-onMount(async () => {
-	if (sessionData == undefined) {
-		selfFetchedSessions = await fetchSessions();
-	}
-});
+let sessions = $derived([
+	{ value: '-1', label: defaultMessage },
+	...sessionData.map((s) => ({ value: s.id.toString(), label: s.name }))
+]);
 
 const selectedLabel = $derived(
 	value ? sessions.find((s) => s.value === value)?.label : defaultMessage

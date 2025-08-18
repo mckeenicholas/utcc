@@ -2,7 +2,7 @@
 import { onMount } from 'svelte';
 import { page } from '$app/stores';
 import type { Competition, CompetitionResults, Result, WCAEvent, User } from '$lib/types';
-import { BASE_URL } from '$lib/utils';
+import { BASE_URL, fetchJson } from '$lib/utils';
 import authFetch from '$lib/authFetch';
 import ResultForm from '$lib/components/ResultForm.svelte';
 import ResultsTable from '$lib/components/ResultsTable.svelte';
@@ -41,17 +41,12 @@ const fetchData = async (background = true) => {
 	loading = background;
 	try {
 		const [compResponse, resultsResponse] = await Promise.all([
-			fetch(`${BASE_URL}/api/competitions/${compId}/`),
-			fetch(`${BASE_URL}/api/competitions/${compId}/results/`)
+			fetchJson<Competition>(`${BASE_URL}/api/competitions/${compId}/`),
+			fetchJson<CompetitionResults>(`${BASE_URL}/api/competitions/${compId}/results/`)
 		]);
 
-		const [compData, resultsData] = await Promise.all([
-			compResponse.json(),
-			resultsResponse.json()
-		]);
-
-		competition = compData;
-		competitionResults = resultsData;
+		competition = compResponse;
+		competitionResults = resultsResponse;
 	} catch {
 		errorMessage = 'Failed to load competition data.';
 	} finally {

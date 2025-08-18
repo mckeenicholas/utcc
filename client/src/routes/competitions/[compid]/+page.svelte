@@ -2,19 +2,17 @@
 import { page } from '$app/stores';
 import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
 import type { CompetitionResults } from '$lib/types';
-import { BASE_URL, formatCompetitionDate } from '$lib/utils';
+import { BASE_URL, fetchJson, formatCompetitionDate } from '$lib/utils';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import { createQuery } from '@tanstack/svelte-query';
 
 const compId = $page.params.compid;
 
-const fetchResults = async () => {
-	const response = await fetch(`${BASE_URL}/api/competitions/${compId}/results/`);
-	return await response.json();
-};
+const fetchResults = async () =>
+	await fetchJson<CompetitionResults>(`${BASE_URL}/api/competitions/${compId}/results/`);
 
-const query = createQuery<CompetitionResults>({
+const query = createQuery({
 	queryKey: ['results', compId],
 	queryFn: fetchResults
 });

@@ -129,13 +129,25 @@ export const getMeanType = (event: WCAEvent) => {
 };
 
 export const checkLoginStatus = async () => {
-	const loggedInRes = await fetch(`${BASE_URL}/api/users/auth/status/`, { credentials: 'include' });
-	const loggedInData = await loggedInRes.json();
-
+	const loggedInData = await fetchJson<{ logged_in: boolean }>(
+		`${BASE_URL}/api/users/auth/status/`,
+		{ credentials: 'include' }
+	);
 	return loggedInData.logged_in;
 };
 
 export const formatCompetitionDate = (dateStr: string) => {
 	const utcDate = new Date(`${dateStr}T12:00:00Z`);
 	return utcDate.toLocaleDateString();
+};
+
+export const fetchJson = async <T>(url: string | URL, options?: RequestInit): Promise<T> => {
+	const response = await fetch(url, options);
+
+	if (!response.ok) {
+		throw new Error(`Failed to fetch: ${response.statusText}`);
+	}
+
+	const data: T = await response.json();
+	return data;
 };

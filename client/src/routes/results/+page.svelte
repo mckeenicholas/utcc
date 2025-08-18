@@ -1,21 +1,18 @@
 <script lang="ts">
 import { type Competition, type CompetitionResults, type Paginated } from '$lib/types';
 import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-import { formatCompetitionDate, latestCompetitionsURL, latestResultsURL } from '$lib/utils';
+import {
+	fetchJson,
+	formatCompetitionDate,
+	latestCompetitionsURL,
+	latestResultsURL
+} from '$lib/utils';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import { createQuery } from '@tanstack/svelte-query';
 
-const queryResults = async () => {
-	const response = await fetch(latestResultsURL);
-	const data: CompetitionResults = await response.json();
-	return data;
-};
-
-const queryCompetitions = async () => {
-	const response = await fetch(latestCompetitionsURL);
-	const data: Paginated<Competition> = await response.json();
-	return data.results.slice(0, 10);
-};
+const queryResults = async () => await fetchJson<CompetitionResults>(latestResultsURL);
+const queryCompetitions = async () =>
+	(await fetchJson<Paginated<Competition>>(latestCompetitionsURL)).results.slice(0, 10);
 
 const competitionsQuery = createQuery({
 	queryKey: ['home-competiitons'],

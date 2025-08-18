@@ -1,16 +1,10 @@
 import authFetch from '$lib/authFetch';
 import type { Session } from '$lib/types';
-import { BASE_URL } from '$lib/utils';
+import { BASE_URL, fetchJson } from '$lib/utils';
 
 const SESSIONS_API_URL = `${BASE_URL}/api/session/`;
 
-export const fetchSessions = async (): Promise<Session[]> => {
-	const response = await authFetch(SESSIONS_API_URL);
-	if (!response.ok) {
-		throw new Error(`Failed to fetch sessions: ${response.statusText}`);
-	}
-	return response.json();
-};
+export const fetchSessions = async (): Promise<Session[]> => await fetchJson(SESSIONS_API_URL);
 
 export const createSession = async (name: string): Promise<Response> => {
 	return authFetch(SESSIONS_API_URL, {

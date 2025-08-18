@@ -10,7 +10,7 @@ import {
 	type RecordInstance,
 	type WCAEvent
 } from '$lib/types';
-import { BASE_URL, PAGINATION_SIZE, renderTime } from '$lib/utils';
+import { BASE_URL, fetchJson, PAGINATION_SIZE, renderTime } from '$lib/utils';
 import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 let selectedEvent: WCAEvent = $state('333');
@@ -32,16 +32,15 @@ let totalCount = $state(0);
 const fetchRankings = async (urlParams: URLSearchParams) => {
 	loading = true;
 	try {
-		const response = await fetch(`${BASE_URL}/api/rankings/?${urlParams.toString()}`);
-		if (!response.ok) throw new Error('Network response was not ok');
+		const response = await fetchJson<Paginated<RecordInstance>>(
+			`${BASE_URL}/api/rankings/?${urlParams.toString()}`
+		);
 
-		const data: Paginated<RecordInstance> = await response.json();
-
-		results = data;
+		results = response;
 		currentPage = pageNum;
-		totalCount = data.count;
-		hasNext = !!data.next;
-		hasPrevious = !!data.previous;
+		totalCount = response.count;
+		hasNext = !!response.next;
+		hasPrevious = !!response.previous;
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 	} catch (error) {
 		console.error('Failed to fetch rankings:', error);

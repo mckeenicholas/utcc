@@ -2,11 +2,12 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
 import authFetch from '$lib/authFetch';
+import { fetchSessions } from '$lib/competitionSessionService';
 import DateForm from '$lib/components/DateForm.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
-import type { Competition } from '$lib/types';
-import { BASE_URL } from '$lib/utils';
+import type { Competition, Session } from '$lib/types';
+import { BASE_URL, fetchJson } from '$lib/utils';
 import { parseDate } from '@internationalized/date';
 import { onMount } from 'svelte';
 
@@ -16,15 +17,17 @@ let competitionData: Competition | null = $state(null);
 let isLoading = $state(true);
 let errorMessage = $state<string | null>(null);
 let selectedEditSession: string = $state('-1');
+let sessions: Session[] = $state([]);
 
 onMount(async () => {
 	try {
-		const response = await fetch(`${BASE_URL}/api/competitions/${id}/`);
-		if (!response.ok) {
-			throw new Error('Failed to fetch competition data.');
-		}
-		const data: Competition = await response.json();
-		competitionData = data;
+		const [competitionDataResponse, sessionsResponse] = await Promise.all([
+			fetchJson<Competition>(`${BASE_URL}/api/competitions/${id}/`),
+			fetchSessions()
+		]);
+
+		competitionData = competitionDataResponse;
+		sessions = sessionsResponse;
 
 		selectedEditSession = competitionData.session ? competitionData.session.toString() : '-1';
 	} catch (error) {
@@ -160,7 +163,11 @@ const updateCompetitionData = async () => {
 
 						<div>
 							<div class="mb-2 block text-sm font-medium text-gray-700">Academic Session</div>
-							<SessionSelector bind:value={selectedEditSession} defaultMessage="No Session" />
+							<SessionSelector
+								bind:value={selectedEditSession}
+								sessionData={sessions}
+								defaultMessage="No Session"
+							/>
 						</div>
 
 						<!-- Action Buttons -->
@@ -180,7 +187,7 @@ const updateCompetitionData = async () => {
 								Save Changes
 							</button>
 
-							<a href="/dashboard">
+							<a href="/dashboard/competitions">
 								<div
 									class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 								>

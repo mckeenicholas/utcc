@@ -1,15 +1,17 @@
 <script lang="ts">
-import type { EventRecords, RecordsApiResponse, WCAEvent } from '$lib/types';
-import { recordsURL } from '$lib/utils';
+import type { EventRecords, RecordsApiResponse, Session, WCAEvent } from '$lib/types';
+import { fetchJson, recordsURL } from '$lib/utils';
 import { eventListIdx, eventSolves, eventNames } from '$lib/types';
 import { onMount } from 'svelte';
 import RecordRow from '$lib/components/RecordRow.svelte';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
+import { fetchSessions } from '$lib/competitionSessionService';
 
 let recordsAPIResponse: RecordsApiResponse | null = $state(null);
 let selectedSession: string = $state('-1');
+let sessions: Session[] = $state([]);
 let loading = $state(true);
 
 const sessionRecordsURL = (sessionId: number): string => {
@@ -25,8 +27,7 @@ $effect(() => {
 const fetchRecords = async (sessionId: number) => {
 	try {
 		loading = true;
-		const recordsResponse = await fetch(sessionRecordsURL(sessionId));
-		recordsAPIResponse = await recordsResponse.json();
+		recordsAPIResponse = await fetchJson<RecordsApiResponse>(sessionRecordsURL(sessionId));
 	} catch (error) {
 		console.error('Failed to fetch records:', error);
 	} finally {
@@ -35,7 +36,8 @@ const fetchRecords = async (sessionId: number) => {
 };
 
 onMount(async () => {
-	await fetchRecords(parseInt(selectedSession));
+	fetchRecords(parseInt(selectedSession));
+	sessions = await fetchSessions();
 });
 
 let recordsDisplay = $derived.by(() => {
@@ -65,7 +67,7 @@ let recordsDisplay = $derived.by(() => {
 					<h1 class="text-3xl font-bold text-gray-900">Club Records</h1>
 					<p class="mt-2 text-gray-600">Fastest result set at a club-sanctioned competition</p>
 				</div>
-				<SessionSelector bind:value={selectedSession} class="shadow-sm" />
+				<SessionSelector bind:value={selectedSession} sessionData={sessions} class="shadow-sm" />
 			</div>
 
 			{#if recordsDisplay.length > 0}

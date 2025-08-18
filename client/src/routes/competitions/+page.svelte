@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Competition, Paginated } from '$lib/types';
-import { BASE_URL, PAGINATION_SIZE } from '$lib/utils';
+import { BASE_URL, fetchJson, PAGINATION_SIZE } from '$lib/utils';
 import { onMount } from 'svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import CompetitionCard from '$lib/components/CompetitionCard.svelte';
@@ -34,13 +34,7 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 			url += `&session_id=${sessionId}`;
 		}
 
-		const response = await fetch(url);
-
-		if (!response.ok) {
-			throw new Error('Failed to fetch competitions');
-		}
-
-		const data: Paginated<Competition> = await response.json();
+		const data = await fetchJson<Paginated<Competition>>(url);
 
 		competitions = data.results;
 		currentPage = page;

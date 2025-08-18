@@ -5,23 +5,22 @@ import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import PersonalRecordsTable from '$lib/components/PersonalRecordsTable.svelte';
 import CompetitionResultsTable from '$lib/components/CompetitionResultsTable.svelte';
 import { type ProfileResponse, type WCAEvent } from '$lib/types';
-import { BASE_URL, processPersonalRecords, generateRecordsForEvent } from '$lib/utils';
+import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from '$lib/utils';
 import { createQuery } from '@tanstack/svelte-query';
 
 const personId = $page.params.id;
 let selectedEvent: WCAEvent = $state('333');
 
 const fetchProfileResults = async () => {
-	const response = await fetch(`${BASE_URL}/api/users/${personId}/results/`);
-	const data: ProfileResponse = await response.json();
+	const response = await fetchJson<ProfileResponse>(`${BASE_URL}/api/users/${personId}/results/`);
 
-	const personalRecords = processPersonalRecords(data.records);
-	const resultsTableContent = data.results.map(generateRecordsForEvent);
+	const personalRecords = processPersonalRecords(response.records);
+	const resultsTableContent = response.results.map(generateRecordsForEvent);
 
 	return {
 		records: personalRecords,
 		results: resultsTableContent,
-		name: data.person.name
+		name: response.person.name
 	};
 };
 
