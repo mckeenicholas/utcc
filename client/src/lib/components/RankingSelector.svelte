@@ -1,9 +1,10 @@
 <script lang="ts">
-import { type WCAEvent } from '$lib/types';
+import { type Session, type WCAEvent } from '$lib/types';
+import { onMount } from 'svelte';
 import EventPicker from './EventPicker.svelte';
 import SessionSelector from './SessionSelector.svelte';
-
 import ToggleButton from './ToggleButton.svelte';
+import { fetchSessions } from '$lib/competitionSessionService';
 
 interface Props {
 	isAverage: boolean;
@@ -18,6 +19,12 @@ let {
 	showAll = $bindable(),
 	session = $bindable()
 }: Props = $props();
+
+let sessions: Session[] = $state([]);
+
+onMount(async () => {
+	sessions = await fetchSessions();
+});
 </script>
 
 <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
@@ -31,5 +38,5 @@ let {
 			<ToggleButton bind:value={showAll} leftLabel="Persons" rightLabel="Results" />
 		</div>
 	</div>
-	<SessionSelector bind:value={session} class="mt-2" />
+	<SessionSelector bind:value={session} sessionData={sessions} class="mt-2" />
 </div>
