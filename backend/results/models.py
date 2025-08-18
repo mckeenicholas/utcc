@@ -5,9 +5,19 @@ from users.models import Person
 THREE_ATTEMPT_EVENTS = ["666", "777", "333bf", "444bf", "555bf", "333fm"]
 
 
+class CompetitionSession(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Competition(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateField()
+    session = models.ForeignKey(
+        CompetitionSession, on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return f"{self.name} - {self.date}"

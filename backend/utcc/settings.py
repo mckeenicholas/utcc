@@ -31,7 +31,8 @@ def get_env_or_error(var_name):
 
 
 SECRET_KEY = get_env_or_error("DJANGO_SECRET_KEY")
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+# DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+DEBUG = True
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 
 # Application definition

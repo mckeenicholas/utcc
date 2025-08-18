@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
+    CompetitionSessionViewSet,
     CompetitionViewSet,
     ResultViewSet,
     CompetitionResultsAPIView,
@@ -12,6 +13,7 @@ from .views import (
 router = DefaultRouter()
 router.register(r"competitions", CompetitionViewSet, basename="competition")
 router.register(r"results", ResultViewSet, basename="result")
+router.register(r"session", CompetitionSessionViewSet, basename="session")
 
 urlpatterns = [
     # Custom API endpoints

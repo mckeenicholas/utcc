@@ -1,14 +1,22 @@
 from rest_framework import serializers
-from .models import Competition, Result
+from .models import Competition, CompetitionSession, Result
+
+
+class CompetitionSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompetitionSession
+        fields = "__all__"
+        read_only_fields = ["id"]
 
 
 class CompetitionSerializer(serializers.ModelSerializer):
     events = serializers.SerializerMethodField()
+    session_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Competition
-        fields = ["id", "name", "date", "events"]
-        read_only_fields = ["id", "events"]
+        fields = ["id", "name", "date", "events", "session", "session_name"]
+        read_only_fields = ["id", "events", "session_name"]
 
     def get_events(self, obj):
         events = (
@@ -18,6 +26,11 @@ class CompetitionSerializer(serializers.ModelSerializer):
             .order_by("event")
         )
         return list(events)
+
+    def get_session_name(self, obj):
+        if obj.session:
+            return obj.session.name
+        return None
 
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):
@@ -66,9 +79,16 @@ class EventSerializer(serializers.Serializer):
 
 
 class CompetitionDetailSerializer(serializers.ModelSerializer):
+    session_name = serializers.SerializerMethodField()
+
+    def get_session_name(self, obj):
+        if obj.session:
+            return obj.session.name
+        return None
+
     class Meta:
         model = Competition
-        fields = ["name", "date", "id"]
+        fields = ["name", "date", "id", "session_name"]
         read_only_fields = ["id"]
 
 

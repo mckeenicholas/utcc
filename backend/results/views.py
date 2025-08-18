@@ -13,13 +13,21 @@ from rest_framework.views import APIView
 
 from django.conf import settings
 
-from .models import Competition, Result
+from .models import Competition, CompetitionSession, Result
 from .serializers import (
     CompetitionSerializer,
+    CompetitionSessionSerializer,
     FullCompetitionResultsSerializer,
     RecordDetailSerializer,
     ResultCreateUpdateSerializer,
 )
+
+
+class CompetitionSessionViewSet(viewsets.ModelViewSet):
+    queryset = CompetitionSession.objects.all()
+    serializer_class = CompetitionSessionSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = None
 
 
 class CompetitionViewSet(viewsets.ModelViewSet):
@@ -27,6 +35,15 @@ class CompetitionViewSet(viewsets.ModelViewSet):
     serializer_class = CompetitionSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # Use the default settings for pagination (PageNumberPagination with page_size=20)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        session_id = self.request.query_params.get("session_id")
+
+        if session_id is not None:
+            queryset = queryset.filter(session__id=session_id)
+
+        return queryset
 
 
 class ResultViewSet(viewsets.ModelViewSet):
@@ -72,10 +89,16 @@ class CompetitionResultsAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, competition_id=None, format=None):
+        session_id = request.query_params.get("session_id")
+
         if competition_id:
             competition = get_object_or_404(Competition, pk=competition_id)
         else:
-            competition = Competition.objects.order_by("-date").first()
+            competition_query = Competition.objects.order_by("-date")
+            if session_id:
+                competition_query = competition_query.filter(session_id=session_id)
+            competition = competition_query.first()
+
             if not competition:
                 return Response(
                     {"message": "No competitions exist"},
@@ -110,6 +133,8 @@ class RecordsListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
+        session_id = request.query_params.get("session_id")
+
         records = defaultdict(dict)
 
         best_singles = (
@@ -138,6 +163,10 @@ class RecordsListAPIView(APIView):
             .filter(row_num=1)
         )
 
+        if session_id:
+            best_singles = best_singles.filter(competition__session_id=session_id)
+            best_averages = best_averages.filter(competition__session_id=session_id)
+
         for result in best_averages:
             serializer = RecordDetailSerializer(
                 result, context={"record_type": "average"}
@@ -157,6 +186,8 @@ class RankingsAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
+        session_id = request.query_params.get("session_id")
+
         # Get query parameters
         event = request.query_params.get("event")
         result_format = request.query_params.get("type")  # 'single' or 'average'
@@ -180,6 +211,10 @@ class RankingsAPIView(APIView):
         queryset = Result.objects.select_related("person_id", "competition").filter(
             event=event
         )
+
+        # Filter by session if provided
+        if session_id:
+            queryset = queryset.filter(competition__session_id=session_id)
 
         # Filter by format and exclude zero/invalid times
         if result_format == "single":
