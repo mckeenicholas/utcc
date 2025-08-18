@@ -1,7 +1,7 @@
 <script lang="ts">
 import { type Competition, type CompetitionResults, type Paginated } from '$lib/types';
 import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-import { latestCompetitionsURL, latestResultsURL } from '$lib/utils';
+import { formatCompetitionDate, latestCompetitionsURL, latestResultsURL } from '$lib/utils';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import { createQuery } from '@tanstack/svelte-query';
 
@@ -136,9 +136,7 @@ const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryRes
 						</a>
 					</h2>
 					<p class="mt-1 text-sm text-gray-600">
-						Latest competition results from {new Date(
-								competition.date
-							).toLocaleDateString()}
+						Latest competition results from {formatCompetitionDate(competition.date)}
 					</p>
 				</div>
 				<div class="p-6">

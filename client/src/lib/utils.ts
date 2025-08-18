@@ -134,3 +134,8 @@ export const checkLoginStatus = async () => {
 
 	return loggedInData.logged_in;
 };
+
+export const formatCompetitionDate = (dateStr: string) => {
+	const utcDate = new Date(`${dateStr}T12:00:00Z`);
+	return utcDate.toLocaleDateString();
+};

@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Competition } from '$lib/types';
+import { formatCompetitionDate } from '$lib/utils';
 
 interface Props {
 	competition: Competition | null;
@@ -31,7 +32,7 @@ let { competition, backUrl = '/dashboard', backText = 'Back to Dashboard' }: Pro
 		{#if competition}
 			<div>
 				<h1 class="text-3xl font-bold text-gray-900">{competition.name}</h1>
-				<p class="text-gray-600">Date: {new Date(competition.date).toLocaleDateString()}</p>
+				<p class="text-gray-600">Date: {formatCompetitionDate(competition.date)}</p>
 			</div>
 		{/if}
 	</div>

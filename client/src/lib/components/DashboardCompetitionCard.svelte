@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Competition } from '$lib/types';
+import { formatCompetitionDate } from '$lib/utils';
 
 interface Props {
 	competition: Competition;
@@ -14,7 +15,7 @@ const { competition, onDeleteCompetition = () => null }: Props = $props();
 		<div>
 			<h3 class="font-medium text-gray-900">{competition.name}</h3>
 			<p class="text-sm text-gray-500">
-				{new Date(competition.date).toLocaleDateString()}
+				{formatCompetitionDate(competition.date)}
 			</p>
 		</div>
 		<div class="flex space-x-2">

@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Competition } from '$lib/types';
+import { formatCompetitionDate } from '$lib/utils';
 import CubeIcon from './CubeIcon.svelte';
 
 interface Props {
@@ -19,7 +20,7 @@ let { competition }: Props = $props();
 					</dt>
 					<dd class="flex items-baseline">
 						<div class="truncate text-sm font-medium text-gray-500">
-							{new Date(competition.date).toLocaleDateString()}
+							{formatCompetitionDate(competition.date)}
 						</div>
 					</dd>
 				</dl>
