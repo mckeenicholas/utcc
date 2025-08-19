@@ -42,9 +42,9 @@ onMount(async () => {
 	loadSessions();
 });
 
-const handleAddSession = async (name: string) => {
+const handleAddSession = async (name: string, date: string) => {
 	try {
-		const response = await createSession(name);
+		const response = await createSession(name, date);
 		if (response.ok) {
 			await loadSessions();
 		} else {
@@ -56,11 +56,13 @@ const handleAddSession = async (name: string) => {
 	}
 };
 
-const handleSaveSession = async (sessionId: number, name: string) => {
+const handleSaveSession = async (sessionId: number, name: string, date: string) => {
 	try {
-		const response = await updateSession(sessionId, name);
+		const response = await updateSession(sessionId, name, date);
 		if (response.ok) {
-			sessions = sessions.map((s) => (s.id === sessionId ? { ...s, name: name } : s));
+			sessions = sessions
+				.map((s) => (s.id === sessionId ? { id: s.id, name: name, start_date: date } : s))
+				.sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
 		} else {
 			alert('Failed to update session');
 		}
@@ -93,7 +95,7 @@ const handleDeleteSession = async (sessionId: number) => {
 
 		<AddSessionForm onAddSession={handleAddSession} />
 
-		<div class="mt-6 rounded-lg bg-white px-6 pt-6 pb-2 shadow-sm">
+		<div class="rounded-lg bg-white px-6 pt-2 pb-6 shadow-sm">
 			{#if loading}
 				<LoadingScreen message={isSearching ? 'Searching...' : 'Loading sessions...'} />
 			{:else if sessions.length > 0}

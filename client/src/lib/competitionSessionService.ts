@@ -6,23 +6,27 @@ const SESSIONS_API_URL = `${BASE_URL}/api/session/`;
 
 export const fetchSessions = async (): Promise<Session[]> => await fetchJson(SESSIONS_API_URL);
 
-export const createSession = async (name: string): Promise<Response> => {
+export const createSession = async (name: string, start_date: string): Promise<Response> => {
 	return authFetch(SESSIONS_API_URL, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ name })
+		body: JSON.stringify({ name, start_date })
 	});
 };
 
-export const updateSession = async (id: number, name: string): Promise<Response> => {
+export const updateSession = async (
+	id: number,
+	name: string,
+	start_date: string
+): Promise<Response> => {
 	return authFetch(`${SESSIONS_API_URL}${id}/`, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ name })
+		body: JSON.stringify({ name, start_date })
 	});
 };
 

@@ -4,16 +4,16 @@ import type { Session } from '$lib/types';
 interface Props {
 	session: Session;
 	onDelete: (id: number) => void;
-	onSave: (id: number, name: string) => void;
+	onSave: (id: number, name: string, date: string) => void;
 }
 
 let { session, onDelete, onSave }: Props = $props();
 
 let isEditing = $state(false);
 let editSessionName = $state(session.name);
+let editSessionDate = $state(session.start_date);
 
 const startEdit = () => {
-	editSessionName = session.name;
 	isEditing = true;
 };
 
@@ -22,8 +22,8 @@ const cancelEdit = () => {
 };
 
 const handleSave = () => {
-	if (editSessionName.trim() && editSessionName.trim() !== session.name) {
-		onSave(session.id, editSessionName.trim());
+	if (editSessionName.trim()) {
+		onSave(session.id, editSessionName.trim(), editSessionDate);
 		isEditing = false;
 	} else {
 		isEditing = false;
@@ -48,10 +48,11 @@ const handleSave = () => {
 						onkeydown={(e) => e.key === 'Enter' && handleSave()}
 						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 					/>
+					<input type="date" bind:value={editSessionDate} class="ms-2" />
 				{:else}
-					<p class="text-sm font-medium text-gray-900">{session.name}</p>
+					<span class="text-sm font-medium text-gray-900">{session.name}</span>
 				{/if}
-				<p class="text-xs text-gray-500">ID: {session.id}</p>
+				<p class="text-xs text-gray-500">ID: {session.id} - Start Date: {session.start_date}</p>
 			</div>
 		</div>
 		<div class="flex space-x-2">

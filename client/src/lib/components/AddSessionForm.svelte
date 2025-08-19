@@ -1,14 +1,17 @@
 <script lang="ts">
+import DateForm from './DateForm.svelte';
+
 interface Props {
-	onAddSession: (name: string) => Promise<void>;
+	onAddSession: (name: string, date: string) => Promise<void>;
 }
 let { onAddSession }: Props = $props();
 
 let newSessionName = $state('');
+let startDate = $state<string>(new Date().toISOString().split('T')[0]);
 
 const handleSubmit = async () => {
 	if (newSessionName.trim()) {
-		await onAddSession(newSessionName.trim());
+		await onAddSession(newSessionName.trim(), startDate);
 		newSessionName = '';
 	}
 };
@@ -28,6 +31,9 @@ const handleSubmit = async () => {
 				onkeydown={(e) => e.key === 'Enter' && handleSubmit()}
 				class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 			/>
+		</div>
+		<div>
+			<DateForm bind:selectedDate={startDate} label="Session start date (used for ordering)" />
 		</div>
 		<button
 			onclick={handleSubmit}

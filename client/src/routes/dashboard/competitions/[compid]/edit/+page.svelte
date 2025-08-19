@@ -8,7 +8,6 @@ import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
 import type { Competition, Session } from '$lib/types';
 import { BASE_URL, fetchJson } from '$lib/utils';
-import { parseDate } from '@internationalized/date';
 import { onMount } from 'svelte';
 
 const id = $page.params.compid;
@@ -154,11 +153,7 @@ const updateCompetitionData = async () => {
 							<label for="compdate" class="mb-2 block text-sm font-medium text-gray-700">
 								Competition Date
 							</label>
-							<DateForm
-								bind:selectedDate={() => parseDate(competitionData!.date), (newDate) => {
-								competitionData = { ...competitionData!, date: newDate.toString()}
-							}}
-							/>
+							<DateForm bind:selectedDate={competitionData.date} />
 						</div>
 
 						<div>

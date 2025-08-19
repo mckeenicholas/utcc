@@ -7,6 +7,7 @@ THREE_ATTEMPT_EVENTS = ["666", "777", "333bf", "444bf", "555bf", "333fm"]
 
 class CompetitionSession(models.Model):
     name = models.CharField(max_length=255)
+    start_date = models.DateField()
 
     def __str__(self):
         return self.name

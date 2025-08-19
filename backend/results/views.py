@@ -24,7 +24,7 @@ from .serializers import (
 
 
 class CompetitionSessionViewSet(viewsets.ModelViewSet):
-    queryset = CompetitionSession.objects.all()
+    queryset = CompetitionSession.objects.all().order_by("-start_date")
     serializer_class = CompetitionSessionSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = None

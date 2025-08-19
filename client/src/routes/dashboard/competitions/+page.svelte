@@ -5,7 +5,6 @@ import { onMount } from 'svelte';
 import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from '$lib/utils';
 import type { Competition, Paginated, Session } from '$lib/types';
 import authFetch from '$lib/authFetch';
-import { type DateValue } from '@internationalized/date';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import DateForm from '$lib/components/DateForm.svelte';
 import DashboardHeader from '$lib/components/DashboardHeader.svelte';
@@ -16,7 +15,7 @@ import { fetchSessions } from '$lib/competitionSessionService';
 let competitions: Competition[] = $state([]);
 let loading = $state(true);
 let newCompName = $state('');
-let selectedDate = $state<DateValue | undefined>(undefined);
+let selectedDate = $state<string>(new Date().toISOString().split('T')[0]);
 let currentPage = $state(1);
 let totalPages = $state(1);
 let hasNext = $state(false);
@@ -111,13 +110,6 @@ const deleteCompetition = async (id: number) => {
 };
 
 const createCompetition = async () => {
-	if (!selectedDate) {
-		alert('Please select a date');
-		return;
-	}
-
-	const dateString = selectedDate.toString();
-
 	const sessionIdToSubmit = createCompSession === '-1' ? null : parseInt(createCompSession);
 
 	const response = await authFetch(`${BASE_URL}/api/competitions/`, {
@@ -125,14 +117,14 @@ const createCompetition = async () => {
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ name: newCompName, date: dateString, session: sessionIdToSubmit })
+		body: JSON.stringify({ name: newCompName, date: selectedDate, session: sessionIdToSubmit })
 	});
 
 	if (response.ok) {
 		const newCompetition: Competition = await response.json();
 		// Reset form
 		newCompName = '';
-		selectedDate = undefined;
+		selectedDate = '';
 		createCompSession = '-1';
 		goto(`/dashboard/competitions/${newCompetition.id}`);
 	} else {

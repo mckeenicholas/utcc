@@ -1,17 +1,24 @@
 <script lang="ts">
 import { DatePicker } from 'bits-ui';
-import { type DateValue } from '@internationalized/date';
+import { parseDate } from '@internationalized/date';
 
-let { selectedDate = $bindable() }: { selectedDate: DateValue | undefined } = $props();
+let {
+	selectedDate = $bindable(),
+	label = 'Competition Date'
+}: { selectedDate: string; label?: string } = $props();
 </script>
 
-<DatePicker.Root bind:value={selectedDate} weekdayFormat="short" fixedWeeks={true}>
+<DatePicker.Root
+	bind:value={() => parseDate(selectedDate), (date) => { selectedDate = date.toString()}}
+	weekdayFormat="short"
+	fixedWeeks={true}
+>
 	<div class="flex w-full flex-col gap-1.5">
 		<DatePicker.Label class="block text-sm font-medium text-gray-700">
-			Competition Date
+			{label}
 		</DatePicker.Label>
 		<DatePicker.Input
-			class="flex w-full items-center rounded-md border border-gray-300 px-3 py-1 text-sm shadow-sm focus-within:border-gray-500 focus-within:ring-1 focus-within:ring-gray-500 hover:border-gray-400"
+			class="flex w-full items-center rounded-md border border-gray-300 py-1 ps-3 pe-1 text-sm shadow-sm focus-within:border-gray-500 focus-within:ring-1 focus-within:ring-gray-500 hover:border-gray-400"
 		>
 			{#snippet children({ segments })}
 				{#each segments as { part, value }, i (part + i)}
