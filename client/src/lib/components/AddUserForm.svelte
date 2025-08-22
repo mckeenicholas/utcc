@@ -1,7 +1,9 @@
 <script lang="ts">
-let { onAddUser }: { onAddUser: (name: string) => Promise<void> } = $props();
+let { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } =
+	$props();
 
 let newUserName = $state('');
+let newUserStudentStatus = $state(true);
 let isSubmitting = $state(false);
 
 const handleSubmit = async () => {
@@ -9,7 +11,7 @@ const handleSubmit = async () => {
 
 	isSubmitting = true;
 	try {
-		await onAddUser(newUserName);
+		await onAddUser(newUserName, newUserStudentStatus);
 		newUserName = '';
 	} catch (error) {
 		console.error('Failed to add user from form:', error);
@@ -21,7 +23,7 @@ const handleSubmit = async () => {
 
 <div class="rounded-lg bg-white p-6 shadow-sm">
 	<h2 class="mb-4 text-xl font-semibold text-gray-800">Add New User</h2>
-	<div class="flex gap-3">
+	<div class="flex items-end gap-3">
 		<div class="flex-1">
 			<label for="new-user-name" class="block text-sm font-medium text-gray-700">Person Name</label>
 			<input
@@ -32,7 +34,20 @@ const handleSubmit = async () => {
 				class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 			/>
 		</div>
-		<div class="flex items-end">
+		<div class="flex flex-col">
+			<label for="is-student" class="block text-sm font-medium text-gray-700"
+				>Is UofT Student?</label
+			>
+			<div class="mt-1 block py-2">
+				<input
+					type="checkbox"
+					bind:checked={newUserStudentStatus}
+					id="is-student"
+					class="h-4 w-4"
+				/>
+			</div>
+		</div>
+		<div>
 			<button
 				onclick={handleSubmit}
 				disabled={!newUserName.trim() || isSubmitting}

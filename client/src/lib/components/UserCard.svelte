@@ -4,13 +4,14 @@ import type { User } from '$lib/types';
 interface Props {
 	user: User;
 	ondelete: (id: number) => void;
-	onsave: (id: number, name: string) => void;
+	onsave: (id: number, name: string, studentStatus: boolean) => void;
 }
 
 let { user, ondelete, onsave }: Props = $props();
 
 let isEditing = $state(false);
 let editUserName = $state(user.name);
+let editUserStudentStatus = $state(user.is_uoft_student);
 
 const startEdit = () => {
 	editUserName = user.name;
@@ -23,7 +24,7 @@ const cancelEdit = () => {
 
 const handleSave = () => {
 	if (editUserName.trim()) {
-		onsave(user.id, editUserName);
+		onsave(user.id, editUserName, editUserStudentStatus);
 		isEditing = false;
 	}
 };
@@ -41,11 +42,23 @@ const handleSave = () => {
 			</div>
 			<div>
 				{#if isEditing}
-					<input
-						bind:value={editUserName}
-						onkeydown={(e) => e.key === 'Enter' && handleSave()}
-						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
-					/>
+					<div class="flex gap-4">
+						<input
+							bind:value={editUserName}
+							onkeydown={(e) => e.key === 'Enter' && handleSave()}
+							class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+						/>
+						<div class="flex flex-col items-center justify-center">
+							<div>
+								<input
+									type="checkbox"
+									bind:checked={editUserStudentStatus}
+									id="is-student-{user.id}"
+								/>
+								<label for="is-student-{user.id}">Is UofT Student?</label>
+							</div>
+						</div>
+					</div>
 				{:else}
 					<p class="text-sm font-medium text-gray-900">{user.name}</p>
 				{/if}

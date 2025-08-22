@@ -95,9 +95,9 @@ $effect(() => {
 });
 
 // Event Handlers
-const handleAddUser = async (name: string) => {
+const handleAddUser = async (name: string, studentStatus: boolean) => {
 	try {
-		const response = await createUser(name);
+		const response = await createUser(name, studentStatus);
 		if (response.ok) {
 			// Refresh current view
 			if (searchTerm) {
@@ -112,9 +112,9 @@ const handleAddUser = async (name: string) => {
 	}
 };
 
-const handleSaveUser = async (userId: number, name: string) => {
+const handleSaveUser = async (userId: number, name: string, studentStatus: boolean) => {
 	try {
-		const response = await updateUser(userId, name);
+		const response = await updateUser(userId, name, studentStatus);
 		if (response.ok) {
 			users = users.map((u) => (u.id === userId ? { ...u, name: name } : u));
 		} else {

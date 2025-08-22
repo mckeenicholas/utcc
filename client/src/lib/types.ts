@@ -136,6 +136,7 @@ export interface RecordsApiResponse {
 export interface User {
 	id: number;
 	name: string;
+	is_uoft_student: boolean;
 }
 
 export interface ProfileRecordDetail {

@@ -13,19 +13,23 @@ export const searchUsersByName = async (query: string): Promise<User[]> => {
 	return await fetchJson(`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`);
 };
 
-export const createUser = (name: string) => {
+export const createUser = (name: string, studentStatus: boolean) => {
+	const data: Omit<User, 'id'> = { name, is_uoft_student: studentStatus };
+
 	return authFetch(`${BASE_URL}/api/users/persons/`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ name })
+		body: JSON.stringify(data)
 	});
 };
 
-export const updateUser = (userId: number, name: string) => {
+export const updateUser = (userId: number, name: string, studentStatus: boolean) => {
+	const data: Omit<User, 'id'> = { name, is_uoft_student: studentStatus };
+
 	return authFetch(`${BASE_URL}/api/users/persons/${userId}/`, {
 		method: 'PATCH',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ name })
+		body: JSON.stringify(data)
 	});
 };
 
