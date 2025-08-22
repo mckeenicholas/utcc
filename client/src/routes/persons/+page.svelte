@@ -80,6 +80,11 @@ $effect(() => {
 });
 </script>
 
+<svelte:head>
+	<title>UofT Rubik's Cube Club Member Search</title>
+	<meta name="description" content="University of Toronto Rubik's Cube Club member search." />
+</svelte:head>
+
 <Backbutton />
 <div class=" bg-gray-50 px-4 py-4">
 	<div class="mx-auto max-w-4xl px-4">

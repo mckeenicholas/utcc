@@ -18,19 +18,6 @@ class CompetitionSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "date", "events", "session", "session_name"]
         read_only_fields = ["id", "events", "session_name"]
 
-    def get_events(self, obj):
-        events = (
-            Result.objects.filter(competition=obj)
-            .values_list("event", flat=True)
-            .distinct()
-            .order_by("event")
-        )
-        return list(events)
-
-    def get_session_name(self, obj):
-        if obj.session:
-            return obj.session.name
-        return None
 
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):

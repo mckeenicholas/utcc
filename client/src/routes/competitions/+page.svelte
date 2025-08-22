@@ -31,10 +31,9 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 	error = null;
 
 	try {
-		let url = `${BASE_URL}/api/competitions/?page=${page}`;
-		if (sessionId !== -1) {
-			url += `&session_id=${sessionId}`;
-		}
+		const url = new URL(`${BASE_URL}/api/competitions/`);
+		url.searchParams.set('page', page);
+		if (sessionId !== -1) url.searchParams.set('session_id', sessionId);
 
 		const data = await fetchJson<Paginated<Competition>>(url);
 
@@ -74,6 +73,11 @@ const goToPage = (page: number) => {
 	}
 };
 </script>
+
+<svelte:head>
+	<title>UofT Rubik's Cube Club Competition Search</title>
+	<meta name="description" content="University of Toronto Rubik's Cube Club competition search." />
+</svelte:head>
 
 <Backbutton />
 <div class="min-h-screen bg-gray-50 py-8">

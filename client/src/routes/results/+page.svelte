@@ -21,6 +21,14 @@ const competitionsQuery = createQuery({
 const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryResults });
 </script>
 
+<svelte:head>
+	<title>UofT Rubik's Cube Club Results</title>
+	<meta
+		name="description"
+		content="Recent results and competitions held by the University of Toronto Rubik's Cube Club."
+	/>
+</svelte:head>
+
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-6xl px-4">
 		<!-- Header -->

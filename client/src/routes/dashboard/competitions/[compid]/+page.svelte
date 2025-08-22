@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { page } from '$app/stores';
-import type { Competition, CompetitionResults, Result, WCAEvent, User } from '$lib/types';
+import type { CompetitionResults, Result, WCAEvent, User } from '$lib/types';
 import { BASE_URL, fetchJson } from '$lib/utils';
 import authFetch from '$lib/authFetch';
 import ResultForm from '$lib/components/ResultForm.svelte';
@@ -14,7 +14,6 @@ import CreateUserModal from '$lib/components/CreateUserModal.svelte';
 
 const compId = $page.params.compid;
 
-let competition: Competition | null = $state(null);
 let competitionResults: CompetitionResults | null = $state(null);
 let loading = $state(true);
 let submitting = $state(false);
@@ -40,13 +39,9 @@ let formData = $state({
 const fetchData = async (background = true) => {
 	loading = background;
 	try {
-		const [compResponse, resultsResponse] = await Promise.all([
-			fetchJson<Competition>(`${BASE_URL}/api/competitions/${compId}/`),
-			fetchJson<CompetitionResults>(`${BASE_URL}/api/competitions/${compId}/results/`)
-		]);
-
-		competition = compResponse;
-		competitionResults = resultsResponse;
+		competitionResults = await fetchJson<CompetitionResults>(
+			`${BASE_URL}/api/competitions/${compId}/results/`
+		);
 	} catch {
 		errorMessage = 'Failed to load competition data.';
 	} finally {
@@ -56,7 +51,6 @@ const fetchData = async (background = true) => {
 
 onMount(fetchData);
 
-// Helper function to find a specific result in the structured data
 const findResult = (personId: number, event: WCAEvent, round: number) => {
 	if (!competitionResults) return null;
 
@@ -191,7 +185,7 @@ const resetFormTimes = () => {
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-[1500px] px-4">
 		<PageHeader
-			competition={competition}
+			competition={competitionResults?.competition ?? null}
 			backText="Back to competitions"
 			backUrl="/dashboard/competitions"
 		/>

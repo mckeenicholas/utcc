@@ -5,19 +5,22 @@ import EventPicker from './EventPicker.svelte';
 import SessionSelector from './SessionSelector.svelte';
 import ToggleButton from './ToggleButton.svelte';
 import { fetchSessions } from '$lib/competitionSessionService';
+import Switch from './Switch.svelte';
 
 interface Props {
 	isAverage: boolean;
 	selectedEvent: WCAEvent;
 	showAll: boolean;
 	session: string;
+	isStudent: boolean;
 }
 
 let {
 	isAverage = $bindable(),
 	selectedEvent = $bindable(),
 	showAll = $bindable(),
-	session = $bindable()
+	session = $bindable(),
+	isStudent = $bindable()
 }: Props = $props();
 
 let sessions: Session[] = $state([]);
@@ -38,5 +41,10 @@ onMount(async () => {
 			<ToggleButton bind:value={showAll} leftLabel="Persons" rightLabel="Results" />
 		</div>
 	</div>
-	<SessionSelector bind:value={session} sessionData={sessions} class="mt-2" />
+	<div class="flex gap-4">
+		<SessionSelector bind:value={session} sessionData={sessions} class="mt-2" />
+		<div class="flex flex-col items-center justify-center">
+			<Switch label="Show UofT Students Only" bind:checked={isStudent} class="mt-2" />
+		</div>
+	</div>
 </div>

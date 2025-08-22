@@ -18,6 +18,7 @@ let isAverage = $state(false);
 let showAllResults = $state(false);
 let pageNum = $state(1);
 let selectedSession: string = $state('-1');
+let isUofTStudent = $state(false);
 
 const eventName = $derived(eventNames[selectedEvent]);
 
@@ -62,7 +63,7 @@ const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
 $effect(() => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const _ = { selectedEvent, isAverage, showAllResults, selectedSession };
+	const _ = { selectedEvent, isAverage, showAllResults, selectedSession, isUofTStudent };
 	pageNum = 1;
 });
 
@@ -76,13 +77,17 @@ $effect(() => {
 		page: pageNum.toString()
 	});
 
-	if (selectedSession !== '-1') {
-		urlParams.append('session_id', selectedSession);
-	}
+	if (selectedSession !== '-1') urlParams.append('session_id', selectedSession);
+	if (isUofTStudent) urlParams.append('uoft_only', '1');
 
 	fetchRankings(urlParams);
 });
 </script>
+
+<svelte:head>
+	<title>UofT Rubik's Cube Club Rankings</title>
+	<meta name="description" content="Rankings for the University of Toronto Rubik's Cube Club." />
+</svelte:head>
 
 <Backbutton />
 <div class="min-h-screen py-8">
@@ -96,6 +101,7 @@ $effect(() => {
 			bind:selectedEvent={selectedEvent}
 			bind:showAll={showAllResults}
 			bind:session={selectedSession}
+			bind:isStudent={isUofTStudent}
 		/>
 		<div class="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
 			{#if loading}

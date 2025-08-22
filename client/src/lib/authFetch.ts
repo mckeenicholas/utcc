@@ -7,7 +7,7 @@ export const getCsrf = async () => {
 	});
 };
 
-const authFetch = (url: string, options: RequestInit = {}): Promise<Response> => {
+const authFetch = (url: string | URL, options: RequestInit = {}): Promise<Response> => {
 	const csrftoken: string = Cookies.get('csrftoken') ?? '';
 
 	const headers = new Headers(options.headers);

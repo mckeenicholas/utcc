@@ -34,10 +34,9 @@ $effect(() => {
 const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 	loading = true;
 
-	let url = `${BASE_URL}/api/competitions/?page=${page}`;
-	if (sessionId !== -1) {
-		url += `&session_id=${sessionId}`;
-	}
+	const url = new URL(`${BASE_URL}/api/competitions/`);
+	url.searchParams.set('page', page.toString());
+	if (sessionId !== -1) url.searchParams.set('session_id', sessionId.toString());
 
 	const competitionRes = await authFetch(url);
 

@@ -30,6 +30,12 @@ const query = createQuery({
 });
 </script>
 
+<svelte:head>
+	<title>
+		Results for {$query.data?.name ?? ""}
+	</title>
+</svelte:head>
+
 <Backbutton />
 
 {#if $query.isError}
