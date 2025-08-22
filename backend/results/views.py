@@ -2,7 +2,7 @@ from collections import defaultdict
 from itertools import groupby
 from operator import attrgetter
 
-from django.db.models import F, Window
+from django.db.models import F, Window, OuterRef, Subquery
 from django.db.models.functions import RowNumber
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
@@ -37,7 +37,7 @@ class CompetitionViewSet(viewsets.ModelViewSet):
     # Use the default settings for pagination (PageNumberPagination with page_size=20)
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = self.queryset.select_related("session").prefetch_related("results")
         session_id = self.request.query_params.get("session_id")
 
         if session_id is not None:
@@ -90,6 +90,7 @@ class CompetitionResultsAPIView(APIView):
 
     def get(self, request, competition_id=None, format=None):
         session_id = request.query_params.get("session_id")
+        uoft_only = request.query_params.get("uoft_only")
 
         if competition_id:
             competition = get_object_or_404(Competition, pk=competition_id)
@@ -110,6 +111,9 @@ class CompetitionResultsAPIView(APIView):
             .select_related("person_id")
             .order_by("event", "round")
         )
+
+        if uoft_only == "1":
+            results = results.filter(person_id__is_uoft_student=True)
 
         events_data = []
         for event_code, event_results_iter in groupby(results, key=attrgetter("event")):
@@ -134,6 +138,7 @@ class RecordsListAPIView(APIView):
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
+        uoft_only = request.query_params.get("uoft_only")
 
         records = defaultdict(dict)
 
@@ -167,6 +172,10 @@ class RecordsListAPIView(APIView):
             best_singles = best_singles.filter(competition__session_id=session_id)
             best_averages = best_averages.filter(competition__session_id=session_id)
 
+        if uoft_only == "1":
+            best_singles = best_singles.filter(person_id__is_uoft_student=True)
+            best_averages = best_averages.filter(person_id__is_uoft_student=True)
+
         for result in best_averages:
             serializer = RecordDetailSerializer(
                 result, context={"record_type": "average"}
@@ -187,6 +196,7 @@ class RankingsAPIView(APIView):
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
+        uoft_only = request.query_params.get("uoft_only")
 
         # Get query parameters
         event = request.query_params.get("event")
@@ -216,30 +226,37 @@ class RankingsAPIView(APIView):
         if session_id:
             queryset = queryset.filter(competition__session_id=session_id)
 
+        # Filter by UofT student status
+        if uoft_only:
+            queryset = queryset.filter(person_id__is_uoft_student=True)
+
         # Filter by format and exclude zero/invalid times
         if result_format == "single":
             queryset = queryset.filter(single__gt=0).order_by("single")
-        else:  # average
+        else:
             queryset = queryset.filter(average__gt=0).order_by("average")
 
-        # If not showing all results, get only best result per person
         if not all_results:
             if result_format == "single":
-                queryset = queryset.annotate(
-                    row_num=Window(
-                        expression=RowNumber(),
-                        partition_by=[F("person_id")],
-                        order_by=F("single").asc(),
+                best_results_subquery = (
+                    Result.objects.filter(
+                        person_id=OuterRef("person_id"), event=event, single__gt=0
                     )
-                ).filter(row_num=1)
-            else:  # average
-                queryset = queryset.annotate(
-                    row_num=Window(
-                        expression=RowNumber(),
-                        partition_by=[F("person_id")],
-                        order_by=F("average").asc(),
+                    .order_by("single")
+                    .values("id")[:1]
+                )
+
+                queryset = queryset.filter(id__in=Subquery(best_results_subquery))
+            else:
+                best_results_subquery = (
+                    Result.objects.filter(
+                        person_id=OuterRef("person_id"), event=event, average__gt=0
                     )
-                ).filter(row_num=1)
+                    .order_by("average")
+                    .values("id")[:1]
+                )
+
+                queryset = queryset.filter(id__in=Subquery(best_results_subquery))
 
         # Paginate results
         paginator = Paginator(queryset, settings.PAGE_SIZE)
@@ -247,7 +264,7 @@ class RankingsAPIView(APIView):
 
         # Build next and previous URLs
         request_url = request.build_absolute_uri()
-        base_url = request_url.split("?")[0]  # Remove existing query params
+        base_url = request_url.split("?")[0]
 
         next_url = None
         if page_obj.has_next():

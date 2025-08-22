@@ -6,7 +6,7 @@ from results.models import Result
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
-        fields = ["id", "name"]
+        fields = "__all__"
         read_only_fields = ["id"]
 
 

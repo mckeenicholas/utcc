@@ -45,7 +45,9 @@ class Result(models.Model):
     )
 
     person_id = models.ForeignKey(Person, on_delete=models.CASCADE)
-    competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
+    competition = models.ForeignKey(
+        Competition, related_name="results", on_delete=models.CASCADE
+    )
     event = models.CharField(max_length=10, choices=EVENT_CHOICES)
     round = models.IntegerField()
 

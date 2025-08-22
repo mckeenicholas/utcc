@@ -5,12 +5,12 @@ from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from django.db.models import Min, Case, When, IntegerField
 from .models import Person
 from .serializers import PersonSerializer
 from results.models import Result
 from itertools import groupby
 from django.shortcuts import get_object_or_404
+from collections import defaultdict
 
 
 class LoginView(APIView):
@@ -76,45 +76,54 @@ class PersonResultsAPIView(APIView):
     def get(self, request, person_id, format=None):
         person = get_object_or_404(Person, id=person_id)
 
-        records_qs = (
-            Result.objects.filter(person_id=person.id)
-            .values("event")
-            .annotate(
-                best_single=Min("single"),
-                best_average=Min(
-                    Case(
-                        When(average__gt=0, then="average"), output_field=IntegerField()
-                    )
-                ),
-            )
-        )
-
-        best_times = {
-            r["event"]: {"single": r["best_single"], "average": r["best_average"]}
-            for r in records_qs
-        }
-
         results_qs = (
             Result.objects.filter(person_id=person.id)
             .select_related("competition")
             .order_by("event", "-competition__date", "round")
         )
 
+        results_list = list(results_qs)
+
+        if not results_list:
+            return Response(
+                {
+                    "person": {"id": person.id, "name": person.name},
+                    "records": {},
+                    "results": [],
+                },
+                status=status.HTTP_200_OK,
+            )
+
         event_list = []
-        for event_name, event_results in groupby(results_qs, key=lambda r: r.event):
+        best_times = defaultdict(
+            lambda: {"single": float("inf"), "average": float("inf")}
+        )
+
+        for event_name, event_results in groupby(results_list, key=lambda r: r.event):
             competition_groups = []
+
             for competition, comp_results in groupby(
                 event_results, key=lambda r: r.competition
             ):
-                rounds = [
-                    {
-                        "round": r.round,
-                        "times": r.get_times(),
-                        "single": r.single,
-                        "average": r.average,
-                    }
-                    for r in comp_results
-                ]
+                rounds = []
+                for r in comp_results:
+                    best_times[event_name]["single"] = min(
+                        best_times[event_name]["single"], r.single
+                    )
+                    if r.average > 0:
+                        best_times[event_name]["average"] = min(
+                            best_times[event_name]["average"], r.average
+                        )
+
+                    rounds.append(
+                        {
+                            "round": r.round,
+                            "times": r.get_times(),
+                            "single": r.single,
+                            "average": r.average,
+                        }
+                    )
+
                 competition_groups.append(
                     {
                         "id": competition.id,
@@ -131,10 +140,19 @@ class PersonResultsAPIView(APIView):
                 }
             )
 
+        cleaned_best_times = {}
+        for event, times in best_times.items():
+            cleaned_best_times[event] = {
+                "single": times["single"] if times["single"] != float("inf") else None,
+                "average": times["average"]
+                if times["average"] != float("inf")
+                else None,
+            }
+
         return Response(
             {
                 "person": {"id": person.id, "name": person.name},
-                "records": best_times,
+                "records": cleaned_best_times,
                 "results": event_list,
             }
         )
