@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import {
 	eventListIdx,
 	eventSolves,
@@ -8,8 +9,7 @@ import {
 	type WCAEvent
 } from './types';
 
-const isProduction = process.env.NODE_ENV === 'production';
-export const BASE_URL = isProduction ? 'https://utcc.nmckee.org' : 'http://localhost:8000';
+export const BASE_URL = dev ? 'http://localhost:8000' : 'https://utcc.nmckee.org';
 
 // Updated URLs to match backend structure
 export const latestCompetitionsURL = `${BASE_URL}/api/competitions/`;
