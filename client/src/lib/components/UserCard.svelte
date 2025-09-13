@@ -60,7 +60,12 @@ const handleSave = () => {
 						</div>
 					</div>
 				{:else}
-					<p class="text-sm font-medium text-gray-900">{user.name}</p>
+					<p class="text-sm font-medium text-gray-900">
+						{user.name}
+						<span class={editUserStudentStatus ? "text-green-500" : "text-red-500"}>
+							{editUserStudentStatus ? "UofT Student" : "Non UofT Student"}</span
+						>
+					</p>
 				{/if}
 				<p class="text-xs text-gray-500">ID: {user.id}</p>
 			</div>

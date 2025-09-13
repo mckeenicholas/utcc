@@ -1,5 +1,7 @@
 <script lang="ts">
-import type { Session } from '$lib/types';
+import type { Competition, Session } from '$lib/types';
+import { BASE_URL, fetchJson, formatCompetitionDate } from '$lib/utils';
+import LoadingScreen from './LoadingScreen.svelte';
 
 interface Props {
 	session: Session;
@@ -12,6 +14,23 @@ let { session, onDelete, onSave }: Props = $props();
 let isEditing = $state(false);
 let editSessionName = $state(session.name);
 let editSessionDate = $state(session.start_date);
+let showModal = $state(false);
+let sessionCompetitions: Competition[] = $state([]);
+let competitionsLoading = $state(false);
+
+$effect(() => {
+	if (showModal) {
+		fetchSessionCompetitions();
+	}
+});
+
+const fetchSessionCompetitions = async () => {
+	competitionsLoading = true;
+	sessionCompetitions = await fetchJson<Competition[]>(
+		`${BASE_URL}/api/session/${session.id}/competitions`
+	);
+	competitionsLoading = false;
+};
 
 const startEdit = () => {
 	isEditing = true;
@@ -72,6 +91,12 @@ const handleSave = () => {
 				</button>
 			{:else}
 				<button
+					onclick={() => {showModal = true}}
+					class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200"
+				>
+					View Competitions
+				</button>
+				<button
 					onclick={startEdit}
 					class="rounded-md bg-yellow-100 px-3 py-1 text-sm text-yellow-800 hover:bg-yellow-200"
 				>
@@ -87,3 +112,47 @@ const handleSave = () => {
 		</div>
 	</div>
 </div>
+
+{#if showModal}
+	<div
+		class="bg-opacity-50 backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+		onclick={() => (showModal = false)}
+		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+		aria-label="Close modal"
+		role="button"
+		tabindex="0"
+	>
+		<div
+			class="w-full max-w-lg rounded-lg bg-white shadow-xl"
+			role="dialog"
+			aria-modal="true"
+			tabindex="0"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+		>
+			<div class="border-b border-gray-200 px-6 py-4">
+				<h3 class="text-lg font-semibold text-gray-900">{session.name}</h3>
+			</div>
+			<div class="px-6 py-2 text-gray-900">
+				<ul>
+					{#if competitionsLoading}
+						<LoadingScreen inline message="Loading Competitions" minHeight="0" />
+					{/if}
+					{#each sessionCompetitions as competition (competition.id)}
+						<li>
+							{formatCompetitionDate(competition.date)} - {competition.name}
+						</li>
+					{/each}
+				</ul>
+			</div>
+			<div class="flex justify-end border-t border-gray-200 px-6 py-4">
+				<button
+					class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
+					onclick={() => (showModal = false)}
+				>
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}

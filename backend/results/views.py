@@ -30,6 +30,17 @@ class CompetitionSessionViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
 
+class SessionCompetitionsAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, session_id, format=None):
+        get_object_or_404(CompetitionSession, pk=session_id)
+        competitions = Competition.objects.filter(session=session_id).order_by("-date")
+        serializer = CompetitionSerializer(competitions, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class CompetitionViewSet(viewsets.ModelViewSet):
     queryset = Competition.objects.all().order_by("-date")
     serializer_class = CompetitionSerializer
