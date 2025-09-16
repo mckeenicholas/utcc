@@ -19,8 +19,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "events", "session_name"]
 
     def get_events(self, obj):
-        events = [result.event for result in obj.results.all()]
-        return sorted(list(set(events)))
+        return sorted(list({result.event for result in obj.results.all()}))
 
     def get_session_name(self, obj):
         if obj.session:
@@ -29,7 +28,8 @@ class CompetitionSerializer(serializers.ModelSerializer):
 
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):
-    person_name = serializers.CharField(source="person_id.name", read_only=True)
+    person_name = serializers.CharField(source="person.name", read_only=True)
+    person_id = serializers.IntegerField(source="person.id", read_only=True)
 
     class Meta:
         model = Result
@@ -53,7 +53,8 @@ class ResultCreateUpdateSerializer(serializers.ModelSerializer):
 
 class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
-    person_name = serializers.CharField(source="person_id.name", read_only=True)
+    person_name = serializers.CharField(source="person.name", read_only=True)
+    person_id = serializers.IntegerField(source="person.id", read_only=True)
 
     class Meta:
         model = Result
@@ -73,30 +74,16 @@ class EventSerializer(serializers.Serializer):
     rounds = RoundSerializer(many=True)
 
 
-class CompetitionDetailSerializer(serializers.ModelSerializer):
-    session_name = serializers.SerializerMethodField()
-
-    def get_session_name(self, obj):
-        if obj.session:
-            return obj.session.name
-        return None
-
-    class Meta:
-        model = Competition
-        fields = ["name", "date", "id", "session_name"]
-        read_only_fields = ["id"]
-
-
 class FullCompetitionResultsSerializer(serializers.Serializer):
-    competition = CompetitionDetailSerializer()
+    competition = CompetitionSerializer()
     results = EventSerializer(many=True)
 
 
 class RecordDetailSerializer(serializers.ModelSerializer):
     result = serializers.SerializerMethodField()
     times_list = serializers.SerializerMethodField()
-    person_name = serializers.CharField(source="person_id.name")
-    person_id = serializers.IntegerField(source="person_id.id")
+    person_name = serializers.CharField(source="person.name")
+    person_id = serializers.IntegerField(source="person.id")
     competition_name = serializers.CharField(source="competition.name")
     competition_id = serializers.IntegerField(source="competition.id")
 

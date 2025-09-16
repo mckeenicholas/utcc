@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Result, WCAEvent, CompetitionResults, PersonResult } from '$lib/types';
-import { eventNames, eventSolves } from '$lib/types';
-import { getMeanType, renderTime } from '$lib/utils';
+import { eventListIdx, eventNames, eventSolves } from '$lib/types';
+import { compareResults, getMeanType, renderTime } from '$lib/utils';
 
 interface Props {
 	competitionResults: CompetitionResults | null;
@@ -10,6 +10,25 @@ interface Props {
 }
 
 let { competitionResults, onEdit, onDelete }: Props = $props();
+
+const resultsObj = $derived.by(() => {
+	if (!competitionResults) return null;
+
+	return {
+		...competitionResults,
+		results: competitionResults.results
+			.map((event) => ({
+				...event,
+				rounds: event.rounds
+					.map((round) => ({
+						...round,
+						results: [...round.results].sort(compareResults)
+					}))
+					.sort((a, b) => a.round - b.round)
+			}))
+			.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
+	};
+});
 
 const getAttemptCount = (event: WCAEvent): number => {
 	return eventSolves[event] || 5;
@@ -42,7 +61,7 @@ const convertToResult = (
 <div class="rounded-lg bg-white p-6 shadow-sm">
 	<h2 class="mb-6 text-xl font-semibold text-gray-800">Results</h2>
 
-	{#each competitionResults?.results ?? [] as eventResult (eventResult.event)}
+	{#each resultsObj?.results ?? [] as eventResult (eventResult.event)}
 		{@const eventAttempts = getAttemptCount(eventResult.event)}
 		<div class="mb-8">
 			<h3 class="mb-4 text-lg font-semibold text-gray-800">{eventNames[eventResult.event]}</h3>
@@ -97,7 +116,7 @@ const convertToResult = (
 												personResult,
 												eventResult.event,
 												round.round,
-												competitionResults!.competition.id
+												resultsObj!.competition.id
 											)}
 										<tr class="hover: border-b border-gray-100">
 											<td class="px-4 py-3 text-sm text-gray-900">{personResult.person_name}</td>

@@ -150,11 +150,12 @@ const submitResult = async () => {
 };
 
 const editResult = (result: Result) => {
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+
 	editingResult = result;
 	selectedPersonId = result.person_id;
 	selectedPersonName = result.person_name;
 	formData = { ...formData, ...result };
-	document.querySelector('.submit-form')?.scrollIntoView({ behavior: 'smooth' });
 };
 
 const deleteResult = async (resultId: number) => {

@@ -32,8 +32,8 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 
 	try {
 		const url = new URL(`${BASE_URL}/api/competitions/`);
-		url.searchParams.set('page', page);
-		if (sessionId !== -1) url.searchParams.set('session_id', sessionId);
+		url.searchParams.set('page', page.toString());
+		if (sessionId !== -1) url.searchParams.set('session_id', sessionId.toString());
 
 		const data = await fetchJson<Paginated<Competition>>(url);
 

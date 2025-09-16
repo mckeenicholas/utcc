@@ -150,9 +150,6 @@ const updateCompetitionData = async () => {
 						</div>
 
 						<div>
-							<label for="compdate" class="mb-2 block text-sm font-medium text-gray-700">
-								Competition Date
-							</label>
 							<DateForm bind:selectedDate={competitionData.date} />
 						</div>
 

@@ -6,12 +6,12 @@ from django.db.models import F, Window, OuterRef, Subquery
 from django.db.models.functions import RowNumber
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.db import IntegrityError
+from django.conf import settings
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from django.conf import settings
 
 from .models import Competition, CompetitionSession, Result
 from .serializers import (
@@ -31,24 +31,31 @@ class CompetitionSessionViewSet(viewsets.ModelViewSet):
 
 
 class SessionCompetitionsAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, session_id, format=None):
         get_object_or_404(CompetitionSession, pk=session_id)
-        competitions = Competition.objects.filter(session=session_id).order_by("-date")
+
+        competitions = (
+            Competition.objects.prefetch_related("results")
+            .filter(session=session_id)
+            .order_by("-date")
+        )
         serializer = CompetitionSerializer(competitions, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CompetitionViewSet(viewsets.ModelViewSet):
-    queryset = Competition.objects.all().order_by("-date")
     serializer_class = CompetitionSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # Use the default settings for pagination (PageNumberPagination with page_size=20)
 
     def get_queryset(self):
-        queryset = self.queryset.select_related("session").prefetch_related("results")
+        queryset = (
+            Competition.objects.select_related("session")
+            .prefetch_related("results")
+            .order_by("-date")
+        )
         session_id = self.request.query_params.get("session_id")
 
         if session_id is not None:
@@ -58,9 +65,7 @@ class CompetitionViewSet(viewsets.ModelViewSet):
 
 
 class ResultViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Result.objects.select_related("person_id").all().order_by("event", "round")
-    )
+    queryset = Result.objects.select_related("person").all().order_by("event", "round")
     serializer_class = ResultCreateUpdateSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -71,33 +76,34 @@ class ResultViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
 
-        # Check if a result already exists for this person, event, round, and competition
-        person_id = serializer.validated_data.get("person_id")
-        event = serializer.validated_data.get("event")
-        round_num = serializer.validated_data.get("round")
-        competition = serializer.validated_data.get("competition")
+        unique_fields = {
+            "person": validated_data.get("person"),
+            "event": validated_data.get("event"),
+            "round": validated_data.get("round"),
+            "competition": validated_data.get("competition"),
+        }
 
-        existing_result = Result.objects.filter(
-            person_id=person_id, event=event, round=round_num, competition=competition
-        ).first()
+        defaults = {k: v for k, v in validated_data.items() if k not in unique_fields}
 
-        if existing_result:
-            # Update the existing result
-            for attr, value in serializer.validated_data.items():
-                setattr(existing_result, attr, value)
-            existing_result.save()
+        try:
+            instance, created = Result.objects.update_or_create(
+                **unique_fields, defaults=defaults
+            )
+        except IntegrityError:
+            return Response(
+                {"detail": "Error creating or updating result."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-            # Return the updated result
-            response_serializer = self.get_serializer(existing_result)
-            return Response(response_serializer.data, status=status.HTTP_200_OK)
-        else:
-            # Create new result as normal
-            return super().create(request, *args, **kwargs)
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        response_serializer = self.get_serializer(instance)
+        return Response(response_serializer.data, status=status_code)
 
 
 class CompetitionResultsAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, competition_id=None, format=None):
         session_id = request.query_params.get("session_id")
@@ -119,12 +125,12 @@ class CompetitionResultsAPIView(APIView):
 
         results = (
             Result.objects.filter(competition=competition)
-            .select_related("person_id")
+            .select_related("person")
             .order_by("event", "round")
         )
 
         if uoft_only == "1":
-            results = results.filter(person_id__is_uoft_student=True)
+            results = results.filter(person__is_uoft_student=True)
 
         events_data = []
         for event_code, event_results_iter in groupby(results, key=attrgetter("event")):
@@ -145,7 +151,7 @@ class CompetitionResultsAPIView(APIView):
 
 
 class RecordsListAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
@@ -154,7 +160,7 @@ class RecordsListAPIView(APIView):
         records = defaultdict(dict)
 
         best_singles = (
-            Result.objects.select_related("person_id", "competition")
+            Result.objects.select_related("person", "competition")
             .filter(single__gt=0)
             .annotate(
                 row_num=Window(
@@ -167,7 +173,7 @@ class RecordsListAPIView(APIView):
         )
 
         best_averages = (
-            Result.objects.select_related("person_id", "competition")
+            Result.objects.select_related("person", "competition")
             .filter(average__gt=0)
             .annotate(
                 row_num=Window(
@@ -184,8 +190,8 @@ class RecordsListAPIView(APIView):
             best_averages = best_averages.filter(competition__session_id=session_id)
 
         if uoft_only == "1":
-            best_singles = best_singles.filter(person_id__is_uoft_student=True)
-            best_averages = best_averages.filter(person_id__is_uoft_student=True)
+            best_singles = best_singles.filter(person__is_uoft_student=True)
+            best_averages = best_averages.filter(person__is_uoft_student=True)
 
         for result in best_averages:
             serializer = RecordDetailSerializer(
@@ -203,7 +209,7 @@ class RecordsListAPIView(APIView):
 
 
 class RankingsAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
@@ -229,7 +235,7 @@ class RankingsAPIView(APIView):
             )
 
         # Build base queryset
-        queryset = Result.objects.select_related("person_id", "competition").filter(
+        queryset = Result.objects.select_related("person", "competition").filter(
             event=event
         )
 
@@ -239,7 +245,7 @@ class RankingsAPIView(APIView):
 
         # Filter by UofT student status
         if uoft_only:
-            queryset = queryset.filter(person_id__is_uoft_student=True)
+            queryset = queryset.filter(person__is_uoft_student=True)
 
         # Filter by format and exclude zero/invalid times
         if result_format == "single":
@@ -248,26 +254,17 @@ class RankingsAPIView(APIView):
             queryset = queryset.filter(average__gt=0).order_by("average")
 
         if not all_results:
-            if result_format == "single":
-                best_results_subquery = (
-                    Result.objects.filter(
-                        person_id=OuterRef("person_id"), event=event, single__gt=0
-                    )
-                    .order_by("single")
-                    .values("id")[:1]
-                )
+            field = "single" if result_format == "single" else "average"
 
-                queryset = queryset.filter(id__in=Subquery(best_results_subquery))
-            else:
-                best_results_subquery = (
-                    Result.objects.filter(
-                        person_id=OuterRef("person_id"), event=event, average__gt=0
-                    )
-                    .order_by("average")
-                    .values("id")[:1]
+            best_results_subquery = (
+                Result.objects.filter(
+                    person=OuterRef("person"), event=event, **{f"{field}__gt": 0}
                 )
+                .order_by(field)
+                .values("id")[:1]
+            )
 
-                queryset = queryset.filter(id__in=Subquery(best_results_subquery))
+            queryset = queryset.filter(id__in=Subquery(best_results_subquery))
 
         # Paginate results
         paginator = Paginator(queryset, settings.PAGE_SIZE)

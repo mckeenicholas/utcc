@@ -1,16 +1,19 @@
+from itertools import groupby
+from collections import defaultdict
+
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import action
-from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+
+from results.models import Result
 from .models import Person
 from .serializers import PersonSerializer
-from results.models import Result
-from itertools import groupby
-from django.shortcuts import get_object_or_404
-from collections import defaultdict
 
 
 class LoginView(APIView):
@@ -19,6 +22,13 @@ class LoginView(APIView):
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
+
+        if not username or not password:
+            return Response(
+                {"error": "Username and password are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -58,16 +68,20 @@ class PersonViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def search(self, request):
-        name_query = request.query_params.get("name", None)
-        if name_query:
-            persons = Person.objects.filter(name__icontains=name_query)
-            serializer = self.get_serializer(persons, many=True)
-            return Response(serializer.data)
-        else:
+        name_query = request.query_params.get("name", "").strip()
+
+        if not name_query:
             return Response(
                 {"error": "Please provide a 'name' parameter to search"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        persons = Person.objects.filter(name__icontains=name_query).order_by("name")[
+            :20
+        ]
+        serializer = self.get_serializer(persons, many=True)
+
+        return Response(serializer.data)
 
 
 class PersonResultsAPIView(APIView):
@@ -77,8 +91,8 @@ class PersonResultsAPIView(APIView):
         person = get_object_or_404(Person, id=person_id)
 
         results_qs = (
-            Result.objects.filter(person_id=person.id)
-            .select_related("competition")
+            Result.objects.filter(person=person.id)
+            .select_related("competition", "competition__session")
             .order_by("event", "-competition__date", "round")
         )
 
@@ -94,33 +108,67 @@ class PersonResultsAPIView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        event_list = []
+        best_times = self._calculate_best_times(results_list)
+
+        event_list = self._group_results_by_event(results_list)
+
+        return Response(
+            {
+                "person": {"id": person.id, "name": person.name},
+                "records": best_times,
+                "results": event_list,
+            }
+        )
+
+    def _calculate_best_times(self, results_list):
         best_times = defaultdict(
             lambda: {"single": float("inf"), "average": float("inf")}
         )
 
+        for result in results_list:
+            event = result.event
+
+            if result.single > 0:
+                best_times[event]["single"] = min(
+                    best_times[event]["single"], result.single
+                )
+
+            if result.average > 0:
+                best_times[event]["average"] = min(
+                    best_times[event]["average"], result.average
+                )
+
+        cleaned_best_times = {}
+        for event, times in best_times.items():
+            cleaned_best_times[event] = {
+                "single": times["single"] if times["single"] != float("inf") else None,
+                "average": times["average"]
+                if times["average"] != float("inf")
+                else None,
+            }
+
+        return cleaned_best_times
+
+    def _group_results_by_event(self, results_list):
+        event_list = []
+
         for event_name, event_results in groupby(results_list, key=lambda r: r.event):
             competition_groups = []
+            event_results_list = list(event_results)
 
             for competition, comp_results in groupby(
-                event_results, key=lambda r: r.competition
+                event_results_list, key=lambda r: r.competition
             ):
                 rounds = []
-                for r in comp_results:
-                    best_times[event_name]["single"] = min(
-                        best_times[event_name]["single"], r.single
-                    )
-                    if r.average > 0:
-                        best_times[event_name]["average"] = min(
-                            best_times[event_name]["average"], r.average
-                        )
+                comp_results_list = list(comp_results)
 
+                for result in comp_results_list:
                     rounds.append(
                         {
-                            "round": r.round,
-                            "times": r.get_times(),
-                            "single": r.single,
-                            "average": r.average,
+                            "round": result.round,
+                            "times": result.get_times(),
+                            "single": result.single,
+                            "average": result.average,
                         }
                     )
 
@@ -140,19 +188,4 @@ class PersonResultsAPIView(APIView):
                 }
             )
 
-        cleaned_best_times = {}
-        for event, times in best_times.items():
-            cleaned_best_times[event] = {
-                "single": times["single"] if times["single"] != float("inf") else None,
-                "average": times["average"]
-                if times["average"] != float("inf")
-                else None,
-            }
-
-        return Response(
-            {
-                "person": {"id": person.id, "name": person.name},
-                "records": cleaned_best_times,
-                "results": event_list,
-            }
-        )
+        return event_list
