@@ -151,3 +151,7 @@ export const fetchJson = async <T>(url: string | URL, options?: RequestInit): Pr
 	const data: T = await response.json();
 	return data;
 };
+
+export const sortEvents = (a: WCAEvent, b: WCAEvent) => {
+	return eventListIdx[a] - eventListIdx[b];
+};

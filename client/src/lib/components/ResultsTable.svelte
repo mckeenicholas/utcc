@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Result, WCAEvent, CompetitionResults, PersonResult } from '$lib/types';
-import { eventListIdx, eventNames, eventSolves } from '$lib/types';
-import { compareResults, getMeanType, renderTime } from '$lib/utils';
+import { eventNames, eventSolves } from '$lib/types';
+import { compareResults, getMeanType, renderTime, sortEvents } from '$lib/utils';
 
 interface Props {
 	competitionResults: CompetitionResults | null;
@@ -26,7 +26,7 @@ const resultsObj = $derived.by(() => {
 					}))
 					.sort((a, b) => a.round - b.round)
 			}))
-			.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
+			.sort((a, b) => sortEvents(a.event, b.event))
 	};
 });
 

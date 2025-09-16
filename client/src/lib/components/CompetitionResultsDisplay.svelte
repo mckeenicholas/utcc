@@ -1,13 +1,12 @@
 <script lang="ts">
 import {
-	eventListIdx,
 	eventNames,
 	eventSolves,
 	type CompetitionResults,
 	type PersonResult,
 	type WCAEvent
 } from '$lib/types';
-import { compareResults, getMeanType, renderTime } from '$lib/utils';
+import { compareResults, getMeanType, renderTime, sortEvents } from '$lib/utils';
 
 const BREAKPOINT = 835;
 
@@ -22,7 +21,7 @@ let sortedResults = $derived(
 				results: results.slice().sort((a, b) => compareResults(a, b))
 			}))
 		}))
-		.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
+		.sort((a, b) => sortEvents(a.event, b.event))
 );
 
 let innerWidth = $state<number>(0);

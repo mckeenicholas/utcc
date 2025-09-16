@@ -1,6 +1,6 @@
 <script lang="ts">
 import { eventNames, eventSolves, type ProfileEventCompetition, type WCAEvent } from '$lib/types';
-import { getMeanType, renderTime } from '$lib/utils';
+import { getMeanType, renderTime, sortEvents } from '$lib/utils';
 import EventPicker from './EventPicker.svelte';
 
 type ResultsTableCompetition = Omit<ProfileEventCompetition, 'date'>;
@@ -18,7 +18,7 @@ let {
 	selectedEvent: WCAEvent;
 } = $props();
 
-const validEvents = $derived(results.map((result) => result.event));
+const validEvents = $derived(results.map((result) => result.event).sort(sortEvents));
 
 let selectedEventData = $derived(
 	results.find((event) => event.event === selectedEvent)?.results ?? []

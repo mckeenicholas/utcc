@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { EventRecords, RecordsApiResponse, Session, WCAEvent } from '$lib/types';
-import { fetchJson, recordsURL } from '$lib/utils';
-import { eventListIdx, eventSolves, eventNames } from '$lib/types';
+import { fetchJson, recordsURL, sortEvents } from '$lib/utils';
+import { eventSolves, eventNames } from '$lib/types';
 import { onMount } from 'svelte';
 import RecordRow from '$lib/components/RecordRow.svelte';
 import Backbutton from '$lib/components/Backbutton.svelte';
@@ -53,11 +53,7 @@ let recordsDisplay = $derived.by(() => {
 	}
 
 	const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
-	recordEntries.sort((a, b) => {
-		const eventA = a[0] as WCAEvent;
-		const eventB = b[0] as WCAEvent;
-		return eventListIdx[eventA] - eventListIdx[eventB];
-	});
+	recordEntries.sort((a, b) => sortEvents(a[0] as WCAEvent, b[0] as WCAEvent));
 	return recordEntries;
 });
 </script>
