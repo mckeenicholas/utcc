@@ -8,17 +8,27 @@ import {
 	latestResultsURL
 } from '$lib/utils';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import { createQuery } from '@tanstack/svelte-query';
+import { onMount } from 'svelte';
+
+let latestResults: CompetitionResults | null = $state(null);
+let competitionList: Competition[] | null = $state(null);
 
 const queryResults = async () => await fetchJson<CompetitionResults>(latestResultsURL);
 const queryCompetitions = async () =>
 	(await fetchJson<Paginated<Competition>>(latestCompetitionsURL)).results.slice(0, 10);
 
-const competitionsQuery = createQuery({
-	queryKey: ['home-competiitons'],
-	queryFn: queryCompetitions
-});
-const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryResults });
+const fetchPageData = async () => {
+	try {
+		const [resultsData, competitions] = await Promise.all([queryResults(), queryCompetitions()]);
+
+		latestResults = resultsData;
+		competitionList = competitions;
+	} catch (err) {
+		console.log('Error loading main page results', err);
+	}
+};
+
+onMount(fetchPageData);
 </script>
 
 <svelte:head>
@@ -38,7 +48,7 @@ const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryRes
 		</div>
 
 		<!-- Navigation Section -->
-		{#if $competitionsQuery.isSuccess}
+		{#if competitionList}
 			<div class="mb-8 rounded-lg bg-white p-4 shadow-sm">
 				<div class="flex flex-wrap items-center gap-2">
 					<a
@@ -117,7 +127,7 @@ const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryRes
 					</a>
 					<div class="flex flex-wrap items-center gap-2">
 						<span class="text-sm font-medium text-gray-700">Recent competitions:</span>
-						{#each $competitionsQuery.data as competition (competition.id)}
+						{#each competitionList as competition (competition.id)}
 							<a
 								href="/competitions/{competition.id}"
 								class="inline-block rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
@@ -131,8 +141,8 @@ const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryRes
 		{/if}
 
 		<!-- Recent Results Section -->
-		{#if $resultsQuery.isSuccess}
-			{@const competition = $resultsQuery.data.competition}
+		{#if latestResults}
+			{@const competition = latestResults.competition}
 			<div class="rounded-lg bg-white shadow-sm">
 				<div class="border-b border-gray-200 px-6 py-4">
 					<h2 class="text-xl font-semibold text-gray-800">
@@ -145,7 +155,7 @@ const resultsQuery = createQuery({ queryKey: ['home-results'], queryFn: queryRes
 					</p>
 				</div>
 				<div class="p-6">
-					<CompetitionResultsDisplay competitionResults={$resultsQuery.data} />
+					<CompetitionResultsDisplay competitionResults={latestResults} />
 				</div>
 			</div>
 		{:else}

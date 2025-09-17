@@ -5,45 +5,62 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('results', '0011_rename_person_id_result_person_alter_result_average_and_more'),
-        ('users', '0003_alter_person_is_uoft_student_alter_person_name'),
+        (
+            "results",
+            "0011_rename_person_id_result_person_alter_result_average_and_more",
+        ),
+        ("users", "0003_alter_person_is_uoft_student_alter_person_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='result',
-            name='round',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(1)]),
+            model_name="result",
+            name="round",
+            field=models.IntegerField(
+                validators=[django.core.validators.MinValueValidator(1)]
+            ),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='time1',
-            field=models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(-2)]),
+            model_name="result",
+            name="time1",
+            field=models.IntegerField(
+                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+            ),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='time2',
-            field=models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(-2)]),
+            model_name="result",
+            name="time2",
+            field=models.IntegerField(
+                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+            ),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='time3',
-            field=models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(-2)]),
+            model_name="result",
+            name="time3",
+            field=models.IntegerField(
+                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+            ),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='time4',
-            field=models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(-2)]),
+            model_name="result",
+            name="time4",
+            field=models.IntegerField(
+                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+            ),
         ),
         migrations.AlterField(
-            model_name='result',
-            name='time5',
-            field=models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(-2)]),
+            model_name="result",
+            name="time5",
+            field=models.IntegerField(
+                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+            ),
         ),
         migrations.AddConstraint(
-            model_name='result',
-            constraint=models.UniqueConstraint(fields=('person', 'competition', 'event', 'round'), name='unique_result_per_person'),
+            model_name="result",
+            constraint=models.UniqueConstraint(
+                fields=("person", "competition", "event", "round"),
+                name="unique_result_per_person",
+            ),
         ),
     ]

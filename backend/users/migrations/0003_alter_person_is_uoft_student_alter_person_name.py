@@ -5,20 +5,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0002_person_is_uoft_student'),
+        ("users", "0002_person_is_uoft_student"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='is_uoft_student',
+            model_name="person",
+            name="is_uoft_student",
             field=models.BooleanField(default=True),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='name',
-            field=models.CharField(max_length=255, validators=[django.core.validators.MinLengthValidator(1)]),
+            model_name="person",
+            name="name",
+            field=models.CharField(
+                max_length=255,
+                validators=[django.core.validators.MinLengthValidator(1)],
+            ),
         ),
     ]

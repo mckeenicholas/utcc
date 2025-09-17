@@ -1,9 +1,7 @@
 <script lang="ts">
-import { eventNames, eventSolves, type ProfileEventCompetition, type WCAEvent } from '$lib/types';
+import { eventNames, eventSolves, type ResultsTableCompetition, type WCAEvent } from '$lib/types';
 import { getMeanType, renderTime, sortEvents } from '$lib/utils';
 import EventPicker from './EventPicker.svelte';
-
-type ResultsTableCompetition = Omit<ProfileEventCompetition, 'date'>;
 
 interface ResultsTableProp {
 	event: WCAEvent;
@@ -108,7 +106,7 @@ let selectedEventData = $derived(
 		</div>
 	{:else}
 		<div class="rounded-lg bg-white p-8 text-center shadow-sm">
-			<h3 class="text-lg font-medium text-gray-900">This person hasn't competed yet.</h3>
+			<h3 class="text-lg font-medium text-gray-900">No results found</h3>
 		</div>
 	{/if}
 </div>

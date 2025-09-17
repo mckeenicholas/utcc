@@ -1,28 +1,24 @@
 <script lang="ts">
 import { page } from '$app/stores';
 import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-import type { CompetitionResults } from '$lib/types';
+import type { CompetitionResults, StudentStatus } from '$lib/types';
 import { BASE_URL, fetchJson, formatCompetitionDate } from '$lib/utils';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import Switch from '$lib/components/Switch.svelte';
+import UofTSelector from '$lib/components/UofTSelector.svelte';
+import { onMount } from 'svelte';
 
 const compId = $page.params.compid;
 
-let showUoftStudents = $state(false);
+let studentStatus: StudentStatus = $state('all');
 let loading = $state(true);
 let error = $state(false);
 let results: CompetitionResults | null = $state(null);
 
-$effect(() => {
-	fetchTimes(showUoftStudents);
-});
-
-const fetchTimes = async (showUoftOnly: boolean) => {
+const fetchTimes = async () => {
 	loading = true;
 
 	const url = new URL(`${BASE_URL}/api/competitions/${compId}/results/`);
-	if (showUoftOnly) url.searchParams.append('uoft_only', '1');
 
 	try {
 		results = await fetchJson<CompetitionResults>(url);
@@ -32,11 +28,38 @@ const fetchTimes = async (showUoftOnly: boolean) => {
 		loading = false;
 	}
 };
+
+onMount(fetchTimes);
+
+const filteredResults: CompetitionResults | null = $derived.by(() => {
+	if (studentStatus === 'all') {
+		return results;
+	}
+
+	const isUofT = studentStatus === 'uoft';
+
+	return results
+		? {
+				...results,
+				results: results.results
+					.map((event) => ({
+						...event,
+						rounds: event.rounds
+							.map((round) => ({
+								...round,
+								results: round.results.filter((result) => result.is_uoft_student === isUofT)
+							}))
+							.filter((round) => round.results.length > 0)
+					}))
+					.filter((event) => event.rounds.length > 0)
+			}
+		: null;
+});
 </script>
 
 <svelte:head>
 	<title>
-		Results from {results?.competition.name ?? ""}
+		Results from {results?.competition.name ?? "competition"}
 	</title>
 </svelte:head>
 
@@ -45,22 +68,22 @@ const fetchTimes = async (showUoftOnly: boolean) => {
 	<div class="mx-auto max-w-6xl px-4">
 		{#if loading}
 			<LoadingScreen message="Loading Results" inline={true} minHeight="30rem" />
-		{:else if !error && results}
+		{:else if !error && filteredResults}
 			<div class="mb-8 flex items-start justify-between">
 				<div>
 					<h1 class="text-3xl font-bold text-gray-900">
-						{results.competition.name}
+						{filteredResults.competition.name}
 					</h1>
 					<p class="mt-2 text-gray-600">
-						{results.competition.session_name ? `${results.competition.session_name} Session - ` : ""}
-						Date: {formatCompetitionDate(results.competition.date)}
+						{filteredResults.competition.session_name ? `${filteredResults.competition.session_name} Session - ` : ""}
+						Date: {formatCompetitionDate(filteredResults.competition.date)}
 					</p>
 				</div>
 				<div class="mt-2">
-					<Switch label="Show UofT Students Only" bind:checked={showUoftStudents} />
+					<UofTSelector bind:status={studentStatus} />
 				</div>
 			</div>
-			<CompetitionResultsDisplay competitionResults={results} />
+			<CompetitionResultsDisplay competitionResults={filteredResults} />
 		{:else}
 			<div class="rounded-lg bg-white p-12 text-center shadow-sm">
 				<h3 class="text-lg font-medium text-gray-900">Competition Not Found</h3>

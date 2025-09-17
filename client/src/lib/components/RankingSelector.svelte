@@ -1,18 +1,18 @@
 <script lang="ts">
-import { type Session, type WCAEvent } from '$lib/types';
+import { type Session, type StudentStatus, type WCAEvent } from '$lib/types';
 import { onMount } from 'svelte';
 import EventPicker from './EventPicker.svelte';
 import SessionSelector from './SessionSelector.svelte';
 import ToggleButton from './ToggleButton.svelte';
 import { fetchSessions } from '$lib/competitionSessionService';
-import Switch from './Switch.svelte';
+import UofTSelector from './UofTSelector.svelte';
 
 interface Props {
 	isAverage: boolean;
 	selectedEvent: WCAEvent;
 	showAll: boolean;
 	session: string;
-	isStudent: boolean;
+	studentStatus: StudentStatus;
 }
 
 let {
@@ -20,7 +20,7 @@ let {
 	selectedEvent = $bindable(),
 	showAll = $bindable(),
 	session = $bindable(),
-	isStudent = $bindable()
+	studentStatus = $bindable()
 }: Props = $props();
 
 let sessions: Session[] = $state([]);
@@ -43,8 +43,8 @@ onMount(async () => {
 	</div>
 	<div class="flex gap-4">
 		<SessionSelector bind:value={session} sessionData={sessions} class="mt-2" />
-		<div class="flex flex-col items-center justify-center">
-			<Switch label="Show UofT Students Only" bind:checked={isStudent} class="mt-2" />
+		<div class="mt-2">
+			<UofTSelector bind:status={studentStatus} />
 		</div>
 	</div>
 </div>

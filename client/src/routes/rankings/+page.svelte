@@ -8,6 +8,7 @@ import {
 	eventSolves,
 	type Paginated,
 	type RecordInstance,
+	type StudentStatus,
 	type WCAEvent
 } from '$lib/types';
 import { BASE_URL, fetchJson, PAGINATION_SIZE, renderTime } from '$lib/utils';
@@ -18,7 +19,7 @@ let isAverage = $state(false);
 let showAllResults = $state(false);
 let pageNum = $state(1);
 let selectedSession: string = $state('-1');
-let isUofTStudent = $state(false);
+let uoftStudentStatus: StudentStatus = $state('all');
 
 const eventName = $derived(eventNames[selectedEvent]);
 
@@ -63,7 +64,7 @@ const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
 $effect(() => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const _ = { selectedEvent, isAverage, showAllResults, selectedSession, isUofTStudent };
+	const _ = { selectedEvent, isAverage, showAllResults, selectedSession, uoftStudentStatus };
 	pageNum = 1;
 });
 
@@ -78,7 +79,11 @@ $effect(() => {
 	});
 
 	if (selectedSession !== '-1') urlParams.append('session_id', selectedSession);
-	if (isUofTStudent) urlParams.append('uoft_only', '1');
+	if (uoftStudentStatus == 'uoft') {
+		urlParams.append('uoft', '1');
+	} else if (uoftStudentStatus == 'non-uoft') {
+		urlParams.append('uoft', '0');
+	}
 
 	fetchRankings(urlParams);
 });
@@ -101,7 +106,7 @@ $effect(() => {
 			bind:selectedEvent={selectedEvent}
 			bind:showAll={showAllResults}
 			bind:session={selectedSession}
-			bind:isStudent={isUofTStudent}
+			bind:studentStatus={uoftStudentStatus}
 		/>
 		<div class="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
 			{#if loading}

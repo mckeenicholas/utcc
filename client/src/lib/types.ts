@@ -89,6 +89,10 @@ export interface PersonResult extends BaseResult {
 	times: number[];
 }
 
+export interface PersonResultStudentStatus extends PersonResult {
+	is_uoft_student: boolean;
+}
+
 export interface Result extends BaseResult {
 	competition: number;
 	event: WCAEvent;
@@ -102,7 +106,7 @@ export interface Result extends BaseResult {
 
 export interface Round {
 	round: number;
-	results: PersonResult[];
+	results: PersonResultStudentStatus[];
 }
 
 export interface EventResult {
@@ -178,3 +182,13 @@ export interface Session {
 	name: string;
 	start_date: string;
 }
+
+export type ResultsTableCompetition = Omit<ProfileEventCompetition, 'date'>;
+
+export interface UserProfileResponse {
+	name: string;
+	records: [WCAEvent, ProfileRecordDetail][];
+	results: { event: WCAEvent; results: ResultsTableCompetition[] }[];
+}
+
+export type StudentStatus = 'all' | 'uoft' | 'non-uoft';

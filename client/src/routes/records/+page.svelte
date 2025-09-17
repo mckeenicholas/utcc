@@ -1,5 +1,11 @@
 <script lang="ts">
-import type { EventRecords, RecordsApiResponse, Session, WCAEvent } from '$lib/types';
+import type {
+	EventRecords,
+	RecordsApiResponse,
+	Session,
+	StudentStatus,
+	WCAEvent
+} from '$lib/types';
 import { fetchJson, recordsURL, sortEvents } from '$lib/utils';
 import { eventSolves, eventNames } from '$lib/types';
 import { onMount } from 'svelte';
@@ -8,33 +14,36 @@ import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
 import { fetchSessions } from '$lib/competitionSessionService';
-import Switch from '$lib/components/Switch.svelte';
+import UofTSelector from '$lib/components/UofTSelector.svelte';
 
 let recordsAPIResponse: RecordsApiResponse | null = $state(null);
 let selectedSession: string = $state('-1');
-let isUofTStudent = $state(false);
+let studentStatus: StudentStatus = $state('all');
 let sessions: Session[] = $state([]);
 let loading = $state(true);
 
-const sessionRecordsURL = (sessionId: number, isUofTStudent: boolean) => {
+const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 	const url = new URL(recordsURL);
 	if (sessionId !== -1) url.searchParams.set('session_id', sessionId.toString());
-	if (isUofTStudent) url.searchParams.set('uoft_only', '1');
+
+	if (uoftStatus == 'uoft') {
+		url.searchParams.set('uoft', '1');
+	} else if (uoftStatus == 'non-uoft') {
+		url.searchParams.set('uoft', '0');
+	}
 
 	return url;
 };
 
 $effect(() => {
-	if (selectedSession) {
-		fetchRecords(parseInt(selectedSession), isUofTStudent);
-	}
+	fetchRecords(parseInt(selectedSession), studentStatus);
 });
 
-const fetchRecords = async (sessionId: number, isStudent: boolean) => {
+const fetchRecords = async (sessionId: number, uoftStatus: StudentStatus) => {
 	try {
 		loading = true;
 		recordsAPIResponse = await fetchJson<RecordsApiResponse>(
-			sessionRecordsURL(sessionId, isStudent)
+			sessionRecordsURL(sessionId, uoftStatus)
 		);
 	} catch (error) {
 		console.error('Failed to fetch records:', error);
@@ -79,7 +88,7 @@ let recordsDisplay = $derived.by(() => {
 				class="flex items-center gap-x-4 rounded-lg border border-gray-200 bg-white p-2 shadow-sm"
 			>
 				<SessionSelector bind:value={selectedSession} sessionData={sessions} class="shadow-sm" />
-				<Switch label="Show UofT Students Only" bind:checked={isUofTStudent} />
+				<UofTSelector bind:status={studentStatus} />
 			</div>
 		</div>
 		{#if loading}

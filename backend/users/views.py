@@ -89,12 +89,16 @@ class PersonResultsAPIView(APIView):
 
     def get(self, request, person_id, format=None):
         person = get_object_or_404(Person, id=person_id)
+        session_id = request.query_params.get("session_id")
 
         results_qs = (
             Result.objects.filter(person=person.id)
             .select_related("competition", "competition__session")
             .order_by("event", "-competition__date", "round")
         )
+
+        if session_id:
+            results_qs = results_qs.filter(competition__session_id=session_id)
 
         results_list = list(results_qs)
 

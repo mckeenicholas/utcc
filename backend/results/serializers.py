@@ -55,10 +55,21 @@ class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
     person_name = serializers.CharField(source="person.name", read_only=True)
     person_id = serializers.IntegerField(source="person.id", read_only=True)
+    is_uoft_student = serializers.BooleanField(
+        source="person.is_uoft_student", read_only=True
+    )
 
     class Meta:
         model = Result
-        fields = ["id", "person_id", "times", "single", "average", "person_name"]
+        fields = [
+            "id",
+            "person_id",
+            "times",
+            "single",
+            "average",
+            "person_name",
+            "is_uoft_student",
+        ]
 
     def get_times(self, obj):
         return obj.get_times()

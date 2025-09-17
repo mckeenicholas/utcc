@@ -107,7 +107,7 @@ class CompetitionResultsAPIView(APIView):
 
     def get(self, request, competition_id=None, format=None):
         session_id = request.query_params.get("session_id")
-        uoft_only = request.query_params.get("uoft_only")
+        uoft_status = request.query_params.get("uoft")
 
         if competition_id:
             competition = get_object_or_404(Competition, pk=competition_id)
@@ -129,8 +129,10 @@ class CompetitionResultsAPIView(APIView):
             .order_by("event", "round")
         )
 
-        if uoft_only == "1":
+        if uoft_status == "1":
             results = results.filter(person__is_uoft_student=True)
+        elif uoft_status == "0":
+            results = results.filter(person__is_uoft_student=False)
 
         events_data = []
         for event_code, event_results_iter in groupby(results, key=attrgetter("event")):
@@ -155,7 +157,7 @@ class RecordsListAPIView(APIView):
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
-        uoft_only = request.query_params.get("uoft_only")
+        uoft_status = request.query_params.get("uoft")
 
         records = defaultdict(dict)
 
@@ -189,9 +191,12 @@ class RecordsListAPIView(APIView):
             best_singles = best_singles.filter(competition__session_id=session_id)
             best_averages = best_averages.filter(competition__session_id=session_id)
 
-        if uoft_only == "1":
+        if uoft_status == "1":
             best_singles = best_singles.filter(person__is_uoft_student=True)
             best_averages = best_averages.filter(person__is_uoft_student=True)
+        elif uoft_status == "0":
+            best_singles = best_singles.filter(person__is_uoft_student=False)
+            best_averages = best_averages.filter(person__is_uoft_student=False)
 
         for result in best_averages:
             serializer = RecordDetailSerializer(
@@ -213,7 +218,7 @@ class RankingsAPIView(APIView):
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
-        uoft_only = request.query_params.get("uoft_only")
+        uoft_status = request.query_params.get("uoft")
 
         # Get query parameters
         event = request.query_params.get("event")
@@ -244,8 +249,10 @@ class RankingsAPIView(APIView):
             queryset = queryset.filter(competition__session_id=session_id)
 
         # Filter by UofT student status
-        if uoft_only:
+        if uoft_status == "1":
             queryset = queryset.filter(person__is_uoft_student=True)
+        elif uoft_status == "0":
+            queryset = queryset.filter(person__is_uoft_student=False)
 
         # Filter by format and exclude zero/invalid times
         if result_format == "single":
