@@ -22,6 +22,8 @@ let studentStatus: StudentStatus = $state('all');
 let sessions: Session[] = $state([]);
 let loading = $state(true);
 
+let innerWidth = $state(0);
+
 const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 	const url = new URL(recordsURL);
 	if (sessionId !== -1) url.searchParams.set('session_id', sessionId.toString());
@@ -67,6 +69,8 @@ let recordsDisplay = $derived.by(() => {
 });
 </script>
 
+<svelte:window bind:innerWidth={innerWidth} />
+
 <svelte:head>
 	<title>UofT Rubik's Cube Club Records</title>
 	<meta
@@ -78,17 +82,17 @@ let recordsDisplay = $derived.by(() => {
 <Backbutton />
 
 <div class="min-h-screen py-8">
-	<div class="mx-auto max-w-6xl px-4">
+	<div class="mx-4 max-w-6xl">
 		<div class="mb-8 flex items-start justify-between">
 			<div>
 				<h1 class="text-3xl font-bold text-gray-900">Club Records</h1>
 				<p class="mt-2 text-gray-600">Fastest result set at a club-sanctioned competition</p>
 			</div>
 			<div
-				class="flex items-center gap-x-4 rounded-lg border border-gray-200 bg-white p-2 shadow-sm"
+				class="ms-2 flex flex-col items-center gap-4 rounded-lg border border-gray-200 bg-white p-2 shadow-sm sm:flex-row"
 			>
 				<SessionSelector bind:value={selectedSession} sessionData={sessions} class="shadow-sm" />
-				<UofTSelector bind:status={studentStatus} />
+				<UofTSelector bind:status={studentStatus} vertical={innerWidth < 430} />
 			</div>
 		</div>
 		{#if loading}

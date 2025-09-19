@@ -2,7 +2,8 @@
 import type { StudentStatus } from '$lib/types';
 import MultiButton from './MultiButton.svelte';
 
-let { status = $bindable() }: { status: StudentStatus } = $props();
+let { status = $bindable(), vertical = false }: { status: StudentStatus; vertical: boolean } =
+	$props();
 
 const getIndex = (status: StudentStatus) => {
 	switch (status) {
@@ -30,4 +31,5 @@ const getStatus = (index: number) => {
 <MultiButton
 	bind:selectedIndex={() => getIndex(status), (index) => {status = getStatus(index)}}
 	labels={["All Students", "UofT Only", "Non-Uoft Only"]}
+	vertical={vertical}
 ></MultiButton>
