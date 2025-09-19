@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
+    CompetitionScramblesAPIView,
     CompetitionSessionViewSet,
     CompetitionViewSet,
     ResultViewSet,
@@ -34,6 +35,11 @@ urlpatterns = [
         "competitions/<int:competition_id>/results/",
         CompetitionResultsAPIView.as_view(),
         name="competition-results-detail",
+    ),
+    path(
+        "competitions/<int:competition_id>/scrambles/",
+        CompetitionScramblesAPIView.as_view(),
+        name="competition-scrambles-detail",
     ),
     # Include router URLs for CRUD operations
     # This provides:

@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from scrambles.serializers import CompetitionScramblesSerializer
 from .models import Competition, CompetitionSession, Result
 
 
@@ -78,6 +80,7 @@ class ResultPersonSerializer(serializers.ModelSerializer):
 class RoundSerializer(serializers.Serializer):
     round = serializers.IntegerField()
     results = ResultPersonSerializer(many=True)
+    scramble_sets = CompetitionScramblesSerializer(many=True)
 
 
 class EventSerializer(serializers.Serializer):

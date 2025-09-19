@@ -19,6 +19,11 @@ const { competition, onDeleteCompetition = () => null }: Props = $props();
 			</p>
 		</div>
 		<div class="flex space-x-2">
+			<a href="/dashboard/competitions/{competition.id}/scrambles">
+				<div class="rounded-md bg-green-100 px-3 py-1 text-sm text-green-800 hover:bg-green-200">
+					Manage Scrambles
+				</div>
+			</a>
 			<a href="/dashboard/competitions/{competition.id}">
 				<div class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200">
 					Add Results

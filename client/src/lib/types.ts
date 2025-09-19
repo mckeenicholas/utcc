@@ -192,3 +192,29 @@ export interface UserProfileResponse {
 }
 
 export type StudentStatus = 'all' | 'uoft' | 'non-uoft';
+
+export interface Scramble {
+	id: number;
+	competition_id: number;
+	event: WCAEvent;
+	round: number;
+	scramble_set: number;
+	scramble_num: number;
+	scramble: string;
+	visible: boolean;
+}
+
+export type CompetitionScrambleSets = {
+	event: WCAEvent;
+	rounds: {
+		round: number;
+		sets: { id: number; scramble_set: number; visible: boolean }[];
+	}[];
+}[];
+
+export interface ScrambleResponse {
+	competition: string;
+	event: WCAEvent;
+	round: number;
+	scrambles: Scramble[];
+}
