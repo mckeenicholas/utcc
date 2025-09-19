@@ -25,7 +25,7 @@ const selectedLabel = $derived(
 );
 </script>
 
-<div class="w-full sm:w-64">
+<div class="w-full sm:w-48">
 	<Select.Root items={sessions} bind:value={value} type="single">
 		<Select.Trigger
 			class="flex w-full items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-left focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none {classProps}"

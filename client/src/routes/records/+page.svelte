@@ -81,7 +81,7 @@ let recordsDisplay = $derived.by(() => {
 
 <Backbutton />
 
-<div class="min-h-screen py-8">
+<div class="flex min-h-screen items-center justify-center py-8">
 	<div class="mx-4 max-w-6xl">
 		<div class="mb-8 flex items-start justify-between">
 			<div>
@@ -89,7 +89,7 @@ let recordsDisplay = $derived.by(() => {
 				<p class="mt-2 text-gray-600">Fastest result set at a club-sanctioned competition</p>
 			</div>
 			<div
-				class="ms-2 flex flex-col items-center gap-4 rounded-lg border border-gray-200 bg-white p-2 shadow-sm sm:flex-row"
+				class="ms-4 flex flex-col items-center gap-4 rounded-lg border border-gray-200 bg-white p-2 shadow-sm sm:flex-row lg:ms-12"
 			>
 				<SessionSelector bind:value={selectedSession} sessionData={sessions} class="shadow-sm" />
 				<UofTSelector bind:status={studentStatus} vertical={innerWidth < 430} />
