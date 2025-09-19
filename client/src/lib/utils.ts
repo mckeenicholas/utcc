@@ -155,3 +155,56 @@ export const fetchJson = async <T>(url: string | URL, options?: RequestInit): Pr
 export const sortEvents = (a: WCAEvent, b: WCAEvent) => {
 	return eventListIdx[a] - eventListIdx[b];
 };
+
+export const scrambleOrder = {
+	'-2': { idx: 7, name: 'E2' },
+	'-1': { idx: 6, name: 'E1' },
+	'1': { idx: 1, name: '1' },
+	'2': { idx: 2, name: '2' },
+	'3': { idx: 3, name: '3' },
+	'4': { idx: 4, name: '4' },
+	'5': { idx: 5, name: '5' }
+} as const;
+
+export const formatScramble = (scrambleStr: string, event: WCAEvent) => {
+	const cubeMovesPerLine = 12;
+	const sq1ClockMovesPerLine = 5;
+	const cubeMaxMoveLength = 4; // Maximum length of a move (e.g., "3Rw'")
+	const sq1ClockMaxMoveLength = 8;
+
+	if (event == 'minx') {
+		const lines = scrambleStr.split('\n').map((line) => line + ' ');
+		return { lines, numLines: lines.length };
+	}
+
+	const splitChar = event == 'sq1' ? ' / ' : ' ';
+	const moves = scrambleStr.split(splitChar);
+	const lines = [];
+
+	const movesPerLine = event == 'sq1' || event == 'clock' ? sq1ClockMovesPerLine : cubeMovesPerLine;
+	const maxMoveLength =
+		event == 'sq1' || event == 'clock' ? sq1ClockMaxMoveLength : cubeMaxMoveLength;
+
+	for (let i = 0; i < moves.length; i += movesPerLine) {
+		const lineMoves = moves.slice(i, i + movesPerLine);
+		const paddedMoves = lineMoves.map((move) => {
+			if (event === 'sq1') {
+				// Split the tuple (e.g., "(1, -5)") into its numbers
+				const [top, bottom] = move
+					.slice(1, -1)
+					.split(',')
+					.map((s) => s.trim());
+
+				// Add a space before positive numbers for alignment
+				const paddedTop = top.startsWith('-') ? top : ` ${top}`;
+				const paddedBottom = bottom.startsWith('-') ? bottom : ` ${bottom}`;
+
+				return `(${paddedTop},${paddedBottom})`;
+			}
+			return move.padEnd(maxMoveLength);
+		});
+		lines.push(paddedMoves.join(splitChar));
+	}
+
+	return { lines: lines, numLines: lines.length };
+};

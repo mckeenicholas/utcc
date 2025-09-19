@@ -23,6 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # API endpoints
     path("api/users/", include("users.urls")),
+    path("api/scrambles/", include("scrambles.urls")),
     path("api/", include("results.urls")),
     # Dashboard (Django templates)
 ]

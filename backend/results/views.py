@@ -13,6 +13,8 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from scrambles.models import ScrambleSet
+
 from .models import Competition, CompetitionSession, Result
 from .serializers import (
     CompetitionSerializer,
@@ -134,6 +136,20 @@ class CompetitionResultsAPIView(APIView):
         elif uoft_status == "0":
             results = results.filter(person__is_uoft_student=False)
 
+        scramble_sets = (
+            ScrambleSet.objects.filter(competition=competition, visible=True)
+            .prefetch_related("scrambles")
+            .order_by("event", "round", "scramble_set")
+        )
+
+        scramble_sets_by_event_round = {}
+        for scramble_set in scramble_sets:
+            key = (scramble_set.event, scramble_set.round)
+
+            if key not in scramble_sets_by_event_round:
+                scramble_sets_by_event_round[key] = []
+            scramble_sets_by_event_round[key].append(scramble_set)
+
         events_data = []
         for event_code, event_results_iter in groupby(results, key=attrgetter("event")):
             event_results = list(event_results_iter)
@@ -143,7 +159,18 @@ class CompetitionResultsAPIView(APIView):
                 event_results, key=attrgetter("round")
             ):
                 round_results = list(round_results_iter)
-                rounds_data.append({"round": round_num, "results": round_results})
+
+                round_scramble_sets = scramble_sets_by_event_round.get(
+                    (event_code, round_num), []
+                )
+
+                rounds_data.append(
+                    {
+                        "round": round_num,
+                        "results": round_results,
+                        "scramble_sets": round_scramble_sets,
+                    }
+                )
 
             events_data.append({"event": event_code, "rounds": rounds_data})
 
@@ -313,3 +340,38 @@ class RankingsAPIView(APIView):
                 "results": serialized_results,
             }
         )
+
+
+class CompetitionScramblesAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, competition_id):
+        scramble_sets = (
+            ScrambleSet.objects.filter(competition_id=competition_id)
+            .values("id", "event", "round", "scramble_set", "visible")
+            .order_by("event", "round", "scramble_set")
+        )
+
+        # Group by event -> round -> list of set objects
+        grouped_data = defaultdict(lambda: defaultdict(list))
+
+        for s_set in scramble_sets:
+            event = s_set["event"]
+            round_num = s_set["round"]
+            grouped_data[event][round_num].append(
+                {
+                    "id": s_set["id"],
+                    "scramble_set": s_set["scramble_set"],
+                    "visible": s_set["visible"],
+                }
+            )
+
+        result = []
+        for event, rounds in sorted(grouped_data.items()):
+            rounds_list = [
+                {"round": round_num, "sets": sets}
+                for round_num, sets in sorted(rounds.items())
+            ]
+            result.append({"event": event, "rounds": rounds_list})
+
+        return Response(result)

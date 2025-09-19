@@ -40,7 +40,7 @@ class Result(models.Model):
         PYRAM = "pyram", "Pyraminx"
         CLOCK = "clock", "Clock"
         SKEWB = "skewb", "Skewb"
-        SQ1 = "sq1", "Square One"
+        SQ1 = "sq1", "Square-One"
         C444BF = "444bf", "4x4x4 Blindfolded"
         C555BF = "555bf", "5x5x5 Blindfolded"
 
