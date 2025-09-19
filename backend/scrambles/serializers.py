@@ -22,5 +22,5 @@ class CompetitionScramblesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ScrambleSet
-        fields = ["scrambles"]
+        fields = ["scramble_set", "scrambles"]
         read_only_fields = ["id"]

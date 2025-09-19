@@ -7,22 +7,13 @@ from rest_framework.response import Response
 from django.db.models import Max
 from .models import Scramble, ScrambleSet, Competition
 from .serializers import ScrambleSerializer, ScrambleSetSerializer
+from django.db import transaction
 
 
 class RoundScrambles(APIView):
-    """
-    API view to handle scramble sets for a specific competition, event, and round.
-    """
-
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, competition_id, event_id, round_id, format=None):
-        """
-        Accepts a list of scramble objects and saves them as a new scramble set.
-        The scramble_set number is auto-incremented, but the scramble_num is taken
-        directly from the POST data.
-        """
-        # Validate that the request data is a list of dictionaries
         scramble_objects = request.data
         if not isinstance(scramble_objects, list) or not all(
             isinstance(s, dict) and "scramble" in s and "scramble_num" in s
@@ -35,43 +26,49 @@ class RoundScrambles(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Get the competition object
+        if len(scramble_objects) > 7:
+            return Response(
+                {"detail": "At most 7 scrambles can be submitted at once."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
-            competition = Competition.objects.get(pk=competition_id)
+            with transaction.atomic():
+                competition = Competition.objects.get(pk=competition_id)
+
+                scramble_sets = ScrambleSet.objects.select_for_update().filter(
+                    competition=competition, event=event_id, round=round_id
+                )
+
+                last_set = (
+                    scramble_sets.aggregate(max_set=Max("scramble_set"))["max_set"] or 0
+                )
+                next_set = last_set + 1
+
+                scr_set = ScrambleSet(
+                    competition=competition,
+                    event=event_id,
+                    round=round_id,
+                    scramble_set=next_set,
+                    visible=False,
+                )
+                scr_set.save()
+
+                scrambles_to_create = [
+                    Scramble(
+                        scramble_set=scr_set,
+                        scramble_num=scramble_obj["scramble_num"],
+                        scramble=scramble_obj["scramble"],
+                    )
+                    for scramble_obj in scramble_objects
+                ]
+
+                Scramble.objects.bulk_create(scrambles_to_create)
+
         except Competition.DoesNotExist:
             return Response(
                 {"detail": "Competition not found."}, status=status.HTTP_404_NOT_FOUND
             )
-
-        # Determine the next scramble_set number for this competition/event/round
-        last_set = (
-            ScrambleSet.objects.filter(
-                competition=competition, event=event_id, round=round_id
-            ).aggregate(max_set=Max("scramble_set"))["max_set"]
-            or 0
-        )
-
-        next_set = last_set + 1
-
-        scr_set = ScrambleSet(
-            competition=competition,
-            event=event_id,
-            round=round_id,
-            scramble_set=next_set,
-            visible=False,
-        )
-
-        scr_set.save()
-
-        # Iterate through the submitted scramble objects and create new model instances
-        for scramble_obj in scramble_objects:
-            s = Scramble(
-                scramble_set=scr_set,
-                scramble_num=scramble_obj["scramble_num"],
-                scramble=scramble_obj["scramble"],
-            )
-
-            s.save()
 
         serializer = ScrambleSetSerializer(scr_set)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -1,3 +1,5 @@
+import type { scrambleOrder } from './utils';
+
 export interface Paginated<T> {
 	count: number;
 	next: string | null;
@@ -107,6 +109,12 @@ export interface Result extends BaseResult {
 export interface Round {
 	round: number;
 	results: PersonResultStudentStatus[];
+	scramble_sets: ResultScrambleSet[];
+}
+
+export interface ResultScrambleSet {
+	scramble_set: number;
+	scrambles: Scramble[];
 }
 
 export interface EventResult {
@@ -195,13 +203,8 @@ export type StudentStatus = 'all' | 'uoft' | 'non-uoft';
 
 export interface Scramble {
 	id: number;
-	competition_id: number;
-	event: WCAEvent;
-	round: number;
-	scramble_set: number;
 	scramble_num: number;
 	scramble: string;
-	visible: boolean;
 }
 
 export type CompetitionScrambleSets = {
@@ -218,3 +221,5 @@ export interface ScrambleResponse {
 	round: number;
 	scrambles: Scramble[];
 }
+
+export type ScrambleKey = keyof typeof scrambleOrder;

@@ -7,6 +7,7 @@ import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import UofTSelector from '$lib/components/UofTSelector.svelte';
 import { onMount } from 'svelte';
+import CompetitionScrambleTable from '$lib/components/CompetitionScrambleTable.svelte';
 
 const compId = $page.params.compid;
 
@@ -84,6 +85,9 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 				</div>
 			</div>
 			<CompetitionResultsDisplay competitionResults={filteredResults} />
+			<div class="mt-8">
+				<CompetitionScrambleTable results={results!.results} />
+			</div>
 		{:else}
 			<div class="rounded-lg bg-white p-12 text-center shadow-sm">
 				<h3 class="text-lg font-medium text-gray-900">Competition Not Found</h3>

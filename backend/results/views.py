@@ -145,11 +145,10 @@ class CompetitionResultsAPIView(APIView):
         scramble_sets_by_event_round = {}
         for scramble_set in scramble_sets:
             key = (scramble_set.event, scramble_set.round)
+
             if key not in scramble_sets_by_event_round:
                 scramble_sets_by_event_round[key] = []
             scramble_sets_by_event_round[key].append(scramble_set)
-
-        print(scramble_sets_by_event_round)
 
         events_data = []
         for event_code, event_results_iter in groupby(results, key=attrgetter("event")):
