@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "results",
     "users",
     "scrambles",
+    "core",
 ]
 
 MIDDLEWARE = [
