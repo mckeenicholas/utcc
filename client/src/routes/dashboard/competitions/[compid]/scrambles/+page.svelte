@@ -20,10 +20,12 @@ const eventOptions = Object.entries(eventNames)
 
 const scrambleIds = [-1, -2, 1, 2, 3, 4, 5];
 
+const compId = page.params.compid;
+
 let competitionScrambles: CompetitionScrambleSets | null = $state(null);
 let selectedEvent: WCAEvent = $state('333');
 let selectedRound = $state(1);
-let compId = page.params.compid;
+let selectedCount = $state(1);
 let loading = $state(true);
 let generating = $state(false);
 
@@ -45,6 +47,16 @@ const generateScrambleSet = async () => {
 
 	const numScrambles = eventSolves[selectedEvent]! + 2;
 
+	await Promise.all(
+		Array.from({ length: selectedCount }).map(() => generateAndSubmit(numScrambles))
+	);
+
+	await fetchScrambles();
+
+	generating = false;
+};
+
+const generateAndSubmit = async (numScrambles: number) => {
 	const scrambles = await generateScrambles(selectedEvent, numScrambles);
 
 	const scrambleObjs = scrambles.map((scramble, idx) => ({
@@ -59,10 +71,6 @@ const generateScrambleSet = async () => {
 			'Content-Type': 'application/json'
 		}
 	});
-
-	await fetchScrambles();
-
-	generating = false;
 };
 
 const deleteScramble = async (setId: number) => {
@@ -179,15 +187,27 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 					</Select.Root>
 				</div>
 
-				<div>
-					<label for="round" class="block text-sm font-medium text-gray-700">Round</label>
-					<input
-						bind:value={selectedRound}
-						id="round"
-						type="number"
-						min="1"
-						class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
-					/>
+				<div class="flex">
+					<div class="w-full">
+						<label for="round" class="block text-sm font-medium text-gray-700">Round</label>
+						<input
+							bind:value={selectedRound}
+							id="round"
+							type="number"
+							min="1"
+							class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+						/>
+					</div>
+					<div class="ms-4 w-full">
+						<label for="count" class="block text-sm font-medium text-gray-700">Count</label>
+						<input
+							bind:value={selectedCount}
+							id="count"
+							type="number"
+							min="1"
+							class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+						/>
+					</div>
 				</div>
 
 				<button
