@@ -45,8 +45,7 @@ const generateScrambleSet = async () => {
 
 	const numScrambles = eventSolves[selectedEvent]! + 2;
 
-	const scrambleAlgs = await generateScrambles(selectedEvent, numScrambles);
-	const scrambles = scrambleAlgs.map(String);
+	const scrambles = await generateScrambles(selectedEvent, numScrambles);
 
 	const scrambleObjs = scrambles.map((scramble, idx) => ({
 		scramble,
