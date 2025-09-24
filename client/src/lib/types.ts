@@ -84,7 +84,7 @@ export interface BaseResult {
 	single: number;
 	average: number;
 	person_name: string;
-	person_id: number;
+	person: number;
 }
 
 export interface PersonResult extends BaseResult {
@@ -131,7 +131,7 @@ export interface RecordInstance {
 	result: number;
 	times_list: number[];
 	person_name: string;
-	person_id: number;
+	person: number;
 	competition_name: string;
 	competition_id: number;
 }

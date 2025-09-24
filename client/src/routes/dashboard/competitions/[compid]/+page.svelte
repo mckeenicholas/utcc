@@ -60,7 +60,7 @@ const findResult = (personId: number, event: WCAEvent, round: number) => {
 	const roundResult = eventResult.rounds.find((r) => r.round === round);
 	if (!roundResult) return null;
 
-	return roundResult.results.find((r) => r.person_id === personId);
+	return roundResult.results.find((r) => r.person === personId);
 };
 
 $effect(() => {
@@ -81,7 +81,7 @@ $effect(() => {
 		editingResult = {
 			id: existing.id,
 			person_name: existing.person_name,
-			person_id: existing.person_id,
+			person: existing.person,
 			competition: Number(compId),
 			event: formData.event,
 			round: formData.round,
@@ -136,7 +136,7 @@ const submitResult = async () => {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				...formData,
-				person_id: selectedPersonId,
+				person: selectedPersonId,
 				competition: Number(compId)
 			})
 		});
@@ -153,7 +153,7 @@ const editResult = (result: Result) => {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 
 	editingResult = result;
-	selectedPersonId = result.person_id;
+	selectedPersonId = result.person;
 	selectedPersonName = result.person_name;
 	formData = { ...formData, ...result };
 };

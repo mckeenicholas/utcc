@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from users.models import Person
 from scrambles.serializers import CompetitionScramblesSerializer
 from .models import Competition, CompetitionSession, Result
 
@@ -31,13 +32,13 @@ class CompetitionSerializer(serializers.ModelSerializer):
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):
     person_name = serializers.CharField(source="person.name", read_only=True)
-    person_id = serializers.IntegerField(source="person.id", read_only=True)
+    person = serializers.PrimaryKeyRelatedField(queryset=Person.objects.all())
 
     class Meta:
         model = Result
         fields = [
             "id",
-            "person_id",
+            "person",
             "person_name",
             "competition",
             "event",
@@ -56,7 +57,7 @@ class ResultCreateUpdateSerializer(serializers.ModelSerializer):
 class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
     person_name = serializers.CharField(source="person.name", read_only=True)
-    person_id = serializers.IntegerField(source="person.id", read_only=True)
+    person = serializers.IntegerField(source="person.id", read_only=True)
     is_uoft_student = serializers.BooleanField(
         source="person.is_uoft_student", read_only=True
     )
@@ -65,7 +66,7 @@ class ResultPersonSerializer(serializers.ModelSerializer):
         model = Result
         fields = [
             "id",
-            "person_id",
+            "person",
             "times",
             "single",
             "average",
@@ -97,7 +98,7 @@ class RecordDetailSerializer(serializers.ModelSerializer):
     result = serializers.SerializerMethodField()
     times_list = serializers.SerializerMethodField()
     person_name = serializers.CharField(source="person.name")
-    person_id = serializers.IntegerField(source="person.id")
+    person = serializers.IntegerField(source="person.id")
     competition_name = serializers.CharField(source="competition.name")
     competition_id = serializers.IntegerField(source="competition.id")
 
@@ -107,7 +108,7 @@ class RecordDetailSerializer(serializers.ModelSerializer):
             "result",
             "times_list",
             "person_name",
-            "person_id",
+            "person",
             "competition_name",
             "competition_id",
         ]

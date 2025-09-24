@@ -99,7 +99,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 											<td
 												class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 											>
-												<a href="/persons/{roundPerson.person_id}" class="hover:text-gray-400">
+												<a href="/persons/{roundPerson.person}" class="hover:text-gray-400">
 													{roundPerson.person_name}
 												</a>
 											</td>

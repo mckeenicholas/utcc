@@ -89,11 +89,15 @@ class ResultViewSet(viewsets.ModelViewSet):
 
         defaults = {k: v for k, v in validated_data.items() if k not in unique_fields}
 
+        print(validated_data)
+
         try:
             instance, created = Result.objects.update_or_create(
                 **unique_fields, defaults=defaults
             )
-        except IntegrityError:
+        except IntegrityError as e:
+            print(e)
+
             return Response(
                 {"detail": "Error creating or updating result."},
                 status=status.HTTP_400_BAD_REQUEST,

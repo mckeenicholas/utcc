@@ -25,7 +25,7 @@ let recordType = $derived.by(() => {
 		</td>
 
 		<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
-			<a href="/persons/{record.person_id}" class="hover:text-gray-400">{record.person_name}</a>
+			<a href="/persons/{record.person}" class="hover:text-gray-400">{record.person_name}</a>
 		</td>
 		<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
 			<a class="hover:text-gray-400" href="/competitions/{record.competition_id}">

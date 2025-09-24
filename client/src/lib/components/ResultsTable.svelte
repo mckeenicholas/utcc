@@ -43,7 +43,7 @@ const convertToResult = (
 	return {
 		id: personResult.id,
 		person_name: personResult.person_name,
-		person_id: personResult.person_id,
+		person: personResult.person,
 		competition: compId,
 		event,
 		round,

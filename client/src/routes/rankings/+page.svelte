@@ -151,7 +151,7 @@ $effect(() => {
 								<td
 									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 								>
-									<a href="/persons/{result.person_id}" class="hover:text-gray-400">
+									<a href="/persons/{result.person}" class="hover:text-gray-400">
 										{result.person_name}
 									</a></td
 								>
