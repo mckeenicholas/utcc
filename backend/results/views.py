@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.conf import settings
+from django.db.models.functions import Rank
 
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
@@ -20,6 +21,7 @@ from .serializers import (
     CompetitionSerializer,
     CompetitionSessionSerializer,
     FullCompetitionResultsSerializer,
+    RankingSerializer,
     RecordDetailSerializer,
     ResultCreateUpdateSerializer,
 )
@@ -251,13 +253,11 @@ class RankingsAPIView(APIView):
         session_id = request.query_params.get("session_id")
         uoft_status = request.query_params.get("uoft")
 
-        # Get query parameters
         event = request.query_params.get("event")
         result_format = request.query_params.get("type")  # 'single' or 'average'
         all_results = request.query_params.get("all", "false").lower() == "true"
         page = int(request.query_params.get("page", 1))
 
-        # Validate required parameters
         if not event:
             return Response(
                 {"error": "Event parameter is required"},
@@ -270,30 +270,26 @@ class RankingsAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Build base queryset
         queryset = Result.objects.select_related("person", "competition").filter(
             event=event
         )
 
-        # Filter by session if provided
         if session_id:
             queryset = queryset.filter(competition__session_id=session_id)
 
-        # Filter by UofT student status
         if uoft_status == "1":
             queryset = queryset.filter(person__is_uoft_student=True)
         elif uoft_status == "0":
             queryset = queryset.filter(person__is_uoft_student=False)
 
-        # Filter by format and exclude zero/invalid times
+        field = "single" if result_format == "single" else "average"
+
         if result_format == "single":
-            queryset = queryset.filter(single__gt=0).order_by("single")
+            queryset = queryset.filter(single__gt=0)
         else:
-            queryset = queryset.filter(average__gt=0).order_by("average")
+            queryset = queryset.filter(average__gt=0)
 
         if not all_results:
-            field = "single" if result_format == "single" else "average"
-
             best_results_subquery = (
                 Result.objects.filter(
                     person=OuterRef("person"), event=event, **{f"{field}__gt": 0}
@@ -301,14 +297,15 @@ class RankingsAPIView(APIView):
                 .order_by(field)
                 .values("id")[:1]
             )
-
             queryset = queryset.filter(id__in=Subquery(best_results_subquery))
 
-        # Paginate results
+        queryset = queryset.annotate(
+            rank=Window(expression=Rank(), order_by=F(field).asc())
+        ).order_by(field, "rank")
+
         paginator = Paginator(queryset, settings.PAGE_SIZE)
         page_obj = paginator.get_page(page)
 
-        # Build next and previous URLs
         request_url = request.build_absolute_uri()
         base_url = request_url.split("?")[0]
 
@@ -324,16 +321,12 @@ class RankingsAPIView(APIView):
             prev_params["page"] = page_obj.previous_page_number()
             previous_url = f"{base_url}?{prev_params.urlencode()}"
 
-        # Serialize results
         serialized_results = []
-        for rank, result in enumerate(
-            page_obj.object_list, start=(page - 1) * settings.PAGE_SIZE + 1
-        ):
-            serializer = RecordDetailSerializer(
+        for result in page_obj.object_list:
+            serializer = RankingSerializer(
                 result, context={"record_type": result_format}
             )
             result_data = serializer.data
-            result_data["rank"] = rank
             serialized_results.append(result_data)
 
         return Response(

@@ -123,3 +123,36 @@ class RecordDetailSerializer(serializers.ModelSerializer):
         elif record_type == "average":
             return obj.average
         return None
+
+
+class RankingSerializer(serializers.ModelSerializer):
+    result = serializers.SerializerMethodField()
+    times_list = serializers.SerializerMethodField()
+    person_name = serializers.CharField(source="person.name")
+    person = serializers.IntegerField(source="person.id")
+    competition_name = serializers.CharField(source="competition.name")
+    competition_id = serializers.IntegerField(source="competition.id")
+    rank = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Result
+        fields = [
+            "result",
+            "times_list",
+            "person_name",
+            "person",
+            "competition_name",
+            "competition_id",
+            "rank",
+        ]
+
+    def get_times_list(self, obj):
+        return obj.get_times()
+
+    def get_result(self, obj):
+        record_type = self.context.get("record_type")
+        if record_type == "single":
+            return obj.single
+        elif record_type == "average":
+            return obj.average
+        return None

@@ -146,7 +146,7 @@ $effect(() => {
 							<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
 								<td
 									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
-									>{(pageNum - 1) * PAGINATION_SIZE + idx + 1}</td
+									>{result.rank}</td
 								>
 								<td
 									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
