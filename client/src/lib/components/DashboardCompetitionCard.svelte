@@ -15,7 +15,7 @@ const { competition, onDeleteCompetition = () => null }: Props = $props();
 		<div>
 			<h3 class="font-medium text-gray-900">{competition.name}</h3>
 			<p class="text-sm text-gray-500">
-				{formatCompetitionDate(competition.date)}
+				{competition.session && `${competition.session_name} - `}{formatCompetitionDate(competition.date)}
 			</p>
 		</div>
 		<div class="flex space-x-2">
