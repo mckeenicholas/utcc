@@ -14,7 +14,7 @@ export const searchUsersByName = async (query: string): Promise<User[]> => {
 };
 
 export const createUser = (name: string, studentStatus: boolean) => {
-	const data: Omit<User, 'id'> = { name, is_uoft_student: studentStatus };
+	const data: Omit<User, 'id' | 'sessions'> = { name, is_uoft_student: studentStatus };
 
 	return authFetch(`${BASE_URL}/api/users/persons/`, {
 		method: 'POST',
@@ -24,7 +24,7 @@ export const createUser = (name: string, studentStatus: boolean) => {
 };
 
 export const updateUser = (userId: number, name: string, studentStatus: boolean) => {
-	const data: Omit<User, 'id'> = { name, is_uoft_student: studentStatus };
+	const data: Omit<User, 'id' | 'sessions'> = { name, is_uoft_student: studentStatus };
 
 	return authFetch(`${BASE_URL}/api/users/persons/${userId}/`, {
 		method: 'PATCH',

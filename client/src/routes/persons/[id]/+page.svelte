@@ -11,8 +11,6 @@ import {
 	type WCAEvent
 } from '$lib/types';
 import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from '$lib/utils';
-import { fetchSessions } from '$lib/competitionSessionService';
-import { onMount } from 'svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
 
 const personId = $page.params.id;
@@ -30,6 +28,8 @@ const fetchProfileResults = async (session_id: string) => {
 		if (session_id !== '-1') url.searchParams.append('session_id', session_id);
 
 		const response = await fetchJson<ProfileResponse>(url);
+
+		allSessions = response.person.sessions;
 
 		const personalRecords = processPersonalRecords(response.records);
 		const resultsTableContent = response.results.map(generateRecordsForEvent);
@@ -50,10 +50,6 @@ const fetchProfileResults = async (session_id: string) => {
 $effect(() => {
 	fetchProfileResults(selectedSession);
 });
-
-onMount(async () => {
-	allSessions = await fetchSessions();
-});
 </script>
 
 <svelte:head>
@@ -71,7 +67,7 @@ onMount(async () => {
 			</div>
 		</div>
 	{:else if loading}
-		<div class="flex min-h-[30rem] w-full items-center justify-center">
+		<div class="flex min-h-120 w-full items-center justify-center">
 			<LoadingScreen message="Loading Profile" inline minHeight="30rem" />
 		</div>
 	{:else}
@@ -82,11 +78,13 @@ onMount(async () => {
 					<h1 class="text-3xl font-bold text-gray-900">{profileResults!.name}</h1>
 					<p class="mt-2 text-gray-600">Competition Profile</p>
 				</div>
-				<SessionSelector
-					bind:value={selectedSession}
-					sessionData={allSessions}
-					class="mt-2 shadow-sm"
-				/>
+				{#if allSessions.length}
+					<SessionSelector
+						bind:value={selectedSession}
+						sessionData={allSessions}
+						class="mt-2 shadow-sm"
+					/>
+				{/if}
 			</div>
 
 			<!-- Personal Records -->

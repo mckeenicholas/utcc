@@ -134,6 +134,7 @@ export interface RecordInstance {
 	person: number;
 	competition_name: string;
 	competition_id: number;
+	rank: number;
 }
 
 export interface EventRecords {
@@ -149,6 +150,7 @@ export interface User {
 	id: number;
 	name: string;
 	is_uoft_student: boolean;
+	sessions: Session[];
 }
 
 export interface ProfileRecordDetail {

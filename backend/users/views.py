@@ -11,7 +11,8 @@ from rest_framework.response import Response
 from rest_framework import permissions, viewsets, status
 from rest_framework.decorators import action
 
-from results.models import Result
+from results.serializers import CompetitionSessionSerializer
+from results.models import CompetitionSession, Result
 from .models import Person
 from .serializers import PersonSerializer
 
@@ -116,9 +117,21 @@ class PersonResultsAPIView(APIView):
 
         event_list = self._group_results_by_event(results_list)
 
+        person_sessions = (
+            CompetitionSession.objects.filter(competition__results__person=person)
+            .distinct()
+            .order_by("start_date")
+        )
+
+        sessions_data = CompetitionSessionSerializer(person_sessions, many=True)
+
         return Response(
             {
-                "person": {"id": person.id, "name": person.name},
+                "person": {
+                    "id": person.id,
+                    "name": person.name,
+                    "sessions": sessions_data.data,
+                },
                 "records": best_times,
                 "results": event_list,
             }
