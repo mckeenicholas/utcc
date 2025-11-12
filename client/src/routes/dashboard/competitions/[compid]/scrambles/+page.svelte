@@ -132,7 +132,7 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 									'Select Event'}
 							</span>
 							<svg
-								class="ml-2 h-4 w-4 flex-shrink-0 text-gray-400"
+								class="ml-2 h-4 w-4 shrink-0 text-gray-400"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"

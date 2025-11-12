@@ -9,7 +9,7 @@ let { message }: Props = $props();
 {#if message}
 	<div class="mb-6 rounded-md border border-red-200 bg-red-50 p-4">
 		<div class="flex">
-			<div class="flex-shrink-0">
+			<div class="shrink-0">
 				<svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						stroke-linecap="round"

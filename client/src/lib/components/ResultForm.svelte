@@ -47,6 +47,20 @@ const selectedEventLabel = $derived.by(() => {
 const areRequiredFieldsFilled = $derived(
 	formData.event && formData.round > 0 && additionalValidation
 );
+
+const handleKeydown = (event: KeyboardEvent) => {
+	if (event.key === 'Enter') {
+		onSubmit();
+	} else if (event.key === 'ArrowUp' || event.key === '-') {
+		event.preventDefault();
+		const inputs = document.querySelectorAll('.time-input');
+		const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
+		const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
+		if (prevInput) {
+			prevInput.focus();
+		}
+	}
+};
 </script>
 
 <div class="my-4 flex items-center justify-between">
@@ -65,7 +79,7 @@ const areRequiredFieldsFilled = $derived(
 			>
 				<span>{selectedEventLabel}</span>
 				<svg
-					class="ml-2 h-4 w-4 flex-shrink-0 text-gray-400"
+					class="ml-2 h-4 w-4 shrink-0 text-gray-400"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -182,8 +196,9 @@ const areRequiredFieldsFilled = $derived(
 <div class="mt-4">
 	<button
 		onclick={onSubmit}
+		onkeydown={handleKeydown}
 		disabled={submitting || !areRequiredFieldsFilled}
-		class="submit-button inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
+		class="time-input submit-button inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 	>
 		{#if submitting}
 			<svg class="mr-2 h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">

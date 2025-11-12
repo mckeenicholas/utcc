@@ -74,11 +74,11 @@ const convertToResult = (
 							<table class="w-full table-fixed border-collapse">
 								<colgroup>
 									<col class="w-32" />
-									<col class="w-20" />
-									<col class="w-20" />
-									<col class="w-20" />
-									<col class="w-20" />
-									<col class="w-20" />
+									<col class="w-20" /> <col class="w-20" /> <col class="w-20" />
+									{#if eventAttempts == 5}
+										<col class="w-20" />
+										<col class="w-20" />
+									{/if}
 									<col class="w-24" />
 									<col class="w-24" />
 									<col class="w-28" />
@@ -89,20 +89,10 @@ const convertToResult = (
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 1</th>
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 2</th>
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 3</th>
-										<th
-											class="px-4 py-3 text-right text-sm font-medium text-gray-700 {eventAttempts ===
-												3
-													? 'text-gray-300'
-													: ''}"
-											>Time 4</th
-										>
-										<th
-											class="px-4 py-3 text-right text-sm font-medium text-gray-700 {eventAttempts ===
-												3
-													? 'text-gray-300'
-													: ''}"
-											>Time 5</th
-										>
+										{#if eventAttempts == 5}
+											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 4</th>
+											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 5</th>
+										{/if}
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Single</th>
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700"
 											>{getMeanType(eventResult.event)}</th
@@ -129,18 +119,14 @@ const convertToResult = (
 											<td class="px-4 py-3 text-right text-sm text-gray-900"
 												>{renderTime(personResult.times[2] || 0)}</td
 											>
-											<td
-												class="px-4 py-3 text-sm {eventAttempts === 3
-														? 'text-gray-300'
-														: 'text-gray-900'} text-right"
-												>{eventAttempts === 5 ? renderTime(personResult.times[3] || 0) : '-'}</td
-											>
-											<td
-												class="px-4 py-3 text-sm {eventAttempts === 3
-														? 'text-gray-300'
-														: 'text-gray-900'} text-right"
-												>{eventAttempts === 5 ? renderTime(personResult.times[4] || 0) : '-'}</td
-											>
+											{#if eventAttempts == 5}
+												<td class="px-4 py-3 text-right text-sm text-gray-900"
+													>{renderTime(personResult.times[3] || 0)}</td
+												>
+												<td class="px-4 py-3 text-right text-sm text-gray-900"
+													>{renderTime(personResult.times[4] || 0)}</td
+												>
+											{/if}
 											<td
 												class="bg-green-50 px-4 py-3 text-right text-sm font-semibold text-green-700"
 												>{renderTime(personResult.single)}</td
