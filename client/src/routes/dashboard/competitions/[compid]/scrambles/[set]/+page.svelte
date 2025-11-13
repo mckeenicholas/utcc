@@ -1,4 +1,5 @@
 <script lang="ts">
+import { goto } from '$app/navigation';
 import { page } from '$app/state';
 import authFetch from '$lib/authFetch';
 import Backbutton from '$lib/components/Backbutton.svelte';
@@ -18,12 +19,13 @@ const { compid, set } = page.params;
 const fetchScrambles = async () => {
 	const scrambleResponse = await authFetch(`${BASE_URL}/api/scrambles/${compid}/${set}/`);
 
+	if (scrambleResponse.status == 403) {
+		goto('/dashboard/signin');
+	}
+
 	const competitionData: ScrambleResponse = await scrambleResponse.json();
 
-	console.log(competitionData);
-
 	if (!competitionData) {
-		// TODO: set some kind of error
 		return;
 	}
 

@@ -53,8 +53,6 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 
 		loading = false;
-	} else if (competitionRes.status === 401) {
-		goto('/dashboard/signin');
 	} else {
 		console.error('Failed to fetch competitions:', competitionRes.statusText);
 		loading = false;
@@ -66,7 +64,6 @@ onMount(async () => {
 
 	if (!loggedIn) {
 		goto('/dashboard/signin');
-		return;
 	}
 
 	allSessions = await fetchSessions();

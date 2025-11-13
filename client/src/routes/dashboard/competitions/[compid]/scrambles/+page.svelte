@@ -10,6 +10,7 @@ import { eventNames } from '$lib/types';
 import Backbutton from '$lib/components/Backbutton.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import ScrambleCard from '$lib/components/ScrambleCard.svelte';
+import { goto } from '$app/navigation';
 
 const eventOptions = Object.entries(eventNames)
 	.map(([key, name]) => ({
@@ -31,6 +32,11 @@ let generating = $state(false);
 
 const fetchScrambles = async () => {
 	const response = await authFetch(`${BASE_URL}/api/competitions/${compId}/scrambles/`);
+
+	if (response.status == 403) {
+		goto('/dashboard/signin');
+	}
+
 	competitionScrambles = await response.json();
 	loading = false;
 };

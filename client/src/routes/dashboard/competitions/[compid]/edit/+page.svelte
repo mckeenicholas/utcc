@@ -7,7 +7,7 @@ import DateForm from '$lib/components/DateForm.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import SessionSelector from '$lib/components/SessionSelector.svelte';
 import type { Competition, Session } from '$lib/types';
-import { BASE_URL, fetchJson } from '$lib/utils';
+import { BASE_URL, checkLoginStatus, fetchJson } from '$lib/utils';
 import { onMount } from 'svelte';
 
 const id = $page.params.compid;
@@ -20,10 +20,15 @@ let sessions: Session[] = $state([]);
 
 onMount(async () => {
 	try {
-		const [competitionDataResponse, sessionsResponse] = await Promise.all([
+		const [competitionDataResponse, sessionsResponse, loggedIn] = await Promise.all([
 			fetchJson<Competition>(`${BASE_URL}/api/competitions/${id}/`),
-			fetchSessions()
+			fetchSessions(),
+			checkLoginStatus()
 		]);
+
+		if (!loggedIn) {
+			goto('/dashboard/signin');
+		}
 
 		competitionData = competitionDataResponse;
 		sessions = sessionsResponse;

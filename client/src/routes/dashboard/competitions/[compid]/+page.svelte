@@ -2,7 +2,7 @@
 import { onMount } from 'svelte';
 import { page } from '$app/stores';
 import type { CompetitionResults, Result, WCAEvent, User } from '$lib/types';
-import { BASE_URL, fetchJson } from '$lib/utils';
+import { BASE_URL, checkLoginStatus, fetchJson } from '$lib/utils';
 import authFetch from '$lib/authFetch';
 import ResultForm from '$lib/components/ResultForm.svelte';
 import ResultsTable from '$lib/components/ResultsTable.svelte';
@@ -11,6 +11,7 @@ import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 import UserSearch from '$lib/components/UserSearch.svelte';
 import CreateUserModal from '$lib/components/CreateUserModal.svelte';
+import { goto } from '$app/navigation';
 
 const compId = $page.params.compid;
 
@@ -39,9 +40,16 @@ let formData = $state({
 const fetchData = async (background = true) => {
 	loading = background;
 	try {
-		competitionResults = await fetchJson<CompetitionResults>(
-			`${BASE_URL}/api/competitions/${compId}/results/`
-		);
+		const [results, loggedIn] = await Promise.all([
+			fetchJson<CompetitionResults>(`${BASE_URL}/api/competitions/${compId}/results/`),
+			checkLoginStatus()
+		]);
+
+		if (!loggedIn) {
+			goto('/dashboard/signin');
+		}
+
+		competitionResults = results;
 	} catch {
 		errorMessage = 'Failed to load competition data.';
 	} finally {
