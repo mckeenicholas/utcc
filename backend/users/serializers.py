@@ -16,6 +16,6 @@ class PersonSerializer(serializers.ModelSerializer):
     def validate_name(self, value):
         """Ensure name is not just whitespace."""
         named_stripped = value.strip()
-        if not value or named_stripped:
+        if not named_stripped:
             raise serializers.ValidationError("Name cannot be empty or just whitespace")
         return named_stripped
