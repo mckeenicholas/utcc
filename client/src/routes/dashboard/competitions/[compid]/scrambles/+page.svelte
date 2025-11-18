@@ -1,7 +1,6 @@
 <script lang="ts">
 import { page } from '$app/state';
 import authFetch from '$lib/authFetch';
-import { generateScrambles } from '$lib/scrambleService';
 import { eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from '$lib/types';
 import { BASE_URL } from '$lib/utils';
 import { onMount } from 'svelte';
@@ -18,8 +17,6 @@ const eventOptions = Object.entries(eventNames)
 		label: name
 	}))
 	.sort((a, b) => eventListIdx[a.value as WCAEvent] - eventListIdx[b.value as WCAEvent]);
-
-const scrambleIds = [-1, -2, 1, 2, 3, 4, 5];
 
 const compId = page.params.compid;
 
@@ -53,30 +50,23 @@ const generateScrambleSet = async () => {
 
 	const numScrambles = eventSolves[selectedEvent]! + 2;
 
-	await Promise.all(
-		Array.from({ length: selectedCount }).map(() => generateAndSubmit(numScrambles))
+	await authFetch(
+		`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/generate/`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				count: numScrambles,
+				numSets: selectedCount
+			})
+		}
 	);
 
 	await fetchScrambles();
 
 	generating = false;
-};
-
-const generateAndSubmit = async (numScrambles: number) => {
-	const scrambles = await generateScrambles(selectedEvent, numScrambles);
-
-	const scrambleObjs = scrambles.map((scramble, idx) => ({
-		scramble,
-		scramble_num: scrambleIds[idx]
-	}));
-
-	await authFetch(`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/`, {
-		method: 'POST',
-		body: JSON.stringify(scrambleObjs),
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
 };
 
 const deleteScramble = async (setId: number) => {
@@ -115,9 +105,7 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 					<div
 						class="me-4 h-6 w-6 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
 					></div>
-					<p class="font-medium text-blue-700">
-						Generating scrambles. Please do not refresh this page.
-					</p>
+					<p class="font-medium text-blue-700">Generating scrambles.</p>
 				</div>
 			</div>
 		{/if}

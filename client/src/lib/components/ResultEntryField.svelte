@@ -85,7 +85,18 @@ const resetIfInvalid = (input: string) => {
 const handleUnfocus = () => {
 	const input = displayValue.trim();
 
-	if (input === 'DNF' || input === 'DNS' || input === '') {
+	if (input == '') {
+		value = 0;
+		return;
+	}
+
+	if (input == 'DNF') {
+		value = -1;
+		return;
+	}
+
+	if (input == 'DNS') {
+		value = -2;
 		return;
 	}
 

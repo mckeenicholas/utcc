@@ -1,0 +1,1 @@
+rootProject.name = "utcc-scramble-service"

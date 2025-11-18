@@ -122,7 +122,9 @@ const createCompetition = async () => {
 		newCompName = '';
 		selectedDate = '';
 		createCompSession = '-1';
-		goto(`/dashboard/competitions/${newCompetition.id}`);
+
+		// Using Goto to not trigger a re-request doesn't seem to work here for some reason
+		window.location.href = `/dashboard/competitions/${newCompetition.id}`;
 	} else {
 		alert('Failed to create competition');
 	}

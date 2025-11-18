@@ -29,6 +29,22 @@ services:
     networks:
       - app-network
 
+  scramble-service:
+    image: utcc-scramble-service
+    pull_policy: never
+    container_name: utcc-scramble-generator
+    build:
+      context: ./scramble-service
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+
   db:
     image: postgres:17.4-alpine
     restart: always
