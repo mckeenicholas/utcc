@@ -121,14 +121,20 @@ class Result(models.Model):
 
         # Calculate average
         num_attempts = len(times)
+        num_not_attempted = sum(1 for t in times if t == 0)
+
         if num_attempts == 3:  # Mean of 3
-            if dnf_count > 0 or any(t == 0 for t in times):
+            if dnf_count > 0:
                 self.average = self.SpecialTime.DNF
+            elif num_not_attempted:
+                self.average = self.SpecialTime.NOT_ATTEMPTED
             else:
                 self.average = round(sum(times) / 3)
         else:  # Average of 5
-            if dnf_count >= 2 or any(t == 0 for t in times):
+            if dnf_count >= 2:
                 self.average = self.SpecialTime.DNF
+            elif num_not_attempted:  # Has any missing times
+                self.average = self.SpecialTime.NOT_ATTEMPTED
             else:
                 sorted_times = sorted(times, key=self.sort_key)
                 trimmed_sum = sum(sorted_times[1:-1])
