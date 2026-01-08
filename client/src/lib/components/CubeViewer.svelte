@@ -1,12 +1,10 @@
 <script lang="ts">
-import 'cubing/twisty';
+import 'scramble-display';
 import type { WCAEvent } from '$lib/types';
-import { Alg } from 'cubing/alg';
-import { eventInfo } from 'cubing/puzzles';
 import type { ClassValue } from 'svelte/elements';
 
 interface Props {
-	alg: Alg | string;
+	alg: string;
 	eventId: WCAEvent;
 	class?: ClassValue;
 	width?: string;
@@ -14,8 +12,6 @@ interface Props {
 }
 
 let { alg, eventId, class: className = '', width = 'auto', height = 'auto' }: Props = $props();
-
-let algObj = $derived(typeof alg === 'string' ? new Alg(alg) : alg);
 
 let scaleAmount = $derived.by(() => {
 	switch (eventId) {
@@ -37,13 +33,6 @@ let scaleAmount = $derived.by(() => {
 	class={className}
 	style="display: flex; justify-content: center; align-items: center; scale: {scaleAmount}"
 >
-	<twisty-player
-		visualization="2D"
-		background="none"
-		control-panel="none"
-		puzzle={eventInfo(eventId)!.puzzleID}
-		alg={algObj}
-		style="width: {width}; height: {height}"
-	>
-	</twisty-player>
+	<scramble-display event={eventId} scramble={alg} style="width: {width}; height: {height}">
+	</scramble-display>
 </div>

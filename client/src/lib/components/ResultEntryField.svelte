@@ -139,7 +139,6 @@ const handleKeydown = (event: KeyboardEvent) => {
 };
 </script>
 
-{value}
 <input
 	id={id}
 	disabled={disabled}
