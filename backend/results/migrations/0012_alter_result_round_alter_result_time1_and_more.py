@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="result",
             name="round",
-            field=models.IntegerField(
-                validators=[django.core.validators.MinValueValidator(1)]
-            ),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(1)]),
         ),
         migrations.AlterField(
             model_name="result",

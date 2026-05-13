@@ -1,18 +1,18 @@
-from itertools import groupby
 from collections import defaultdict
+from itertools import groupby
 
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import permissions, viewsets, status
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from results.serializers import CompetitionSessionSerializer
 from results.models import CompetitionSession, Result
+from results.serializers import CompetitionSessionSerializer
+
 from .models import Person
 from .serializers import PersonSerializer
 
@@ -39,9 +39,7 @@ class LoginView(APIView):
                 status=status.HTTP_200_OK,
             )
         else:
-            return Response(
-                {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class LogoutView(APIView):
@@ -77,9 +75,7 @@ class PersonViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        persons = Person.objects.filter(name__icontains=name_query).order_by("name")[
-            :20
-        ]
+        persons = Person.objects.filter(name__icontains=name_query).order_by("name")[:20]
         serializer = self.get_serializer(persons, many=True)
 
         return Response(serializer.data)
@@ -138,30 +134,22 @@ class PersonResultsAPIView(APIView):
         )
 
     def _calculate_best_times(self, results_list):
-        best_times = defaultdict(
-            lambda: {"single": float("inf"), "average": float("inf")}
-        )
+        best_times = defaultdict(lambda: {"single": float("inf"), "average": float("inf")})
 
         for result in results_list:
             event = result.event
 
             if result.single > 0:
-                best_times[event]["single"] = min(
-                    best_times[event]["single"], result.single
-                )
+                best_times[event]["single"] = min(best_times[event]["single"], result.single)
 
             if result.average > 0:
-                best_times[event]["average"] = min(
-                    best_times[event]["average"], result.average
-                )
+                best_times[event]["average"] = min(best_times[event]["average"], result.average)
 
         cleaned_best_times = {}
         for event, times in best_times.items():
             cleaned_best_times[event] = {
                 "single": times["single"] if times["single"] != float("inf") else None,
-                "average": times["average"]
-                if times["average"] != float("inf")
-                else None,
+                "average": times["average"] if times["average"] != float("inf") else None,
             }
 
         return cleaned_best_times

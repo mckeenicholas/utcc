@@ -54,21 +54,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "round",
-                    models.IntegerField(
-                        validators=[django.core.validators.MinValueValidator(1)]
-                    ),
+                    models.IntegerField(validators=[django.core.validators.MinValueValidator(1)]),
                 ),
                 (
                     "scramble_set",
-                    models.IntegerField(
-                        validators=[django.core.validators.MinValueValidator(1)]
-                    ),
+                    models.IntegerField(validators=[django.core.validators.MinValueValidator(1)]),
                 ),
                 (
                     "generated_on",
-                    models.DateTimeField(
-                        default=django.db.models.functions.datetime.Now()
-                    ),
+                    models.DateTimeField(default=django.db.models.functions.datetime.Now()),
                 ),
                 ("visible", models.BooleanField(default=False)),
             ],

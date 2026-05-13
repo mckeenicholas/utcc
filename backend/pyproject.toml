@@ -1,0 +1,35 @@
+[project]
+name = "utcc-backend"
+version = "0.1.0"
+dependencies = [
+    "Django>=5.2.2",
+    "djangorestframework>=3.16.0",
+    "django-cors-headers>=4.7.0",
+    "psycopg2-binary>=2.9.10",
+    "whitenoise>=6.9.0",
+    "gunicorn>=23.0.0",
+    "requests>=2.32.3",
+]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "DJ", "B", "C4", "UP"]
+ignore = [
+    "E501",
+]
+
+[tool.ruff.lint.isort]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+known-first-party = ["backend"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*" = ["E402"]
+"settings.py" = ["F403", "F405"]

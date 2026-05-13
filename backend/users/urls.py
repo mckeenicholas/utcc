@@ -1,12 +1,13 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 from .views import (
     LoginView,
     LogoutView,
     PersonResultsAPIView,
+    PersonViewSet,
     get_csrf,
     is_logged_in,
-    PersonViewSet,
 )
 
 # Create router for CRUD operations

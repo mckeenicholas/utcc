@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
 
 from users.models import Person
 
@@ -17,9 +17,7 @@ class CompetitionSession(models.Model):
 class Competition(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateField()
-    session = models.ForeignKey(
-        CompetitionSession, on_delete=models.SET_NULL, null=True
-    )
+    session = models.ForeignKey(CompetitionSession, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.name} - {self.date}"
@@ -50,9 +48,7 @@ class Result(models.Model):
         NOT_ATTEMPTED = 0, "Not Attempted"
 
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    competition = models.ForeignKey(
-        Competition, related_name="results", on_delete=models.CASCADE
-    )
+    competition = models.ForeignKey(Competition, related_name="results", on_delete=models.CASCADE)
     event = models.CharField(max_length=10, choices=Event.choices)
     round = models.IntegerField(validators=[MinValueValidator(1)])
 
@@ -111,11 +107,7 @@ class Result(models.Model):
 
         # Calculate single
         if not valid_times:
-            self.single = (
-                self.SpecialTime.DNF
-                if dnf_count > 0
-                else self.SpecialTime.NOT_ATTEMPTED
-            )
+            self.single = self.SpecialTime.DNF if dnf_count > 0 else self.SpecialTime.NOT_ATTEMPTED
         else:
             self.single = min(valid_times)
 

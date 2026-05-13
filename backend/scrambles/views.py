@@ -1,17 +1,17 @@
 # Scramble API View
 # This file contains the API view for handling scramble sets.
-from django.shortcuts import get_object_or_404
 import requests
-
-from rest_framework import status, permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.db import transaction
 from django.db.models import Max
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from results.models import Result
-from .models import Scramble, ScrambleSet, Competition
+
+from .models import Competition, Scramble, ScrambleSet
 from .serializers import ScrambleSerializer, ScrambleSetSerializer
-from django.db import transaction
 
 SCRAMBLE_SERVICE_ENDPOINT = "http://utcc-scramble-generator:8080"
 SCRAMBLE_NUMS = [-2, -1, 1, 2, 3, 4, 5]
@@ -28,9 +28,7 @@ class RoundScrambleSet(APIView):
         serializer = ScrambleSerializer(scrambles, many=True)
 
         if not scrambles.exists():
-            return Response(
-                {"detail": "No scrambles found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"detail": "No scrambles found"}, status=status.HTTP_404_NOT_FOUND)
 
         scramble_set = scrambles.first().scramble_set
         competition = scramble_set.competition
@@ -45,9 +43,7 @@ class RoundScrambleSet(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
     def delete(self, request, competition_id, set_id):
-        delete_records = ScrambleSet.objects.filter(
-            pk=set_id, competition=competition_id
-        )
+        delete_records = ScrambleSet.objects.filter(pk=set_id, competition=competition_id)
 
         num_deleted = len(delete_records)
         delete_records.delete()
@@ -123,10 +119,7 @@ class ScrambleGenerator(APIView):
                 scramble_sets_qs = ScrambleSet.objects.select_for_update().filter(
                     competition=competition, event=event_id, round=round_id
                 )
-                last_set = (
-                    scramble_sets_qs.aggregate(max_set=Max("scramble_set"))["max_set"]
-                    or 0
-                )
+                last_set = scramble_sets_qs.aggregate(max_set=Max("scramble_set"))["max_set"] or 0
                 next_set_number = last_set + 1
 
                 scramble_sets_to_create = []
@@ -158,9 +151,7 @@ class ScrambleGenerator(APIView):
                 Scramble.objects.bulk_create(scrambles_to_create)
 
         except Competition.DoesNotExist:
-            return Response(
-                {"detail": "Competition not found."}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"detail": "Competition not found."}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ScrambleSetSerializer(scramble_sets_to_create, many=True)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

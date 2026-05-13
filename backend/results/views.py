@@ -2,15 +2,13 @@ from collections import defaultdict
 from itertools import groupby
 from operator import attrgetter
 
-from django.db.models import F, Window, OuterRef, Subquery
-from django.db.models.functions import RowNumber
-from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.conf import settings
-from django.db.models.functions import Rank
-
-from rest_framework import viewsets, status, permissions
+from django.db.models import F, OuterRef, Subquery, Window
+from django.db.models.functions import Rank, RowNumber
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -94,9 +92,7 @@ class ResultViewSet(viewsets.ModelViewSet):
         print(validated_data)
 
         try:
-            instance, created = Result.objects.update_or_create(
-                **unique_fields, defaults=defaults
-            )
+            instance, created = Result.objects.update_or_create(**unique_fields, defaults=defaults)
         except IntegrityError as e:
             print(e)
 
@@ -161,14 +157,10 @@ class CompetitionResultsAPIView(APIView):
             event_results = list(event_results_iter)
             rounds_data = []
 
-            for round_num, round_results_iter in groupby(
-                event_results, key=attrgetter("round")
-            ):
+            for round_num, round_results_iter in groupby(event_results, key=attrgetter("round")):
                 round_results = list(round_results_iter)
 
-                round_scramble_sets = scramble_sets_by_event_round.get(
-                    (event_code, round_num), []
-                )
+                round_scramble_sets = scramble_sets_by_event_round.get((event_code, round_num), [])
 
                 rounds_data.append(
                     {
@@ -232,15 +224,11 @@ class RecordsListAPIView(APIView):
             best_averages = best_averages.filter(person__is_uoft_student=False)
 
         for result in best_averages:
-            serializer = RecordDetailSerializer(
-                result, context={"record_type": "average"}
-            )
+            serializer = RecordDetailSerializer(result, context={"record_type": "average"})
             records[result.event]["average"] = serializer.data
 
         for result in best_singles:
-            serializer = RecordDetailSerializer(
-                result, context={"record_type": "single"}
-            )
+            serializer = RecordDetailSerializer(result, context={"record_type": "single"})
             records[result.event]["single"] = serializer.data
 
         return Response(records)
@@ -270,9 +258,7 @@ class RankingsAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        queryset = Result.objects.select_related("person", "competition").filter(
-            event=event
-        )
+        queryset = Result.objects.select_related("person", "competition").filter(event=event)
 
         if session_id:
             queryset = queryset.filter(competition__session_id=session_id)
@@ -291,9 +277,7 @@ class RankingsAPIView(APIView):
 
         if not all_results:
             best_results_subquery = (
-                Result.objects.filter(
-                    person=OuterRef("person"), event=event, **{f"{field}__gt": 0}
-                )
+                Result.objects.filter(person=OuterRef("person"), event=event, **{f"{field}__gt": 0})
                 .order_by(field)
                 .values("id")[:1]
             )
@@ -323,9 +307,7 @@ class RankingsAPIView(APIView):
 
         serialized_results = []
         for result in page_obj.object_list:
-            serializer = RankingSerializer(
-                result, context={"record_type": result_format}
-            )
+            serializer = RankingSerializer(result, context={"record_type": result_format})
             result_data = serializer.data
             serialized_results.append(result_data)
 
@@ -366,8 +348,7 @@ class CompetitionScramblesAPIView(APIView):
         result = []
         for event, rounds in sorted(grouped_data.items()):
             rounds_list = [
-                {"round": round_num, "sets": sets}
-                for round_num, sets in sorted(rounds.items())
+                {"round": round_num, "sets": sets} for round_num, sets in sorted(rounds.items())
             ]
             result.append({"event": event, "rounds": rounds_list})
 

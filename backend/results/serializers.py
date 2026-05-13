@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from users.models import Person
 from scrambles.serializers import CompetitionScramblesSerializer
+from users.models import Person
+
 from .models import Competition, CompetitionSession, Result
 
 
@@ -58,9 +59,7 @@ class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
     person_name = serializers.CharField(source="person.name", read_only=True)
     person = serializers.IntegerField(source="person.id", read_only=True)
-    is_uoft_student = serializers.BooleanField(
-        source="person.is_uoft_student", read_only=True
-    )
+    is_uoft_student = serializers.BooleanField(source="person.is_uoft_student", read_only=True)
 
     class Meta:
         model = Result

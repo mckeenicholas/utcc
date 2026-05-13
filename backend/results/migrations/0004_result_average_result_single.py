@@ -12,9 +12,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="result",
             name="average",
-            field=models.IntegerField(
-                blank=True, help_text="Attempt average/mean time", null=True
-            ),
+            field=models.IntegerField(blank=True, help_text="Attempt average/mean time", null=True),
         ),
         migrations.AddField(
             model_name="result",

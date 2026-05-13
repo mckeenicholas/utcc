@@ -51,15 +51,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "round",
-                    models.IntegerField(
-                        validators=[django.core.validators.MinValueValidator(1)]
-                    ),
+                    models.IntegerField(validators=[django.core.validators.MinValueValidator(1)]),
                 ),
                 (
                     "scramble_num",
-                    models.IntegerField(
-                        verbose_name=django.core.validators.MinValueValidator(-2)
-                    ),
+                    models.IntegerField(verbose_name=django.core.validators.MinValueValidator(-2)),
                 ),
                 ("scramble", models.TextField()),
                 ("visible", models.BooleanField(default=False)),

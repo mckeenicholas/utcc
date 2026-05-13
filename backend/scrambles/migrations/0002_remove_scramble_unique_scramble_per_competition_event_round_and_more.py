@@ -26,9 +26,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="scramble",
             name="scramble_num",
-            field=models.IntegerField(
-                validators=[django.core.validators.MinValueValidator(-2)]
-            ),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(-2)]),
         ),
         migrations.AddConstraint(
             model_name="scramble",

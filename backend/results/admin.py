@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import CompetitionSession, Result, Competition
+
+from .models import Competition, CompetitionSession, Result
 
 admin.site.register(Result)
 admin.site.register(Competition)

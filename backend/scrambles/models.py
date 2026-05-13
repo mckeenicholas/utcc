@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
 from django.utils import timezone
 
 from results.models import Competition, Result
@@ -53,8 +53,6 @@ class Scramble(models.Model):
 
     def __str__(self):
         scramble_name = (
-            str(self.scramble_num)
-            if self.scramble_num > 0
-            else f"E{-self.scramble_num}"
+            str(self.scramble_num) if self.scramble_num > 0 else f"E{-self.scramble_num}"
         )
         return f"{self.scramble_set}: Scramble {scramble_name}"
