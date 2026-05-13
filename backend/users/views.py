@@ -38,8 +38,7 @@ class LoginView(APIView):
                 {"message": "Login successful", "sessionid": session_id},
                 status=status.HTTP_200_OK,
             )
-        else:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class LogoutView(APIView):
@@ -130,7 +129,7 @@ class PersonResultsAPIView(APIView):
                 },
                 "records": best_times,
                 "results": event_list,
-            }
+            },
         )
 
     def _calculate_best_times(self, results_list):
@@ -162,20 +161,20 @@ class PersonResultsAPIView(APIView):
             event_results_list = list(event_results)
 
             for competition, comp_results in groupby(
-                event_results_list, key=lambda r: r.competition
+                event_results_list,
+                key=lambda r: r.competition,
             ):
-                rounds = []
                 comp_results_list = list(comp_results)
 
-                for result in comp_results_list:
-                    rounds.append(
-                        {
-                            "round": result.round,
-                            "times": result.get_times(),
-                            "single": result.single,
-                            "average": result.average,
-                        }
-                    )
+                rounds = [
+                    {
+                        "round": result.round,
+                        "times": result.get_times(),
+                        "single": result.single,
+                        "average": result.average,
+                    }
+                    for result in comp_results_list
+                ]
 
                 competition_groups.append(
                     {
@@ -183,14 +182,14 @@ class PersonResultsAPIView(APIView):
                         "name": competition.name,
                         "date": competition.date,
                         "rounds": rounds,
-                    }
+                    },
                 )
 
             event_list.append(
                 {
                     "event": event_name,
                     "competitions": competition_groups,
-                }
+                },
             )
 
         return event_list

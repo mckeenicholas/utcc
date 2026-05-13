@@ -22,7 +22,8 @@ class RoundScrambleSet(APIView):
 
     def get(self, request, set_id, competition_id):
         scrambles = Scramble.objects.filter(
-            scramble_set=set_id, scramble_set__competition=competition_id
+            scramble_set=set_id,
+            scramble_set__competition=competition_id,
         ).order_by("scramble_num")
 
         serializer = ScrambleSerializer(scrambles, many=True)
@@ -110,14 +111,16 @@ class ScrambleGenerator(APIView):
 
         except requests.exceptions.RequestException as e:
             return Response(
-                {"error": f"Failed to generate scrambles: {str(e)}"},
+                {"error": f"Failed to generate scrambles: {e}"},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 
         try:
             with transaction.atomic():
                 scramble_sets_qs = ScrambleSet.objects.select_for_update().filter(
-                    competition=competition, event=event_id, round=round_id
+                    competition=competition,
+                    event=event_id,
+                    round=round_id,
                 )
                 last_set = scramble_sets_qs.aggregate(max_set=Max("scramble_set"))["max_set"] or 0
                 next_set_number = last_set + 1
@@ -144,7 +147,7 @@ class ScrambleGenerator(APIView):
                                 scramble_set=scr_set,
                                 scramble_num=scramble_num,
                                 scramble=scrambles[scramble_counter],
-                            )
+                            ),
                         )
                         scramble_counter += 1
 

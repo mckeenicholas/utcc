@@ -3,14 +3,14 @@
 from django.db import migrations
 
 
-def populate_single_average(apps, schema_editor):
+def populate_single_average(apps, schema_editor) -> None:
     Result = apps.get_model("results", "Result")
 
     for result in Result.objects.all():
         result.save()
 
 
-def reverse_populate_single_average(apps, schema_editor):
+def reverse_populate_single_average(apps, schema_editor) -> None:
     Result = apps.get_model("results", "Result")
     Result.objects.update(single=None, average=None)
 

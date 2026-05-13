@@ -108,7 +108,8 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="scramble",
             constraint=models.UniqueConstraint(
-                fields=("scramble_set", "scramble_num"), name="unique_scramble_per_set"
+                fields=("scramble_set", "scramble_num"),
+                name="unique_scramble_per_set",
             ),
         ),
         migrations.AddConstraint(

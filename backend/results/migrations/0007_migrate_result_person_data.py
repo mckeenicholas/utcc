@@ -1,7 +1,7 @@
 from django.db import migrations
 
 
-def populate_person_foreign_keys(apps, schema_editor):
+def populate_person_foreign_keys(apps, schema_editor) -> None:
     Result = apps.get_model("results", "Result")
     Person = apps.get_model("users", "Person")
 
@@ -22,7 +22,7 @@ def populate_person_foreign_keys(apps, schema_editor):
         result.save(update_fields=["person_id"])
 
 
-def unpopulate_person_foreign_keys(apps, schema_editor):
+def unpopulate_person_foreign_keys(apps, schema_editor) -> None:
     Result = apps.get_model("results", "Result")
     Result.objects.update(person_id=None)
 
@@ -35,6 +35,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(
-            populate_person_foreign_keys, reverse_code=unpopulate_person_foreign_keys
+            populate_person_foreign_keys,
+            reverse_code=unpopulate_person_foreign_keys,
         ),
     ]

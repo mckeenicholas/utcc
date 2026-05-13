@@ -1,5 +1,4 @@
-"""
-WSGI config for utcc project.
+"""WSGI config for utcc project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

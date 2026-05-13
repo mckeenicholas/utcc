@@ -3,14 +3,14 @@ from django.db import models
 
 from users.models import Person
 
-THREE_ATTEMPT_EVENTS = set(["666", "777", "333bf", "444bf", "555bf", "333fm"])
+THREE_ATTEMPT_EVENTS = {"666", "777", "333bf", "444bf", "555bf", "333fm"}
 
 
 class CompetitionSession(models.Model):
     name = models.CharField(max_length=255)
     start_date = models.DateField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}"
 
 
@@ -19,7 +19,7 @@ class Competition(models.Model):
     date = models.DateField()
     session = models.ForeignKey(CompetitionSession, on_delete=models.SET_NULL, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} - {self.date}"
 
 
@@ -53,19 +53,24 @@ class Result(models.Model):
     round = models.IntegerField(validators=[MinValueValidator(1)])
 
     time1 = models.IntegerField(
-        default=SpecialTime.NOT_ATTEMPTED, validators=[MinValueValidator(-2)]
+        default=SpecialTime.NOT_ATTEMPTED,
+        validators=[MinValueValidator(-2)],
     )
     time2 = models.IntegerField(
-        default=SpecialTime.NOT_ATTEMPTED, validators=[MinValueValidator(-2)]
+        default=SpecialTime.NOT_ATTEMPTED,
+        validators=[MinValueValidator(-2)],
     )
     time3 = models.IntegerField(
-        default=SpecialTime.NOT_ATTEMPTED, validators=[MinValueValidator(-2)]
+        default=SpecialTime.NOT_ATTEMPTED,
+        validators=[MinValueValidator(-2)],
     )
     time4 = models.IntegerField(
-        default=SpecialTime.NOT_ATTEMPTED, validators=[MinValueValidator(-2)]
+        default=SpecialTime.NOT_ATTEMPTED,
+        validators=[MinValueValidator(-2)],
     )
     time5 = models.IntegerField(
-        default=SpecialTime.NOT_ATTEMPTED, validators=[MinValueValidator(-2)]
+        default=SpecialTime.NOT_ATTEMPTED,
+        validators=[MinValueValidator(-2)],
     )
 
     single = models.IntegerField(
@@ -84,23 +89,26 @@ class Result(models.Model):
             models.UniqueConstraint(
                 fields=["person", "competition", "event", "round"],
                 name="unique_result_per_person",
-            )
+            ),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.person.name}: ({self.competition.date} - {self.get_event_display()} - Round {self.round})"
+
+    def save(self, *args, **kwargs) -> None:
+        self.calculate_single_and_average()
+        super().save(*args, **kwargs)
 
     def get_times(self):
         if self.event in THREE_ATTEMPT_EVENTS:
             return [self.time1, self.time2, self.time3]
-        else:
-            return [self.time1, self.time2, self.time3, self.time4, self.time5]
+        return [self.time1, self.time2, self.time3, self.time4, self.time5]
 
     @staticmethod
     def sort_key(time):
         return float("inf") if time < 0 else time
 
-    def calculate_single_and_average(self):
+    def calculate_single_and_average(self) -> None:
         times = self.get_times()
         valid_times = [t for t in times if t > 0]
         dnf_count = sum(1 for t in times if t < 0)
@@ -125,7 +133,3 @@ class Result(models.Model):
                 sorted_times = sorted(times, key=self.sort_key)
                 trimmed_sum = sum(sorted_times[1:-1])
                 self.average = round(trimmed_sum / 3)
-
-    def save(self, *args, **kwargs):
-        self.calculate_single_and_average()
-        super().save(*args, **kwargs)

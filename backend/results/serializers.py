@@ -23,7 +23,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "events", "session_name"]
 
     def get_events(self, obj):
-        return sorted(list({result.event for result in obj.results.all()}))
+        return sorted({result.event for result in obj.results.all()})
 
     def get_session_name(self, obj):
         if obj.session:
@@ -119,7 +119,7 @@ class RecordDetailSerializer(serializers.ModelSerializer):
         record_type = self.context.get("record_type")
         if record_type == "single":
             return obj.single
-        elif record_type == "average":
+        if record_type == "average":
             return obj.average
         return None
 
@@ -152,6 +152,6 @@ class RankingSerializer(serializers.ModelSerializer):
         record_type = self.context.get("record_type")
         if record_type == "single":
             return obj.single
-        elif record_type == "average":
+        if record_type == "average":
             return obj.average
         return None

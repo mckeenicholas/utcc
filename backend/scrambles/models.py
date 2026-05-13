@@ -7,7 +7,9 @@ from results.models import Competition, Result
 
 class ScrambleSet(models.Model):
     competition = models.ForeignKey(
-        Competition, related_name="scramble_sets", on_delete=models.CASCADE
+        Competition,
+        related_name="scramble_sets",
+        on_delete=models.CASCADE,
     )
     event = models.CharField(max_length=10, choices=Result.Event.choices)
     round = models.IntegerField(validators=[MinValueValidator(1)])
@@ -26,16 +28,18 @@ class ScrambleSet(models.Model):
                     "scramble_set",
                 ],
                 name="unique_scramble_set_per_competition_event_round",
-            )
+            ),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.competition.name}: ({self.get_event_display()}, Round {self.round}, Set {self.scramble_set})"
 
 
 class Scramble(models.Model):
     scramble_set = models.ForeignKey(
-        ScrambleSet, related_name="scrambles", on_delete=models.CASCADE
+        ScrambleSet,
+        related_name="scrambles",
+        on_delete=models.CASCADE,
     )
     scramble_num = models.IntegerField(validators=[MinValueValidator(-2)])
     scramble = models.TextField()
@@ -48,10 +52,10 @@ class Scramble(models.Model):
                     "scramble_num",
                 ],
                 name="unique_scramble_per_set",
-            )
+            ),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         scramble_name = (
             str(self.scramble_num) if self.scramble_num > 0 else f"E{-self.scramble_num}"
         )

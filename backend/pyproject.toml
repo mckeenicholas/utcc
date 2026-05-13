@@ -29,7 +29,3 @@ known-first-party = ["backend"]
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
-
-[tool.ruff.lint.per-file-ignores]
-"**/migrations/*" = ["E402"]
-"settings.py" = ["F403", "F405"]

@@ -18,7 +18,9 @@ class Migration(migrations.Migration):
             model_name="result",
             name="single",
             field=models.IntegerField(
-                blank=True, help_text="Best single time in centiseconds", null=True
+                blank=True,
+                help_text="Best single time in centiseconds",
+                null=True,
             ),
         ),
     ]

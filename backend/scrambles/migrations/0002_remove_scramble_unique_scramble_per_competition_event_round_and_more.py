@@ -19,7 +19,8 @@ class Migration(migrations.Migration):
             model_name="scramble",
             name="scramble_set",
             field=models.IntegerField(
-                default=1, validators=[django.core.validators.MinValueValidator(1)]
+                default=1,
+                validators=[django.core.validators.MinValueValidator(1)],
             ),
             preserve_default=False,
         ),

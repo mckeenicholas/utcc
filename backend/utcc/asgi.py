@@ -1,5 +1,4 @@
-"""
-ASGI config for utcc project.
+"""ASGI config for utcc project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

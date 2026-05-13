@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                     models.UniqueConstraint(
                         fields=("competition", "event", "round", "scramble_num"),
                         name="unique_scramble_per_competition_event_round",
-                    )
+                    ),
                 ],
             },
         ),

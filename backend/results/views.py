@@ -89,8 +89,6 @@ class ResultViewSet(viewsets.ModelViewSet):
 
         defaults = {k: v for k, v in validated_data.items() if k not in unique_fields}
 
-        print(validated_data)
-
         try:
             instance, created = Result.objects.update_or_create(**unique_fields, defaults=defaults)
         except IntegrityError as e:
@@ -167,7 +165,7 @@ class CompetitionResultsAPIView(APIView):
                         "round": round_num,
                         "results": round_results,
                         "scramble_sets": round_scramble_sets,
-                    }
+                    },
                 )
 
             events_data.append({"event": event_code, "rounds": rounds_data})
@@ -194,7 +192,7 @@ class RecordsListAPIView(APIView):
                     expression=RowNumber(),
                     partition_by=[F("event")],
                     order_by=F("single").asc(),
-                )
+                ),
             )
             .filter(row_num=1)
         )
@@ -207,7 +205,7 @@ class RecordsListAPIView(APIView):
                     expression=RowNumber(),
                     partition_by=[F("event")],
                     order_by=F("average").asc(),
-                )
+                ),
             )
             .filter(row_num=1)
         )
@@ -284,7 +282,7 @@ class RankingsAPIView(APIView):
             queryset = queryset.filter(id__in=Subquery(best_results_subquery))
 
         queryset = queryset.annotate(
-            rank=Window(expression=Rank(), order_by=F(field).asc())
+            rank=Window(expression=Rank(), order_by=F(field).asc()),
         ).order_by(field, "rank")
 
         paginator = Paginator(queryset, settings.PAGE_SIZE)
@@ -317,7 +315,7 @@ class RankingsAPIView(APIView):
                 "next": next_url,
                 "previous": previous_url,
                 "results": serialized_results,
-            }
+            },
         )
 
 
@@ -342,7 +340,7 @@ class CompetitionScramblesAPIView(APIView):
                     "id": s_set["id"],
                     "scramble_set": s_set["scramble_set"],
                     "visible": s_set["visible"],
-                }
+                },
             )
 
         result = []

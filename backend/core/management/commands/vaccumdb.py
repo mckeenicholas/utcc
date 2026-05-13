@@ -5,14 +5,14 @@ from django.db import connection
 class Command(BaseCommand):
     help = "Run VACUUM on the database (supports --full for VACUUM FULL on Postgres)."
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument(
             "--full",
             action="store_true",
             help="Run a full vacuum (PostgreSQL only).",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         full = options["full"]
 
         if full:

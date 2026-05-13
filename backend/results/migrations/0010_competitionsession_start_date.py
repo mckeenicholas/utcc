@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             model_name="competitionsession",
             name="start_date",
             field=models.DateField(
-                default=datetime.datetime(2000, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)
+                default=datetime.datetime(2000, 1, 1, 0, 0, tzinfo=datetime.UTC),
             ),
             preserve_default=False,
         ),

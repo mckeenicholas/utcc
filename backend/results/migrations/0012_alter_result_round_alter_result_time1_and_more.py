@@ -23,35 +23,40 @@ class Migration(migrations.Migration):
             model_name="result",
             name="time1",
             field=models.IntegerField(
-                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+                default=0,
+                validators=[django.core.validators.MinValueValidator(-2)],
             ),
         ),
         migrations.AlterField(
             model_name="result",
             name="time2",
             field=models.IntegerField(
-                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+                default=0,
+                validators=[django.core.validators.MinValueValidator(-2)],
             ),
         ),
         migrations.AlterField(
             model_name="result",
             name="time3",
             field=models.IntegerField(
-                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+                default=0,
+                validators=[django.core.validators.MinValueValidator(-2)],
             ),
         ),
         migrations.AlterField(
             model_name="result",
             name="time4",
             field=models.IntegerField(
-                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+                default=0,
+                validators=[django.core.validators.MinValueValidator(-2)],
             ),
         ),
         migrations.AlterField(
             model_name="result",
             name="time5",
             field=models.IntegerField(
-                default=0, validators=[django.core.validators.MinValueValidator(-2)]
+                default=0,
+                validators=[django.core.validators.MinValueValidator(-2)],
             ),
         ),
         migrations.AddConstraint(
