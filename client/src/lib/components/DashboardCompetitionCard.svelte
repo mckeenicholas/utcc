@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { Competition } from '$lib/types';
-import { formatCompetitionDate } from '$lib/utils';
+	import type { Competition } from "$lib/types";
+	import { formatCompetitionDate } from "$lib/utils";
 
-interface Props {
-	competition: Competition;
-	onDeleteCompetition: (id: number) => unknown;
-}
+	interface Props {
+		competition: Competition;
+		onDeleteCompetition: (id: number) => unknown;
+	}
 
-const { competition, onDeleteCompetition = () => null }: Props = $props();
+	const { competition, onDeleteCompetition = () => null }: Props = $props();
 </script>
 
 <div class="rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
@@ -25,9 +25,7 @@ const { competition, onDeleteCompetition = () => null }: Props = $props();
 				</div>
 			</a>
 			<a href="/dashboard/competitions/{competition.id}">
-				<div class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200">
-					Add Results
-				</div>
+				<div class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200">Add Results</div>
 			</a>
 			<a href="/dashboard/competitions/{competition.id}/edit">
 				<div class="rounded-md bg-yellow-100 px-3 py-1 text-sm text-yellow-800 hover:bg-yellow-200">

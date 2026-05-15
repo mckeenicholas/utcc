@@ -1,43 +1,36 @@
 <script lang="ts">
-import type { Session } from '$lib/types';
-import { Select } from 'bits-ui';
-import type { ClassValue } from 'svelte/elements';
+	import type { Session } from "$lib/types";
+	import type { ClassValue } from "svelte/elements";
+	import { Select } from "bits-ui";
 
-let {
-	value = $bindable(),
-	defaultMessage = 'All sessions',
-	class: classProps,
-	sessionData
-}: {
-	value: string;
-	defaultMessage?: string;
-	class?: ClassValue;
-	sessionData: Session[];
-} = $props();
+	let {
+		value = $bindable(),
+		defaultMessage = "All sessions",
+		class: classProps,
+		sessionData,
+	}: {
+		value: string;
+		defaultMessage?: string;
+		class?: ClassValue;
+		sessionData: Session[];
+	} = $props();
 
-let sessions = $derived([
-	{ value: '-1', label: defaultMessage },
-	...(sessionData?.map((s) => ({ value: s.id.toString(), label: s.name })) ?? [])
-]);
+	let sessions = $derived([
+		{ value: "-1", label: defaultMessage },
+		...(sessionData?.map((s) => ({ value: s.id.toString(), label: s.name })) ?? []),
+	]);
 
-const selectedLabel = $derived(
-	value ? sessions.find((s) => s.value === value)?.label : defaultMessage
-);
+	const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.label : defaultMessage);
 </script>
 
 <div class="w-full sm:w-48">
-	<Select.Root items={sessions} bind:value={value} type="single">
+	<Select.Root items={sessions} bind:value type="single">
 		<Select.Trigger
 			class="flex w-full items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-left focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none {classProps}"
 			aria-label="Select an event"
 		>
 			<span>{selectedLabel}</span>
-			<svg
-				class="ml-2 h-4 w-4 shrink-0 text-gray-400"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-			>
+			<svg class="ml-2 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 			</svg>
 		</Select.Trigger>

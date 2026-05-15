@@ -1,50 +1,54 @@
 <script lang="ts">
-import { eventListIdx, eventNames, type EventResult } from '$lib/types';
-import { scrambleOrder } from '$lib/utils';
-import type { ScrambleKey } from '$lib/types';
-import { Collapsible } from 'bits-ui';
-import CubeIcon from './CubeIcon.svelte';
-import { slide } from 'svelte/transition';
+	import type { ScrambleKey } from "$lib/types";
+	import { eventListIdx, eventNames, type EventResult } from "$lib/types";
+	import { scrambleOrder } from "$lib/utils";
+	import { Collapsible } from "bits-ui";
+	import { slide } from "svelte/transition";
+	import CubeIcon from "./CubeIcon.svelte";
 
-let { results }: { results: EventResult[] } = $props();
+	let { results }: { results: EventResult[] } = $props();
 
-let scrambles = $derived(
-	results
-		.map((result) => ({
-			event: result.event,
-			rounds: result.rounds
-				.map((round) => ({
-					roundNum: round.round,
-					sets: round.scramble_sets
-						.map((set) => {
-							const scrambles = set.scrambles
-								.map((scramble) => ({
-									num: scramble.scramble_num.toString(),
-									scramble: scramble.scramble
-								}))
-								.filter((s) => s.scramble && s.scramble.length > 0)
-								.sort(
-									(a, b) =>
-										scrambleOrder[a.num as ScrambleKey].idx -
-										scrambleOrder[b.num as ScrambleKey].idx
-								);
+	let scrambles = $derived(
+		results
+			.map((result) => ({
+				event: result.event,
+				rounds: result.rounds
+					.map((round) => ({
+						roundNum: round.round,
+						sets: round.scramble_sets
+							.map((set) => {
+								const setScrambles = set.scrambles
+									.map((scramble) => ({
+										num: scramble.scramble_num.toString(),
+										scramble: scramble.scramble,
+									}))
+									.filter((s) => s.scramble && s.scramble.length > 0)
+									.toSorted(
+										(a, b) =>
+											scrambleOrder[a.num as ScrambleKey].idx -
+											scrambleOrder[b.num as ScrambleKey].idx,
+									);
 
-							return {
-								num: set.scramble_set,
-								scrambles
-							};
-						})
-						.filter((set) => set.scrambles.length > 0)
-						.sort((a, b) => a.num - b.num)
-				}))
-				.filter((round) => round.sets.length > 0)
-				.sort((a, b) => a.roundNum - b.roundNum)
-		}))
-		.filter((event) => event.rounds.length > 0)
-		.sort((a, b) => eventListIdx[a.event] - eventListIdx[b.event])
-);
+								return {
+									num: set.scramble_set,
+									scrambles: setScrambles,
+								};
+							})
+							.filter((set) => set.scrambles.length > 0)
+							.toSorted((a, b) => a.num - b.num),
+					}))
+					.filter((round) => round.sets.length > 0)
+					.toSorted((a, b) => a.roundNum - b.roundNum),
+			}))
+			.filter((event) => event.rounds.length > 0)
+			.toSorted((a, b) => eventListIdx[a.event] - eventListIdx[b.event]),
+	);
 
-let isOpen = $state<boolean[]>(Array.from({ length: results.length }).fill(false) as boolean[]);
+	let isOpen = $state<boolean[]>([]);
+
+	$effect(() => {
+		isOpen = Array.from({ length: results.length }).fill(false) as boolean[];
+	});
 </script>
 
 <div class="space-y-4">
@@ -72,12 +76,7 @@ let isOpen = $state<boolean[]>(Array.from({ length: results.length }).fill(false
 							stroke="currentColor"
 							viewBox="0 0 24 24"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M19 9l-7 7-7-7"
-							/>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 						</svg>
 					</div>
 				</Collapsible.Trigger>

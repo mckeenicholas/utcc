@@ -1,15 +1,17 @@
 <script lang="ts">
-import { DatePicker } from 'bits-ui';
-import { parseDate } from '@internationalized/date';
+	import { parseDate } from "@internationalized/date";
+	import { DatePicker } from "bits-ui";
 
-let {
-	selectedDate = $bindable(),
-	label = 'Competition Date'
-}: { selectedDate: string; label?: string } = $props();
+	let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: string; label?: string } = $props();
 </script>
 
 <DatePicker.Root
-	bind:value={() => parseDate(selectedDate), (date) => { selectedDate = date.toString()}}
+	bind:value={
+		() => parseDate(selectedDate),
+		(date) => {
+			selectedDate = date.toString();
+		}
+	}
 	weekdayFormat="short"
 	fixedWeeks={true}
 >
@@ -23,13 +25,13 @@ let {
 			{#snippet children({ segments })}
 				{#each segments as { part, value }, i (part + i)}
 					<div class="-m-0.5 inline-block select-none">
-						{#if part === 'literal'}
-							<DatePicker.Segment part={part} class="px-1 text-gray-500">
+						{#if part === "literal"}
+							<DatePicker.Segment {part} class="px-1 text-gray-500">
 								{value}
 							</DatePicker.Segment>
 						{:else}
 							<DatePicker.Segment
-								part={part}
+								{part}
 								class="rounded px-1 py-1 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 focus-visible:ring-0 focus-visible:ring-offset-0 aria-[valuetext=Empty]:text-gray-400"
 							>
 								{value}
@@ -87,7 +89,9 @@ let {
 								<DatePicker.GridHead>
 									<DatePicker.GridRow class="mb-1 flex w-full justify-between">
 										{#each weekdays as day (day)}
-											<DatePicker.HeadCell class="w-9 rounded-md text-xs font-normal text-gray-500">
+											<DatePicker.HeadCell
+												class="w-9 rounded-md text-xs font-normal text-gray-500"
+											>
 												<div>{day.slice(0, 2)}</div>
 											</DatePicker.HeadCell>
 										{/each}
@@ -98,7 +102,7 @@ let {
 										<DatePicker.GridRow class="flex w-full">
 											{#each weekDates as date (date)}
 												<DatePicker.Cell
-													date={date}
+													{date}
 													month={month.value}
 													class="relative h-9 w-9 p-0 text-center text-sm"
 												>

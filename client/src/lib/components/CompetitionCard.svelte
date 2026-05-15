@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { Competition } from '$lib/types';
-import { formatCompetitionDate } from '$lib/utils';
-import CubeIcon from './CubeIcon.svelte';
+	import type { Competition } from "$lib/types";
+	import { formatCompetitionDate } from "$lib/utils";
+	import CubeIcon from "./CubeIcon.svelte";
 
-interface Props {
-	competition: Competition;
-}
+	interface Props {
+		competition: Competition;
+	}
 
-let { competition }: Props = $props();
+	let { competition }: Props = $props();
 </script>
 
 <div class="overflow-hidden rounded-lg bg-white ps-6 shadow">
@@ -28,7 +28,7 @@ let { competition }: Props = $props();
 		</div>
 		<div class="ms-6 flex flex-wrap gap-2">
 			{#each competition.events as event (event)}
-				<CubeIcon event={event} class="text-lg text-gray-700" />
+				<CubeIcon {event} class="text-lg text-gray-700" />
 			{/each}
 		</div>
 	</div>

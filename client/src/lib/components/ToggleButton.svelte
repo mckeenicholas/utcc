@@ -1,11 +1,11 @@
 <script lang="ts">
-interface Props {
-	value: boolean;
-	leftLabel: string;
-	rightLabel: string;
-}
+	interface Props {
+		value: boolean;
+		leftLabel: string;
+		rightLabel: string;
+	}
 
-let { value = $bindable(), leftLabel, rightLabel }: Props = $props();
+	let { value = $bindable(), leftLabel, rightLabel }: Props = $props();
 </script>
 
 <div class="inline-flex rounded-md border border-gray-200 bg-white">

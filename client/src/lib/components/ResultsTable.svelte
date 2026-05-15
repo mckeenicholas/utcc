@@ -1,61 +1,59 @@
 <script lang="ts">
-import type { Result, WCAEvent, CompetitionResults, PersonResult } from '$lib/types';
-import { eventNames, eventSolves } from '$lib/types';
-import { compareResults, getMeanType, renderTime, sortEvents } from '$lib/utils';
+	import type { Result, WCAEvent, CompetitionResults, PersonResult } from "$lib/types";
+	import { eventNames, eventSolves } from "$lib/types";
+	import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
 
-interface Props {
-	competitionResults: CompetitionResults | null;
-	onEdit: (result: Result) => void;
-	onDelete: (resultId: number) => void;
-}
+	interface Props {
+		competitionResults: CompetitionResults | null;
+		onEdit: (result: Result) => void;
+		onDelete: (resultId: number) => void;
+	}
 
-let { competitionResults, onEdit, onDelete }: Props = $props();
+	let { competitionResults, onEdit, onDelete }: Props = $props();
 
-const resultsObj = $derived.by(() => {
-	if (!competitionResults) return null;
+	const resultsObj = $derived.by(() => {
+		if (!competitionResults) {
+			return null;
+		}
 
-	return {
-		...competitionResults,
-		results: competitionResults.results
-			.map((event) => ({
-				...event,
-				rounds: event.rounds
-					.map((round) => ({
-						...round,
-						results: [...round.results].sort(compareResults)
-					}))
-					.sort((a, b) => a.round - b.round)
-			}))
-			.sort((a, b) => sortEvents(a.event, b.event))
+		return {
+			...competitionResults,
+			results: competitionResults.results
+				.map((event) =>
+					Object.assign(event, {
+						rounds: event.rounds
+							.map((round) => ({
+								...round,
+								results: [...round.results].toSorted(compareResults),
+							}))
+							.toSorted((a, b) => a.round - b.round),
+					}),
+				)
+				.toSorted((a, b) => sortEvents(a.event, b.event)),
+		};
+	});
+
+	const getAttemptCount = (event: WCAEvent): number => {
+		return eventSolves[event] || 5;
 	};
-});
 
-const getAttemptCount = (event: WCAEvent): number => {
-	return eventSolves[event] || 5;
-};
-
-const convertToResult = (
-	personResult: PersonResult,
-	event: WCAEvent,
-	round: number,
-	compId: number
-): Result => {
-	return {
-		id: personResult.id,
-		person_name: personResult.person_name,
-		person: personResult.person,
-		competition: compId,
-		event,
-		round,
-		time1: personResult.times[0] || 0,
-		time2: personResult.times[1] || 0,
-		time3: personResult.times[2] || 0,
-		time4: personResult.times[3] || 0,
-		time5: personResult.times[4] || 0,
-		single: personResult.single,
-		average: personResult.average
+	const convertToResult = (personResult: PersonResult, event: WCAEvent, round: number, compId: number): Result => {
+		return {
+			id: personResult.id,
+			person_name: personResult.person_name,
+			person: personResult.person,
+			competition: compId,
+			event,
+			round,
+			time1: personResult.times[0] || 0,
+			time2: personResult.times[1] || 0,
+			time3: personResult.times[2] || 0,
+			time4: personResult.times[3] || 0,
+			time5: personResult.times[4] || 0,
+			single: personResult.single,
+			average: personResult.average,
+		};
 	};
-};
 </script>
 
 <div class="rounded-lg bg-white p-6 shadow-sm">
@@ -90,8 +88,12 @@ const convertToResult = (
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 2</th>
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 3</th>
 										{#if eventAttempts == 5}
-											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 4</th>
-											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Time 5</th>
+											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700"
+												>Time 4</th
+											>
+											<th class="px-4 py-3 text-right text-sm font-medium text-gray-700"
+												>Time 5</th
+											>
 										{/if}
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700">Single</th>
 										<th class="px-4 py-3 text-right text-sm font-medium text-gray-700"
@@ -103,11 +105,11 @@ const convertToResult = (
 								<tbody>
 									{#each round.results as personResult, idx (idx)}
 										{@const result = convertToResult(
-												personResult,
-												eventResult.event,
-												round.round,
-												resultsObj!.competition.id
-											)}
+											personResult,
+											eventResult.event,
+											round.round,
+											resultsObj!.competition.id,
+										)}
 										<tr class="hover: border-b border-gray-100">
 											<td class="px-4 py-3 text-sm text-gray-900">{personResult.person_name}</td>
 											<td class="px-4 py-3 text-right text-sm text-gray-900"

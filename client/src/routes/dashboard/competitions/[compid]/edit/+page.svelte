@@ -1,85 +1,87 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
-import { page } from '$app/stores';
-import authFetch from '$lib/authFetch';
-import { fetchSessions } from '$lib/competitionSessionService';
-import DateForm from '$lib/components/DateForm.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import SessionSelector from '$lib/components/SessionSelector.svelte';
-import type { Competition, Session } from '$lib/types';
-import { BASE_URL, checkLoginStatus, fetchJson } from '$lib/utils';
-import { onMount } from 'svelte';
+	import type { Competition, Session } from "$lib/types";
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+	import authFetch from "$lib/authFetch";
+	import { fetchSessions } from "$lib/competitionSessionService";
+	import DateForm from "$lib/components/DateForm.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import SessionSelector from "$lib/components/SessionSelector.svelte";
+	import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
+	import { onMount } from "svelte";
 
-const id = $page.params.compid;
+	const id = $page.params.compid;
 
-let competitionData: Competition | null = $state(null);
-let isLoading = $state(true);
-let errorMessage = $state<string | null>(null);
-let selectedEditSession: string = $state('-1');
-let sessions: Session[] = $state([]);
+	let competitionData: Competition | null = $state(null);
+	let isLoading = $state(true);
+	let currentErrorMessage = $state<string | null>(null);
+	let selectedEditSession: string = $state("-1");
+	let sessions: Session[] = $state([]);
 
-onMount(async () => {
-	try {
-		const [competitionDataResponse, sessionsResponse, loggedIn] = await Promise.all([
-			fetchJson<Competition>(`${BASE_URL}/api/competitions/${id}/`),
-			fetchSessions(),
-			checkLoginStatus()
-		]);
+	onMount(async () => {
+		try {
+			const [competitionDataResponse, sessionsResponse, loggedIn] = await Promise.all([
+				fetchJson<Competition>(`${BASE_URL}/api/competitions/${id}/`),
+				fetchSessions(),
+				checkLoginStatus(),
+			]);
 
-		if (!loggedIn) {
-			goto('/dashboard/signin');
+			if (!loggedIn) {
+				goto("/dashboard/signin");
+			}
+
+			competitionData = competitionDataResponse;
+			sessions = sessionsResponse;
+
+			selectedEditSession = competitionData.session ? competitionData.session.toString() : "-1";
+		} catch (error) {
+			currentErrorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+			console.error(error);
+		} finally {
+			isLoading = false;
+		}
+	});
+
+	const updateCompetitionData = async () => {
+		if (!competitionData) {
+			return;
 		}
 
-		competitionData = competitionDataResponse;
-		sessions = sessionsResponse;
+		currentErrorMessage = null;
 
-		selectedEditSession = competitionData.session ? competitionData.session.toString() : '-1';
-	} catch (error) {
-		errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-		console.error(error);
-	} finally {
-		isLoading = false;
-	}
-});
+		try {
+			const sessionIdToSubmit = selectedEditSession === "-1" ? null : parseInt(selectedEditSession);
 
-const updateCompetitionData = async () => {
-	if (!competitionData) return;
+			const payload = {
+				name: competitionData.name,
+				date: competitionData.date,
+				session: sessionIdToSubmit,
+			};
 
-	errorMessage = null;
+			const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
 
-	try {
-		const sessionIdToSubmit = selectedEditSession === '-1' ? null : parseInt(selectedEditSession);
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
 
-		const payload = {
-			name: competitionData.name,
-			date: competitionData.date,
-			session: sessionIdToSubmit
-		};
+				const errorMessage = Object.entries(errorData).reduce(
+					(prev, [field, msg]) => `${prev}\n${field}: ${msg}`,
+					"",
+				);
+				throw new Error(errorMessage);
+			}
 
-		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(payload)
-		});
-
-		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}));
-
-			const errorMessage = Object.entries(errorData).reduce(
-				(prev, [field, msg]) => `${prev}\n${field}: ${msg}`,
-				''
-			);
-			throw new Error(errorMessage);
+			goto("/dashboard/competitions");
+		} catch (error) {
+			currentErrorMessage = error instanceof Error ? error.message : "An update error occurred.";
+			console.error(error);
 		}
-
-		goto('/dashboard/competitions');
-	} catch (error) {
-		errorMessage = error instanceof Error ? error.message : 'An update error occurred.';
-		console.error(error);
-	}
-};
+	};
 </script>
 
 {#if isLoading}
@@ -108,16 +110,11 @@ const updateCompetitionData = async () => {
 				</div>
 			</div>
 
-			{#if errorMessage}
+			{#if currentErrorMessage}
 				<div class="mb-6 rounded-md border border-red-200 bg-red-50 p-4">
 					<div class="flex">
 						<div class="shrink-0">
-							<svg
-								class="h-5 w-5 text-red-400"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
+							<svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -129,7 +126,7 @@ const updateCompetitionData = async () => {
 						<div class="ml-3">
 							<h3 class="text-sm font-medium text-red-800">Error</h3>
 							<div class="mt-2 text-sm text-red-700">
-								{errorMessage}
+								{currentErrorMessage}
 							</div>
 						</div>
 					</div>

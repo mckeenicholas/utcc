@@ -1,83 +1,87 @@
 <script lang="ts">
-import { fetchUsers, searchUsersByName } from '$lib/userService';
-import type { User } from '$lib/types';
-import { PAGINATION_SIZE } from '$lib/utils';
-import PublicUserCard from '$lib/components/PublicUserCard.svelte';
-import PaginationControls from '$lib/components/PaginationControls.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import Backbutton from '$lib/components/Backbutton.svelte';
-import { onMount } from 'svelte';
+	import type { User } from "$lib/types";
+	import Backbutton from "$lib/components/Backbutton.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import PaginationControls from "$lib/components/PaginationControls.svelte";
+	import PublicUserCard from "$lib/components/PublicUserCard.svelte";
+	import { fetchUsers, searchUsersByName } from "$lib/userService";
+	import { PAGINATION_SIZE } from "$lib/utils";
+	import { onMount } from "svelte";
 
-// State Management
-let users: User[] = $state([]);
-let searchTerm = $state('');
-let loading = $state(false);
-let isSearching = $state(false);
-let searchTimeout: number | null = null;
+	// State Management
+	let users: User[] = $state([]);
+	let searchTerm = $state("");
+	let loading = $state(false);
+	let isSearching = $state(false);
+	let searchTimeout: number | null = null;
 
-// Pagination State
-let currentPage = $state(1);
-let totalPages = $state(1);
-let hasNext = $state(false);
-let hasPrevious = $state(false);
-let totalCount = $state(0);
+	// Pagination State
+	let currentPage = $state(1);
+	let totalPages = $state(1);
+	let hasNext = $state(false);
+	let hasPrevious = $state(false);
+	let totalCount = $state(0);
 
-const loadUsers = async (page: number = 1) => {
-	loading = true;
-	try {
-		const data = await fetchUsers(page);
-		users = data.results;
-		currentPage = page;
-		totalCount = data.count;
-		hasNext = !!data.next;
-		hasPrevious = !!data.previous;
-		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-	} catch (error) {
-		console.error('Failed to load users:', error);
-		users = [];
-	} finally {
-		loading = false;
-		isSearching = false;
-	}
-};
+	const loadUsers = async (page: number = 1) => {
+		loading = true;
+		try {
+			const data = await fetchUsers(page);
+			users = data.results;
+			currentPage = page;
+			totalCount = data.count;
+			hasNext = !!data.next;
+			hasPrevious = !!data.previous;
+			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+		} catch (error) {
+			console.error("Failed to load users:", error);
+			users = [];
+		} finally {
+			loading = false;
+			isSearching = false;
+		}
+	};
 
-const performSearch = async (query: string) => {
-	isSearching = true;
-	loading = true;
-	try {
-		users = await searchUsersByName(query);
-		// Reset pagination for search results
-		currentPage = 1;
-		totalPages = 1;
-		hasNext = false;
-		hasPrevious = false;
-		totalCount = users.length;
-	} catch (error) {
-		console.error('Search failed:', error);
-		users = [];
-	} finally {
-		loading = false;
-	}
-};
+	const performSearch = async (query: string) => {
+		isSearching = true;
+		loading = true;
+		try {
+			users = await searchUsersByName(query);
+			// Reset pagination for search results
+			currentPage = 1;
+			totalPages = 1;
+			hasNext = false;
+			hasPrevious = false;
+			totalCount = users.length;
+		} catch (error) {
+			console.error("Search failed:", error);
+			users = [];
+		} finally {
+			loading = false;
+		}
+	};
 
-onMount(() => {
-	loadUsers(1);
-});
+	onMount(() => {
+		loadUsers(1);
+	});
 
-$effect(() => {
-	if (searchTimeout) clearTimeout(searchTimeout);
+	$effect(() => {
+		if (searchTimeout) {
+			clearTimeout(searchTimeout);
+		}
 
-	const query = searchTerm.trim();
-	if (!query) {
-		// If search term is cleared, fetch all users again
-		if (isSearching) loadUsers(1);
-		return;
-	}
+		const query = searchTerm.trim();
+		if (!query) {
+			// If search term is cleared, fetch all users again
+			if (isSearching) {
+				loadUsers(1);
+			}
+			return;
+		}
 
-	searchTimeout = setTimeout(() => {
-		performSearch(query);
-	}, 300); // 300ms debounce
-});
+		searchTimeout = setTimeout(() => {
+			performSearch(query);
+		}, 300); // 300ms debounce
+	});
 </script>
 
 <svelte:head>
@@ -97,9 +101,7 @@ $effect(() => {
 		<div class="mt-4 rounded-lg bg-white px-6 py-4 shadow-sm">
 			<h2 class="mb-4 text-xl font-semibold text-gray-800">Search Competitors</h2>
 			<div>
-				<label for="search-users" class="block text-sm font-medium text-gray-700">
-					Search by name
-				</label>
+				<label for="search-users" class="block text-sm font-medium text-gray-700"> Search by name </label>
 				<input
 					id="search-users"
 					placeholder="Type to search competitors..."
@@ -109,10 +111,7 @@ $effect(() => {
 			</div>
 
 			{#if loading}
-				<LoadingScreen
-					message={isSearching ? 'Searching...' : 'Loading competitors...'}
-					inline={true}
-				/>
+				<LoadingScreen message={isSearching ? "Searching..." : "Loading competitors..."} inline={true} />
 			{:else if users.length > 0}
 				<div class="mt-4 space-y-2">
 					<h3 class="text-sm font-medium text-gray-700">
@@ -120,7 +119,7 @@ $effect(() => {
 					</h3>
 					<div class="mb-4 grid gap-4">
 						{#each users as user (user.id)}
-							<PublicUserCard user={user} />
+							<PublicUserCard {user} />
 						{/each}
 					</div>
 				</div>
@@ -129,12 +128,12 @@ $effect(() => {
 					{#if totalPages > 1}
 						<div>
 							<PaginationControls
-								currentPage={currentPage}
-								totalPages={totalPages}
-								totalCount={totalCount}
+								{currentPage}
+								{totalPages}
+								{totalCount}
 								itemsPerPage={PAGINATION_SIZE}
-								hasNext={hasNext}
-								hasPrevious={hasPrevious}
+								{hasNext}
+								{hasPrevious}
 								onPageChange={loadUsers}
 								onNext={() => loadUsers(currentPage + 1)}
 								onPrevious={() => loadUsers(currentPage - 1)}

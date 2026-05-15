@@ -1,77 +1,79 @@
 <script lang="ts">
-import type { Competition, Paginated, Session } from '$lib/types';
-import { BASE_URL, fetchJson, PAGINATION_SIZE } from '$lib/utils';
-import { onMount } from 'svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import CompetitionCard from '$lib/components/CompetitionCard.svelte';
-import Backbutton from '$lib/components/Backbutton.svelte';
-import PaginationControls from '$lib/components/PaginationControls.svelte';
-import SessionSelector from '$lib/components/SessionSelector.svelte';
-import { fetchSessions } from '$lib/competitionSessionService';
+	import type { Competition, Paginated, Session } from "$lib/types";
+	import { fetchSessions } from "$lib/competitionSessionService";
+	import Backbutton from "$lib/components/Backbutton.svelte";
+	import CompetitionCard from "$lib/components/CompetitionCard.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import PaginationControls from "$lib/components/PaginationControls.svelte";
+	import SessionSelector from "$lib/components/SessionSelector.svelte";
+	import { BASE_URL, fetchJson, PAGINATION_SIZE } from "$lib/utils";
+	import { onMount } from "svelte";
 
-let competitions: Competition[] = $state([]);
-let loading = $state(true);
-let error = $state<string | null>(null);
-let currentPage = $state(1);
-let totalPages = $state(1);
-let hasNext = $state(false);
-let hasPrevious = $state(false);
-let totalCount = $state(0);
-let allSessions: Session[] = $state([]);
-let selectedSession: string = $state('-1');
+	let competitions: Competition[] = $state([]);
+	let loading = $state(true);
+	let error = $state<string | null>(null);
+	let currentPage = $state(1);
+	let totalPages = $state(1);
+	let hasNext = $state(false);
+	let hasPrevious = $state(false);
+	let totalCount = $state(0);
+	let allSessions: Session[] = $state([]);
+	let selectedSession: string = $state("-1");
 
-$effect(() => {
-	if (selectedSession) {
-		fetchCompetitions(currentPage, parseInt(selectedSession));
-	}
-});
+	$effect(() => {
+		if (selectedSession) {
+			fetchCompetitions(currentPage, parseInt(selectedSession));
+		}
+	});
 
-const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
-	loading = true;
-	error = null;
+	const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
+		loading = true;
+		error = null;
 
-	try {
-		const url = new URL(`${BASE_URL}/api/competitions/`);
-		url.searchParams.set('page', page.toString());
-		if (sessionId !== -1) url.searchParams.set('session_id', sessionId.toString());
+		try {
+			const url = new URL(`${BASE_URL}/api/competitions/`);
+			url.searchParams.set("page", page.toString());
+			if (sessionId !== -1) {
+				url.searchParams.set("session_id", sessionId.toString());
+			}
 
-		const data = await fetchJson<Paginated<Competition>>(url);
+			const data = await fetchJson<Paginated<Competition>>(url);
 
-		competitions = data.results;
-		currentPage = page;
-		totalCount = data.count;
-		hasNext = !!data.next;
-		hasPrevious = !!data.previous;
-		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-	} catch (err) {
-		console.error('Error fetching competitions:', err);
-		error = 'Failed to load competitions. Please try again later.';
-	} finally {
-		loading = false;
-	}
-};
+			competitions = data.results;
+			currentPage = page;
+			totalCount = data.count;
+			hasNext = !!data.next;
+			hasPrevious = !!data.previous;
+			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+		} catch (err) {
+			console.error("Error fetching competitions:", err);
+			error = "Failed to load competitions. Please try again later.";
+		} finally {
+			loading = false;
+		}
+	};
 
-onMount(async () => {
-	allSessions = await fetchSessions();
-});
+	onMount(async () => {
+		allSessions = await fetchSessions();
+	});
 
-const goToNextPage = () => {
-	if (hasNext) {
-		fetchCompetitions(currentPage + 1, parseInt(selectedSession));
-	}
-};
+	const goToNextPage = () => {
+		if (hasNext) {
+			fetchCompetitions(currentPage + 1, parseInt(selectedSession));
+		}
+	};
 
-const goToPreviousPage = () => {
-	if (hasPrevious) {
-		fetchCompetitions(currentPage - 1, parseInt(selectedSession));
-	}
-};
+	const goToPreviousPage = () => {
+		if (hasPrevious) {
+			fetchCompetitions(currentPage - 1, parseInt(selectedSession));
+		}
+	};
 
-const goToPage = (page: number) => {
-	if (page >= 1 && page <= totalPages) {
-		fetchCompetitions(page, parseInt(selectedSession));
-	}
-};
+	const goToPage = (page: number) => {
+		if (page >= 1 && page <= totalPages) {
+			fetchCompetitions(page, parseInt(selectedSession));
+		}
+	};
 </script>
 
 <svelte:head>
@@ -117,19 +119,19 @@ const goToPage = (page: number) => {
 			<!-- Competitions List -->
 			<div class="space-y-4">
 				{#each competitions as competition (competition.id)}
-					<CompetitionCard competition={competition} />
+					<CompetitionCard {competition} />
 				{/each}
 			</div>
 
 			{#if totalPages > 1}
 				<div class="mt-4 rounded-md bg-white p-4 shadow">
 					<PaginationControls
-						currentPage={currentPage}
-						totalPages={totalPages}
-						totalCount={totalCount}
+						{currentPage}
+						{totalPages}
+						{totalCount}
 						itemsPerPage={PAGINATION_SIZE}
-						hasNext={hasNext}
-						hasPrevious={hasPrevious}
+						{hasNext}
+						{hasPrevious}
 						onPageChange={goToPage}
 						onNext={goToNextPage}
 						onPrevious={goToPreviousPage}

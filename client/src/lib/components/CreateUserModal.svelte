@@ -1,39 +1,41 @@
 <script lang="ts">
-import { type User } from '$lib/types';
-import { createUser } from '$lib/userService';
+	import { type User } from "$lib/types";
+	import { createUser } from "$lib/userService";
 
-let {
-	show,
-	initialName = '',
-	onClose,
-	onUserCreated
-}: {
-	show: boolean;
-	initialName?: string;
-	onClose: () => void;
-	onUserCreated: (user: User) => void;
-} = $props();
+	let {
+		show,
+		initialName = "",
+		onClose,
+		onUserCreated,
+	}: {
+		show: boolean;
+		initialName?: string;
+		onClose: () => void;
+		onUserCreated: (user: User) => void;
+	} = $props();
 
-let creatingUser = $state(false);
-let isUofTStudent = $state(true);
+	let creatingUser = $state(false);
+	let isUofTStudent = $state(true);
 
-const handleCreateUser = async () => {
-	if (!initialName.trim()) return;
-	creatingUser = true;
-
-	try {
-		const response = await createUser(initialName, isUofTStudent);
-		if (response.ok) {
-			const newUser: User = await response.json();
-			onUserCreated(newUser);
-			onClose();
+	const handleCreateUser = async () => {
+		if (!initialName.trim()) {
+			return;
 		}
-	} catch (error) {
-		console.error('Failed to create user:', error);
-	} finally {
-		creatingUser = false;
-	}
-};
+		creatingUser = true;
+
+		try {
+			const response = await createUser(initialName, isUofTStudent);
+			if (response.ok) {
+				const newUser: User = await response.json();
+				onUserCreated(newUser);
+				onClose();
+			}
+		} catch (error) {
+			console.error("Failed to create user:", error);
+		} finally {
+			creatingUser = false;
+		}
+	};
 </script>
 
 {#if show}
@@ -49,15 +51,8 @@ const handleCreateUser = async () => {
 				class="w-full rounded-md border border-gray-300 px-3 py-2"
 			/>
 			<div class="mt-2 flex flex-row items-center">
-				<label for="student-status" class="text-sm font-medium text-gray-700">
-					Is UofT Student?
-				</label>
-				<input
-					id="student-status"
-					class="ms-2 h-4 w-4"
-					type="checkbox"
-					bind:checked={isUofTStudent}
-				/>
+				<label for="student-status" class="text-sm font-medium text-gray-700"> Is UofT Student? </label>
+				<input id="student-status" class="ms-2 h-4 w-4" type="checkbox" bind:checked={isUofTStudent} />
 			</div>
 
 			<div class="mt-4 flex justify-end space-x-2">
@@ -67,7 +62,7 @@ const handleCreateUser = async () => {
 					disabled={creatingUser || !initialName.trim()}
 					class="rounded-md bg-green-600 px-4 py-2 text-white disabled:bg-gray-400"
 				>
-					{creatingUser ? 'Creating...' : 'Create User'}
+					{creatingUser ? "Creating..." : "Create User"}
 				</button>
 			</div>
 		</div>

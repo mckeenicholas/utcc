@@ -1,82 +1,73 @@
 <script lang="ts">
-import type {
-	EventRecords,
-	RecordsApiResponse,
-	Session,
-	StudentStatus,
-	WCAEvent
-} from '$lib/types';
-import { fetchJson, recordsURL, sortEvents } from '$lib/utils';
-import { eventSolves, eventNames } from '$lib/types';
-import { onMount } from 'svelte';
-import RecordRow from '$lib/components/RecordRow.svelte';
-import Backbutton from '$lib/components/Backbutton.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import SessionSelector from '$lib/components/SessionSelector.svelte';
-import { fetchSessions } from '$lib/competitionSessionService';
-import UofTSelector from '$lib/components/UofTSelector.svelte';
+	import type { EventRecords, RecordsApiResponse, Session, StudentStatus, WCAEvent } from "$lib/types";
+	import { fetchSessions } from "$lib/competitionSessionService";
+	import Backbutton from "$lib/components/Backbutton.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import RecordRow from "$lib/components/RecordRow.svelte";
+	import SessionSelector from "$lib/components/SessionSelector.svelte";
+	import UofTSelector from "$lib/components/UofTSelector.svelte";
+	import { eventSolves, eventNames } from "$lib/types";
+	import { fetchJson, recordsURL, sortEvents } from "$lib/utils";
+	import { onMount } from "svelte";
 
-let recordsAPIResponse: RecordsApiResponse | null = $state(null);
-let selectedSession: string = $state('-1');
-let studentStatus: StudentStatus = $state('all');
-let sessions: Session[] = $state([]);
-let loading = $state(true);
+	let recordsAPIResponse: RecordsApiResponse | null = $state(null);
+	let selectedSession: string = $state("-1");
+	let studentStatus: StudentStatus = $state("all");
+	let sessions: Session[] = $state([]);
+	let loading = $state(true);
 
-let innerWidth = $state(0);
+	let innerWidth = $state(0);
 
-const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
-	const url = new URL(recordsURL);
-	if (sessionId !== -1) url.searchParams.set('session_id', sessionId.toString());
+	const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
+		const url = new URL(recordsURL);
+		if (sessionId !== -1) {
+			url.searchParams.set("session_id", sessionId.toString());
+		}
 
-	if (uoftStatus == 'uoft') {
-		url.searchParams.set('uoft', '1');
-	} else if (uoftStatus == 'non-uoft') {
-		url.searchParams.set('uoft', '0');
-	}
+		if (uoftStatus == "uoft") {
+			url.searchParams.set("uoft", "1");
+		} else if (uoftStatus == "non-uoft") {
+			url.searchParams.set("uoft", "0");
+		}
 
-	return url;
-};
+		return url;
+	};
 
-$effect(() => {
-	fetchRecords(parseInt(selectedSession), studentStatus);
-});
+	$effect(() => {
+		fetchRecords(parseInt(selectedSession), studentStatus);
+	});
 
-const fetchRecords = async (sessionId: number, uoftStatus: StudentStatus) => {
-	try {
-		loading = true;
-		recordsAPIResponse = await fetchJson<RecordsApiResponse>(
-			sessionRecordsURL(sessionId, uoftStatus)
-		);
-	} catch (error) {
-		console.error('Failed to fetch records:', error);
-	} finally {
-		loading = false;
-	}
-};
+	const fetchRecords = async (sessionId: number, uoftStatus: StudentStatus) => {
+		try {
+			loading = true;
+			recordsAPIResponse = await fetchJson<RecordsApiResponse>(sessionRecordsURL(sessionId, uoftStatus));
+		} catch (error) {
+			console.error("Failed to fetch records:", error);
+		} finally {
+			loading = false;
+		}
+	};
 
-onMount(async () => {
-	sessions = await fetchSessions();
-});
+	onMount(async () => {
+		sessions = await fetchSessions();
+	});
 
-let recordsDisplay = $derived.by(() => {
-	if (!recordsAPIResponse) {
-		return [];
-	}
+	let recordsDisplay = $derived.by(() => {
+		if (!recordsAPIResponse) {
+			return [];
+		}
 
-	const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
-	recordEntries.sort((a, b) => sortEvents(a[0] as WCAEvent, b[0] as WCAEvent));
-	return recordEntries;
-});
+		const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
+		recordEntries.sort((a, b) => sortEvents(a[0] as WCAEvent, b[0] as WCAEvent));
+		return recordEntries;
+	});
 </script>
 
-<svelte:window bind:innerWidth={innerWidth} />
+<svelte:window bind:innerWidth />
 
 <svelte:head>
 	<title>UofT Rubik's Cube Club Records</title>
-	<meta
-		name="description"
-		content="Current records from University of Toronto Rubik's Cube Club."
-	/>
+	<meta name="description" content="Current records from University of Toronto Rubik's Cube Club." />
 </svelte:head>
 
 <Backbutton />
@@ -135,10 +126,10 @@ let recordsDisplay = $derived.by(() => {
 								</thead>
 								<tbody class="divide-y divide-gray-200 bg-white">
 									{#if eventRecords.single}
-										<RecordRow record={eventRecords.single} eventKey={eventKey} type="Single" />
+										<RecordRow record={eventRecords.single} {eventKey} type="Single" />
 									{/if}
 									{#if eventRecords.average}
-										<RecordRow record={eventRecords.average} eventKey={eventKey} type="Average" />
+										<RecordRow record={eventRecords.average} {eventKey} type="Average" />
 									{/if}
 								</tbody>
 							</table>

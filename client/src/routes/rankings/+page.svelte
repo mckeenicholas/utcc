@@ -1,92 +1,96 @@
 <script lang="ts">
-import Backbutton from '$lib/components/Backbutton.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import PaginationControls from '$lib/components/PaginationControls.svelte';
-import RankingSelector from '$lib/components/RankingSelector.svelte';
-import {
-	eventNames,
-	eventSolves,
-	type Paginated,
-	type RecordInstance,
-	type StudentStatus,
-	type WCAEvent
-} from '$lib/types';
-import { BASE_URL, fetchJson, PAGINATION_SIZE, renderTime } from '$lib/utils';
-import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import Backbutton from "$lib/components/Backbutton.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import PaginationControls from "$lib/components/PaginationControls.svelte";
+	import RankingSelector from "$lib/components/RankingSelector.svelte";
+	import {
+		eventNames,
+		eventSolves,
+		type Paginated,
+		type RecordInstance,
+		type StudentStatus,
+		type WCAEvent,
+	} from "$lib/types";
+	import { BASE_URL, fetchJson, PAGINATION_SIZE, renderTime } from "$lib/utils";
+	import { SvelteURLSearchParams } from "svelte/reactivity";
 
-let selectedEvent: WCAEvent = $state('333');
-let isAverage = $state(false);
-let showAllResults = $state(false);
-let pageNum = $state(1);
-let selectedSession: string = $state('-1');
-let uoftStudentStatus: StudentStatus = $state('all');
+	let selectedEvent: WCAEvent = $state("333");
+	let isAverage = $state(false);
+	let showAllResults = $state(false);
+	let pageNum = $state(1);
+	let selectedSession: string = $state("-1");
+	let uoftStudentStatus: StudentStatus = $state("all");
 
-const eventName = $derived(eventNames[selectedEvent]);
+	const eventName = $derived(eventNames[selectedEvent]);
 
-let results: Paginated<RecordInstance> | null = $state(null);
-let loading = $state(true);
-let currentPage = $state(1);
-let totalPages = $state(1);
-let hasNext = $state(false);
-let hasPrevious = $state(false);
-let totalCount = $state(0);
+	let results: Paginated<RecordInstance> | null = $state(null);
+	let loading = $state(true);
+	let currentPage = $state(1);
+	let totalPages = $state(1);
+	let hasNext = $state(false);
+	let hasPrevious = $state(false);
+	let totalCount = $state(0);
 
-const fetchRankings = async (urlParams: URLSearchParams) => {
-	loading = true;
-	try {
-		const response = await fetchJson<Paginated<RecordInstance>>(
-			`${BASE_URL}/api/rankings/?${urlParams.toString()}`
-		);
+	const fetchRankings = async (urlParams: URLSearchParams) => {
+		loading = true;
+		try {
+			const response = await fetchJson<Paginated<RecordInstance>>(
+				`${BASE_URL}/api/rankings/?${urlParams.toString()}`,
+			);
 
-		results = response;
-		currentPage = pageNum;
-		totalCount = response.count;
-		hasNext = !!response.next;
-		hasPrevious = !!response.previous;
-		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-	} catch (error) {
-		console.error('Failed to fetch rankings:', error);
-		results = null;
-	} finally {
-		loading = false;
-	}
-};
+			results = response;
+			currentPage = pageNum;
+			totalCount = response.count;
+			hasNext = !!response.next;
+			hasPrevious = !!response.previous;
+			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+		} catch (error) {
+			console.error("Failed to fetch rankings:", error);
+			results = null;
+		} finally {
+			loading = false;
+		}
+	};
 
-const goToPage = (page: number) => {
-	if (page >= 1 && page <= totalPages) {
-		pageNum = page;
-	}
-};
+	const goToPage = (page: number) => {
+		if (page >= 1 && page <= totalPages) {
+			pageNum = page;
+		}
+	};
 
-const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
+	const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
 
-const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
+	const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
-$effect(() => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const _ = { selectedEvent, isAverage, showAllResults, selectedSession, uoftStudentStatus };
-	pageNum = 1;
-});
-
-$effect(() => {
-	if (!selectedSession) return;
-
-	const urlParams = new SvelteURLSearchParams({
-		event: selectedEvent,
-		type: isAverage ? 'average' : 'single',
-		all: showAllResults.toString(),
-		page: pageNum.toString()
+	$effect(() => {
+		// oxlint-disable-next-line @typescript-eslint/no-unused-vars
+		const _ = { selectedEvent, isAverage, showAllResults, selectedSession, uoftStudentStatus };
+		pageNum = 1;
 	});
 
-	if (selectedSession !== '-1') urlParams.append('session_id', selectedSession);
-	if (uoftStudentStatus == 'uoft') {
-		urlParams.append('uoft', '1');
-	} else if (uoftStudentStatus == 'non-uoft') {
-		urlParams.append('uoft', '0');
-	}
+	$effect(() => {
+		if (!selectedSession) {
+			return;
+		}
 
-	fetchRankings(urlParams);
-});
+		const urlParams = new SvelteURLSearchParams({
+			event: selectedEvent,
+			type: isAverage ? "average" : "single",
+			all: showAllResults.toString(),
+			page: pageNum.toString(),
+		});
+
+		if (selectedSession !== "-1") {
+			urlParams.append("session_id", selectedSession);
+		}
+		if (uoftStudentStatus == "uoft") {
+			urlParams.append("uoft", "1");
+		} else if (uoftStudentStatus == "non-uoft") {
+			urlParams.append("uoft", "0");
+		}
+
+		fetchRankings(urlParams);
+	});
 </script>
 
 <svelte:head>
@@ -102,8 +106,8 @@ $effect(() => {
 			<h1 class="text-3xl font-bold text-gray-900">Rankings for {eventName}</h1>
 		</div>
 		<RankingSelector
-			bind:isAverage={isAverage}
-			bind:selectedEvent={selectedEvent}
+			bind:isAverage
+			bind:selectedEvent
 			bind:showAll={showAllResults}
 			bind:session={selectedSession}
 			bind:studentStatus={uoftStudentStatus}
@@ -115,20 +119,17 @@ $effect(() => {
 				<table class="min-w-full divide-y divide-gray-200">
 					<thead>
 						<tr>
-							<th
-								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								>#</th
 							>
-							<th
-								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								>Name</th
 							>
 							<th
 								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								class:lg:ps-24={!isAverage}>Result</th
 							>
-							<th
-								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 								>Competition</th
 							>
 							{#if isAverage}
@@ -144,13 +145,10 @@ $effect(() => {
 					<tbody>
 						{#each results?.results as result, idx (idx)}
 							<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
-								<td
-									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
+								<td class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
 									>{result.rank}</td
 								>
-								<td
-									class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
-								>
+								<td class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900">
 									<a href="/persons/{result.person}" class="hover:text-gray-400">
 										{result.person_name}
 									</a></td
@@ -179,12 +177,12 @@ $effect(() => {
 				{#if totalPages > 1}
 					<div class="px-4 pt-2 pb-4">
 						<PaginationControls
-							currentPage={currentPage}
-							totalPages={totalPages}
-							totalCount={totalCount}
+							{currentPage}
+							{totalPages}
+							{totalCount}
 							itemsPerPage={PAGINATION_SIZE}
-							hasNext={hasNext}
-							hasPrevious={hasPrevious}
+							{hasNext}
+							{hasPrevious}
 							onPageChange={goToPage}
 							onNext={goToNextPage}
 							onPrevious={goToPreviousPage}

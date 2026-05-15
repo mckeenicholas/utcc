@@ -1,71 +1,69 @@
 <script lang="ts">
-import type { WCAEvent, Result } from '$lib/types';
-import { eventNames, eventSolves } from '$lib/types';
-import { Select } from 'bits-ui';
-import ResultEntryField from './ResultEntryField.svelte';
+	import type { WCAEvent, Result } from "$lib/types";
+	import { eventNames, eventSolves } from "$lib/types";
+	import { Select } from "bits-ui";
+	import ResultEntryField from "./ResultEntryField.svelte";
 
-interface Props {
-	formData: {
-		event: WCAEvent;
-		round: number;
-		time1: number;
-		time2: number;
-		time3: number;
-		time4: number;
-		time5: number;
-	};
-	editingResult: Result | null;
-	submitting: boolean;
-	onSubmit: () => void;
-	onCancel: () => void;
-	additionalValidation?: boolean;
-}
-
-let {
-	formData = $bindable(),
-	editingResult,
-	submitting,
-	onSubmit,
-	onCancel,
-	additionalValidation = true
-}: Props = $props();
-
-const getAttemptCount = (event: WCAEvent): number => {
-	return eventSolves[event] || 5;
-};
-
-const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
-	value: key,
-	label: name
-}));
-
-const selectedEventLabel = $derived.by(() => {
-	const selected = eventOptions.find((option) => option.value === formData.event);
-	return selected ? selected.label : 'Select an event';
-});
-
-const areRequiredFieldsFilled = $derived(
-	formData.event && formData.round > 0 && additionalValidation
-);
-
-const handleKeydown = (event: KeyboardEvent) => {
-	if (event.key === 'Enter') {
-		onSubmit();
-	} else if (event.key === 'ArrowUp' || event.key === '-') {
-		event.preventDefault();
-		const inputs = document.querySelectorAll('.time-input');
-		const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
-		const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
-		if (prevInput) {
-			prevInput.focus();
-		}
+	interface Props {
+		formData: {
+			event: WCAEvent;
+			round: number;
+			time1: number;
+			time2: number;
+			time3: number;
+			time4: number;
+			time5: number;
+		};
+		editingResult: Result | null;
+		submitting: boolean;
+		onSubmit: () => void;
+		onCancel: () => void;
+		additionalValidation?: boolean;
 	}
-};
+
+	let {
+		formData = $bindable(),
+		editingResult,
+		submitting,
+		onSubmit,
+		onCancel,
+		additionalValidation = true,
+	}: Props = $props();
+
+	const getAttemptCount = (event: WCAEvent): number => {
+		return eventSolves[event] || 5;
+	};
+
+	const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
+		value: key,
+		label: name,
+	}));
+
+	const selectedEventLabel = $derived.by(() => {
+		const selected = eventOptions.find((option) => option.value === formData.event);
+		return selected ? selected.label : "Select an event";
+	});
+
+	const areRequiredFieldsFilled = $derived(formData.event && formData.round > 0 && additionalValidation);
+
+	const handleKeydown = (event: KeyboardEvent) => {
+		if (event.key === "Enter") {
+			onSubmit();
+		} else if (event.key === "ArrowUp" || event.key === "-") {
+			event.preventDefault();
+			const inputs = document.querySelectorAll(".time-input");
+			const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
+			const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
+			if (prevInput) {
+				prevInput.focus();
+			}
+		}
+	};
 </script>
 
 <div class="my-4 flex items-center justify-between">
 	<h2 class="text-lg font-semibold text-gray-800">
-		{editingResult ? 'Edit Results' : 'Enter Results'}
+		{editingResult ? "Edit Results" : "Enter Results"}
 	</h2>
 </div>
 
@@ -78,18 +76,8 @@ const handleKeydown = (event: KeyboardEvent) => {
 				aria-label="Select an event"
 			>
 				<span>{selectedEventLabel}</span>
-				<svg
-					class="ml-2 h-4 w-4 shrink-0 text-gray-400"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M19 9l-7 7-7-7"
-					/>
+				<svg class="ml-2 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 				</svg>
 			</Select.Trigger>
 			<Select.Portal>
@@ -209,9 +197,9 @@ const handleKeydown = (event: KeyboardEvent) => {
 					d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 				/>
 			</svg>
-			{editingResult ? 'Updating...' : 'Submitting...'}
+			{editingResult ? "Updating..." : "Submitting..."}
 		{:else}
-			{editingResult ? 'Update Result' : 'Submit Result'}
+			{editingResult ? "Update Result" : "Submit Result"}
 		{/if}
 	</button>
 	{#if editingResult}

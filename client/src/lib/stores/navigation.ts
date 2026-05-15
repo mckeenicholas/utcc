@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 // This is used as a hacky way to "see" if the users last
 // page was on this site, by keeping track of their "page depth"

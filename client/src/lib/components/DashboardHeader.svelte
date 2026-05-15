@@ -1,5 +1,5 @@
 <script lang="ts">
-const { title, showBack = false }: { title: string; showBack?: boolean } = $props();
+	const { title, showBack = false }: { title: string; showBack?: boolean } = $props();
 </script>
 
 <div class="mb-8 flex items-center justify-between">

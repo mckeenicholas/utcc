@@ -1,38 +1,37 @@
 <script lang="ts">
-import type { User } from '$lib/types';
+	import type { User } from "$lib/types";
 
-interface Props {
-	user: User;
-	ondelete: (id: number) => void;
-	onsave: (id: number, name: string, studentStatus: boolean) => void;
-}
-
-let { user, ondelete, onsave }: Props = $props();
-
-let isEditing = $state(false);
-let editUserName = $state(user.name);
-let editUserStudentStatus = $state(user.is_uoft_student);
-
-const startEdit = () => {
-	editUserName = user.name;
-	isEditing = true;
-};
-
-const cancelEdit = () => {
-	isEditing = false;
-};
-
-const handleSave = () => {
-	if (editUserName.trim()) {
-		onsave(user.id, editUserName, editUserStudentStatus);
-		isEditing = false;
+	interface Props {
+		user: User;
+		ondelete: (id: number) => void;
+		onsave: (id: number, name: string, studentStatus: boolean) => void;
 	}
-};
+
+	let { user, ondelete, onsave }: Props = $props();
+
+	let isEditing = $state(false);
+	let editUserName = $state("");
+	let editUserStudentStatus = $state(false);
+
+	const startEdit = () => {
+		editUserName = user.name;
+		editUserStudentStatus = user.is_uoft_student;
+		isEditing = true;
+	};
+
+	const cancelEdit = () => {
+		isEditing = false;
+	};
+
+	const handleSave = () => {
+		if (editUserName.trim()) {
+			onsave(user.id, editUserName, editUserStudentStatus);
+			isEditing = false;
+		}
+	};
 </script>
 
-<div
-	class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
->
+<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
 	<div class="flex items-center justify-between">
 		<div class="flex items-center space-x-3">
 			<div
@@ -45,16 +44,12 @@ const handleSave = () => {
 					<div class="flex gap-4">
 						<input
 							bind:value={editUserName}
-							onkeydown={(e) => e.key === 'Enter' && handleSave()}
+							onkeydown={(e) => e.key === "Enter" && handleSave()}
 							class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 						/>
 						<div class="flex flex-col items-center justify-center">
 							<div>
-								<input
-									type="checkbox"
-									bind:checked={editUserStudentStatus}
-									id="is-student-{user.id}"
-								/>
+								<input type="checkbox" bind:checked={editUserStudentStatus} id="is-student-{user.id}" />
 								<label for="is-student-{user.id}">Is UofT Student?</label>
 							</div>
 						</div>
@@ -62,8 +57,8 @@ const handleSave = () => {
 				{:else}
 					<p class="text-sm font-medium text-gray-900">
 						{user.name}
-						<span class={editUserStudentStatus ? "text-green-500" : "text-red-500"}>
-							{editUserStudentStatus ? "UofT Student" : "Non UofT Student"}</span
+						<span class={user.is_uoft_student ? "text-green-500" : "text-red-500"}>
+							{user.is_uoft_student ? "UofT Student" : "Non UofT Student"}</span
 						>
 					</p>
 				{/if}

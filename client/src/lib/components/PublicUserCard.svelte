@@ -1,11 +1,11 @@
 <script lang="ts">
-import type { User } from '$lib/types';
+	import type { User } from "$lib/types";
 
-interface Props {
-	user: User;
-}
+	interface Props {
+		user: User;
+	}
 
-let { user }: Props = $props();
+	let { user }: Props = $props();
 </script>
 
 <a href="/persons/{user.id}">

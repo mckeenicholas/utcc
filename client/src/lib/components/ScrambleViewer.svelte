@@ -1,22 +1,22 @@
 <script lang="ts">
-import CubeViewer from '$lib/components/CubeViewer.svelte';
-import type { WCAEvent } from '$lib/types';
-import { formatScramble } from '$lib/utils';
+	import type { WCAEvent } from "$lib/types";
+	import CubeViewer from "$lib/components/CubeViewer.svelte";
+	import { formatScramble } from "$lib/utils";
 
-interface Props {
-	scrambles: string[];
-	extras: string[];
-	event: WCAEvent;
-}
+	interface Props {
+		scrambles: string[];
+		extras: string[];
+		event: WCAEvent;
+	}
 
-const { scrambles, extras, event }: Props = $props();
+	const { scrambles, extras, event }: Props = $props();
 
-// Store heights for each row
-let scrambleCellHeights: number[] = $state([]);
-let extraCellHeights: number[] = $state([]);
+	// Store heights for each row
+	let scrambleCellHeights: number[] = $state([]);
+	let extraCellHeights: number[] = $state([]);
 
-const cubeImageMaxHeight = $derived(Math.max(...scrambleCellHeights, ...extraCellHeights, 180));
-const cubeImageMaxWidth = $derived(cubeImageMaxHeight * 1.33);
+	const cubeImageMaxHeight = $derived(Math.max(...scrambleCellHeights, ...extraCellHeights, 180));
+	const cubeImageMaxWidth = $derived(cubeImageMaxHeight * 1.33);
 </script>
 
 <div>
@@ -31,7 +31,7 @@ const cubeImageMaxWidth = $derived(cubeImageMaxHeight * 1.33);
 							{#each scrambleFormatted.lines as scrambleLine, i (i)}
 								<p
 									class="mb-1 ps-2 font-mono text-xl font-bold whitespace-pre"
-									class:bg-neutral-300={i % 2 !== 0 && (scrambleFormatted.numLines > 4)}
+									class:bg-neutral-300={i % 2 !== 0 && scrambleFormatted.numLines > 4}
 								>
 									{scrambleLine}
 								</p>

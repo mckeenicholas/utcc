@@ -1,38 +1,32 @@
 <script lang="ts">
-import {
-	eventNames,
-	eventSolves,
-	type CompetitionResults,
-	type PersonResult,
-	type WCAEvent
-} from '$lib/types';
-import { compareResults, getMeanType, renderTime, sortEvents } from '$lib/utils';
+	import { eventNames, eventSolves, type CompetitionResults, type PersonResult, type WCAEvent } from "$lib/types";
+	import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
 
-const BREAKPOINT = 835;
+	const BREAKPOINT = 835;
 
-let { competitionResults }: { competitionResults: CompetitionResults } = $props();
+	let { competitionResults }: { competitionResults: CompetitionResults } = $props();
 
-let sortedResults = $derived(
-	competitionResults.results
-		.map(({ event, rounds }) => ({
-			event,
-			rounds: rounds.map(({ round, results }) => ({
-				round,
-				results: results.slice().sort((a, b) => compareResults(a, b))
+	let sortedResults = $derived(
+		competitionResults.results
+			.map(({ event, rounds }) => ({
+				event,
+				rounds: rounds.map(({ round, results }) => ({
+					round,
+					results: results.slice().toSorted((a, b) => compareResults(a, b)),
+				})),
 			}))
-		}))
-		.sort((a, b) => sortEvents(a.event, b.event))
-);
+			.toSorted((a, b) => sortEvents(a.event, b.event)),
+	);
 
-let innerWidth = $state<number>(0);
-let selectedPerson = $state<PersonResult | null>(null);
-let selectedEvent = $state<WCAEvent>('333');
-let showModal = $state<boolean>(false);
+	let innerWidth = $state<number>(0);
+	let selectedPerson = $state<PersonResult | null>(null);
+	let selectedEvent = $state<WCAEvent>("333");
+	let showModal = $state<boolean>(false);
 
-let trimResults = $derived(innerWidth < BREAKPOINT);
+	let trimResults = $derived(innerWidth < BREAKPOINT);
 </script>
 
-<svelte:window bind:innerWidth={innerWidth} />
+<svelte:window bind:innerWidth />
 <div class="space-y-6">
 	<div class="space-y-6">
 		{#each sortedResults as { event, rounds } (event)}
@@ -83,13 +77,13 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 											class="hover: transition-colors duration-150 ease-in-out hover:bg-gray-100"
 											class:cursor-pointer={trimResults}
 											onclick={(e) => {
-													if (!trimResults) return;
-													// Don't open modal if clicking on a link
-													if (e.target instanceof Element && e.target.closest('a')) return;
-													selectedPerson = roundPerson;
-													selectedEvent = event;
-													showModal = true;
-												}}
+												if (!trimResults) return;
+												// Don't open modal if clicking on a link
+												if (e.target instanceof Element && e.target.closest("a")) return;
+												selectedPerson = roundPerson;
+												selectedEvent = event;
+												showModal = true;
+											}}
 										>
 											<td
 												class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
@@ -132,12 +126,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 		{:else}
 			<div class="px-6 py-8 text-center">
 				<div class="text-gray-500">
-					<svg
-						class="mx-auto h-12 w-12 text-gray-400"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
+					<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -146,9 +135,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 						/>
 					</svg>
 					<h3 class="mt-2 text-sm font-medium text-gray-900">No Results Entered</h3>
-					<p class="mt-1 text-sm text-gray-500">
-						Results for this round have not been entered yet.
-					</p>
+					<p class="mt-1 text-sm text-gray-500">Results for this round have not been entered yet.</p>
 				</div>
 			</div>
 		{/each}
@@ -159,7 +146,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 	<div
 		class="bg-opacity-50 backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
 		onclick={() => (showModal = false)}
-		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+		onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 		aria-label="Close modal"
 		role="button"
 		tabindex="0"
@@ -170,7 +157,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 			aria-modal="true"
 			tabindex="0"
 			onclick={(e) => e.stopPropagation()}
-			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+			onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 		>
 			<div class="border-b border-gray-200 px-6 py-4">
 				<h3 class="text-lg font-semibold text-gray-900">{selectedPerson.person_name}</h3>
@@ -184,7 +171,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 							{selectedPerson.times
 								.filter((time) => time != 0)
 								.map(renderTime)
-								.join(', ')}
+								.join(", ")}
 						</div>
 						<div class="text-sm font-medium text-gray-700">Best Single:</div>
 						<div class="font-mono text-sm font-medium text-gray-900">
@@ -210,7 +197,7 @@ let trimResults = $derived(innerWidth < BREAKPOINT);
 {/if}
 
 <style>
-.backdrop {
-	background-color: rgba(0, 0, 0, 0.5);
-}
+	.backdrop {
+		background-color: rgba(0, 0, 0, 0.5);
+	}
 </style>

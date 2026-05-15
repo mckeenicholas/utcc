@@ -1,11 +1,11 @@
 <script lang="ts">
-import '../app.css';
-import { afterNavigate } from '$app/navigation';
-import { incrementNavigationCount } from '$lib/stores/navigation';
+	import "../app.css";
+	import { afterNavigate } from "$app/navigation";
+	import { incrementNavigationCount } from "$lib/stores/navigation";
 
-let { children } = $props();
+	let { children } = $props();
 
-afterNavigate(incrementNavigationCount);
+	afterNavigate(incrementNavigationCount);
 </script>
 
 {@render children()}

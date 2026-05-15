@@ -1,22 +1,22 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
-import { onMount } from 'svelte';
-import { checkLoginStatus } from '$lib/utils';
-import DashboardHeader from '$lib/components/DashboardHeader.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+	import { goto } from "$app/navigation";
+	import DashboardHeader from "$lib/components/DashboardHeader.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import { checkLoginStatus } from "$lib/utils";
+	import { onMount } from "svelte";
 
-let loading = $state(true);
+	let loading = $state(true);
 
-onMount(async () => {
-	const loggedIn = await checkLoginStatus();
+	onMount(async () => {
+		const loggedIn = await checkLoginStatus();
 
-	if (!loggedIn) {
-		goto('/dashboard/signin');
-		return;
-	}
+		if (!loggedIn) {
+			goto("/dashboard/signin");
+			return;
+		}
 
-	loading = false;
-});
+		loading = false;
+	});
 </script>
 
 {#if loading}
@@ -36,25 +36,16 @@ onMount(async () => {
 				>
 					<div class="flex items-center space-x-3">
 						<div>
-							<h2
-								class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-blue-600"
-							>
+							<h2 class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
 								Competition Management
 							</h2>
 							<p class="mt-1 text-sm text-gray-600">Create, manage, and view competition results</p>
 						</div>
 					</div>
-					<div
-						class="mt-4 flex items-center text-blue-600 transition-colors group-hover:text-blue-700"
-					>
+					<div class="mt-4 flex items-center text-blue-600 transition-colors group-hover:text-blue-700">
 						<span class="text-sm font-medium">Manage Competitions</span>
 						<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 5l7 7-7 7"
-							/>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 						</svg>
 					</div>
 				</a>
@@ -74,17 +65,10 @@ onMount(async () => {
 							<p class="mt-1 text-sm text-gray-600">Add, edit, and manage user accounts</p>
 						</div>
 					</div>
-					<div
-						class="mt-4 flex items-center text-green-600 transition-colors group-hover:text-green-700"
-					>
+					<div class="mt-4 flex items-center text-green-600 transition-colors group-hover:text-green-700">
 						<span class="text-sm font-medium">Manage Users</span>
 						<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 5l7 7-7 7"
-							/>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 						</svg>
 					</div>
 				</a>
@@ -104,17 +88,10 @@ onMount(async () => {
 							<p class="mt-1 text-sm text-gray-600">Add, edit, and manage academic sessions</p>
 						</div>
 					</div>
-					<div
-						class="mt-4 flex items-center text-orange-400 transition-colors group-hover:text-orange-500"
-					>
+					<div class="mt-4 flex items-center text-orange-400 transition-colors group-hover:text-orange-500">
 						<span class="text-sm font-medium">Manage Sessions</span>
 						<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 5l7 7-7 7"
-							/>
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 						</svg>
 					</div>
 				</a>

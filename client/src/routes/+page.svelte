@@ -1,9 +1,6 @@
 <svelte:head>
 	<title>UofT Rubik's Cube Club</title>
-	<meta
-		name="description"
-		content="Results website for the University of Toronto Rubik's Cube Club."
-	/>
+	<meta name="description" content="Results website for the University of Toronto Rubik's Cube Club." />
 </svelte:head>
 
 <div class="m-4">

@@ -1,58 +1,54 @@
 <script lang="ts">
-import type { Competition, Session } from '$lib/types';
-import { BASE_URL, fetchJson, formatCompetitionDate } from '$lib/utils';
-import LoadingScreen from './LoadingScreen.svelte';
+	import type { Competition, Session } from "$lib/types";
+	import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
+	import LoadingScreen from "./LoadingScreen.svelte";
 
-interface Props {
-	session: Session;
-	onDelete: (id: number) => void;
-	onSave: (id: number, name: string, date: string) => void;
-}
-
-let { session, onDelete, onSave }: Props = $props();
-
-let isEditing = $state(false);
-let editSessionName = $state(session.name);
-let editSessionDate = $state(session.start_date);
-let showModal = $state(false);
-let sessionCompetitions: Competition[] = $state([]);
-let competitionsLoading = $state(false);
-
-$effect(() => {
-	if (showModal) {
-		fetchSessionCompetitions();
+	interface Props {
+		session: Session;
+		onDelete: (id: number) => void;
+		onSave: (id: number, name: string, date: string) => void;
 	}
-});
 
-const fetchSessionCompetitions = async () => {
-	competitionsLoading = true;
-	sessionCompetitions = await fetchJson<Competition[]>(
-		`${BASE_URL}/api/session/${session.id}/competitions`
-	);
-	competitionsLoading = false;
-};
+	let { session, onDelete, onSave }: Props = $props();
 
-const startEdit = () => {
-	isEditing = true;
-};
+	let isEditing = $state(false);
+	let editSessionName = $state("");
+	let editSessionDate = $state("");
+	let showModal = $state(false);
+	let sessionCompetitions: Competition[] = $state([]);
+	let competitionsLoading = $state(false);
 
-const cancelEdit = () => {
-	isEditing = false;
-};
+	$effect(() => {
+		if (showModal) {
+			fetchSessionCompetitions();
+		}
+	});
 
-const handleSave = () => {
-	if (editSessionName.trim()) {
-		onSave(session.id, editSessionName.trim(), editSessionDate);
+	const fetchSessionCompetitions = async () => {
+		competitionsLoading = true;
+		sessionCompetitions = await fetchJson<Competition[]>(`${BASE_URL}/api/session/${session.id}/competitions`);
+		competitionsLoading = false;
+	};
+
+	const startEdit = () => {
+		editSessionName = session.name;
+		editSessionDate = session.start_date;
+		isEditing = true;
+	};
+
+	const cancelEdit = () => {
 		isEditing = false;
-	} else {
+	};
+
+	const handleSave = () => {
+		if (editSessionName.trim()) {
+			onSave(session.id, editSessionName.trim(), editSessionDate);
+		}
 		isEditing = false;
-	}
-};
+	};
 </script>
 
-<div
-	class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
->
+<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
 	<div class="flex items-center justify-between">
 		<div class="flex items-center space-x-3">
 			<div
@@ -64,7 +60,7 @@ const handleSave = () => {
 				{#if isEditing}
 					<input
 						bind:value={editSessionName}
-						onkeydown={(e) => e.key === 'Enter' && handleSave()}
+						onkeydown={(e) => e.key === "Enter" && handleSave()}
 						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 					/>
 					<input type="date" bind:value={editSessionDate} class="ms-2" />
@@ -91,7 +87,9 @@ const handleSave = () => {
 				</button>
 			{:else}
 				<button
-					onclick={() => {showModal = true}}
+					onclick={() => {
+						showModal = true;
+					}}
 					class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200"
 				>
 					View Competitions
@@ -117,7 +115,7 @@ const handleSave = () => {
 	<div
 		class="bg-opacity-50 backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
 		onclick={() => (showModal = false)}
-		onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+		onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 		aria-label="Close modal"
 		role="button"
 		tabindex="0"
@@ -128,7 +126,7 @@ const handleSave = () => {
 			aria-modal="true"
 			tabindex="0"
 			onclick={(e) => e.stopPropagation()}
-			onkeydown={(e) => e.key === 'Escape' && (showModal = false)}
+			onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 		>
 			<div class="border-b border-gray-200 px-6 py-4">
 				<h3 class="text-lg font-semibold text-gray-900">{session.name}</h3>

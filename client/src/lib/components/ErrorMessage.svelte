@@ -1,9 +1,9 @@
 <script lang="ts">
-interface Props {
-	message: string | null;
-}
+	interface Props {
+		message: string | null;
+	}
 
-let { message }: Props = $props();
+	let { message }: Props = $props();
 </script>
 
 {#if message}

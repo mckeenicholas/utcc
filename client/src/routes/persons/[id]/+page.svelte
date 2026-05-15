@@ -1,55 +1,51 @@
 <script lang="ts">
-import { page } from '$app/stores';
-import Backbutton from '$lib/components/Backbutton.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import PersonalRecordsTable from '$lib/components/PersonalRecordsTable.svelte';
-import CompetitionResultsTable from '$lib/components/CompetitionResultsTable.svelte';
-import {
-	type ProfileResponse,
-	type Session,
-	type UserProfileResponse,
-	type WCAEvent
-} from '$lib/types';
-import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from '$lib/utils';
-import SessionSelector from '$lib/components/SessionSelector.svelte';
+	import { page } from "$app/stores";
+	import Backbutton from "$lib/components/Backbutton.svelte";
+	import CompetitionResultsTable from "$lib/components/CompetitionResultsTable.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import PersonalRecordsTable from "$lib/components/PersonalRecordsTable.svelte";
+	import SessionSelector from "$lib/components/SessionSelector.svelte";
+	import { type ProfileResponse, type Session, type UserProfileResponse, type WCAEvent } from "$lib/types";
+	import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from "$lib/utils";
 
-const personId = $page.params.id;
-let selectedEvent: WCAEvent = $state('333');
-let selectedSession: string = $state('-1');
-let profileResults = $state<UserProfileResponse | null>(null);
-let allSessions: Session[] = $state([]);
-let loading = $state(true);
-let error = $state('');
+	const personId = $page.params.id;
+	let selectedEvent: WCAEvent = $state("333");
+	let selectedSession: string = $state("-1");
+	let profileResults = $state<UserProfileResponse | null>(null);
+	let allSessions: Session[] = $state([]);
+	let loading = $state(true);
+	let error = $state("");
 
-const fetchProfileResults = async (session_id: string) => {
-	try {
-		const url = new URL(`${BASE_URL}/api/users/${personId}/results/`);
+	const fetchProfileResults = async (session_id: string) => {
+		try {
+			const url = new URL(`${BASE_URL}/api/users/${personId}/results/`);
 
-		if (session_id !== '-1') url.searchParams.append('session_id', session_id);
+			if (session_id !== "-1") {
+				url.searchParams.append("session_id", session_id);
+			}
 
-		const response = await fetchJson<ProfileResponse>(url);
+			const response = await fetchJson<ProfileResponse>(url);
 
-		allSessions = response.person.sessions;
+			allSessions = response.person.sessions;
 
-		const personalRecords = processPersonalRecords(response.records);
-		const resultsTableContent = response.results.map(generateRecordsForEvent);
+			const personalRecords = processPersonalRecords(response.records);
+			const resultsTableContent = response.results.map(generateRecordsForEvent);
 
-		profileResults = {
-			records: personalRecords,
-			results: resultsTableContent,
-			name: response.person.name
-		} as unknown as UserProfileResponse;
-	} catch (err) {
-		console.log('Error fetching user profile', err);
-		error = 'Unable to fetch user profile.';
-	} finally {
-		loading = false;
-	}
-};
+			profileResults = {
+				records: personalRecords,
+				results: resultsTableContent,
+				name: response.person.name,
+			} as unknown as UserProfileResponse;
+		} catch (err) {
+			error = "Unable to fetch user profile.";
+		} finally {
+			loading = false;
+		}
+	};
 
-$effect(() => {
-	fetchProfileResults(selectedSession);
-});
+	$effect(() => {
+		fetchProfileResults(selectedSession);
+	});
 </script>
 
 <svelte:head>
@@ -79,11 +75,7 @@ $effect(() => {
 					<p class="mt-2 text-gray-600">Competition Profile</p>
 				</div>
 				{#if allSessions.length}
-					<SessionSelector
-						bind:value={selectedSession}
-						sessionData={allSessions}
-						class="mt-2 shadow-sm"
-					/>
+					<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="mt-2 shadow-sm" />
 				{/if}
 			</div>
 
@@ -96,7 +88,7 @@ $effect(() => {
 
 			<!-- Competition Results -->
 			<div class="w-full min-w-[900px]">
-				<CompetitionResultsTable results={profileResults!.results} selectedEvent={selectedEvent} />
+				<CompetitionResultsTable results={profileResults!.results} {selectedEvent} />
 			</div>
 		</div>
 	{/if}

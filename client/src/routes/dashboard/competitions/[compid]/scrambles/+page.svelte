@@ -1,99 +1,96 @@
 <script lang="ts">
-import { page } from '$app/state';
-import authFetch from '$lib/authFetch';
-import { eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from '$lib/types';
-import { BASE_URL } from '$lib/utils';
-import { onMount } from 'svelte';
-import { Select } from 'bits-ui';
-import { eventNames } from '$lib/types';
-import Backbutton from '$lib/components/Backbutton.svelte';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import ScrambleCard from '$lib/components/ScrambleCard.svelte';
-import { goto } from '$app/navigation';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
+	import authFetch from "$lib/authFetch";
+	import Backbutton from "$lib/components/Backbutton.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import ScrambleCard from "$lib/components/ScrambleCard.svelte";
+	import { eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
+	import { eventNames } from "$lib/types";
+	import { BASE_URL } from "$lib/utils";
+	import { Select } from "bits-ui";
+	import { onMount } from "svelte";
 
-const eventOptions = Object.entries(eventNames)
-	.map(([key, name]) => ({
-		value: key,
-		label: name
-	}))
-	.sort((a, b) => eventListIdx[a.value as WCAEvent] - eventListIdx[b.value as WCAEvent]);
+	const eventOptions = Object.entries(eventNames)
+		.map(([key, name]) => ({
+			value: key,
+			label: name,
+		}))
+		.toSorted((a, b) => eventListIdx[a.value as WCAEvent] - eventListIdx[b.value as WCAEvent]);
 
-const compId = page.params.compid;
+	const compId = page.params.compid;
 
-let competitionScrambles: CompetitionScrambleSets | null = $state(null);
-let selectedEvent: WCAEvent = $state('333');
-let selectedRound = $state(1);
-let selectedCount = $state(1);
-let loading = $state(true);
-let generating = $state(false);
+	let competitionScrambles: CompetitionScrambleSets | null = $state(null);
+	let selectedEvent: WCAEvent = $state("333");
+	let selectedRound = $state(1);
+	let selectedCount = $state(1);
+	let loading = $state(true);
+	let generating = $state(false);
 
-const fetchScrambles = async () => {
-	const response = await authFetch(`${BASE_URL}/api/competitions/${compId}/scrambles/`);
+	const fetchScrambles = async () => {
+		const response = await authFetch(`${BASE_URL}/api/competitions/${compId}/scrambles/`);
 
-	if (response.status == 403) {
-		goto('/dashboard/signin');
-	}
+		if (response.status == 403) {
+			goto("/dashboard/signin");
+		}
 
-	competitionScrambles = await response.json();
-	loading = false;
-};
+		competitionScrambles = await response.json();
+		loading = false;
+	};
 
-onMount(fetchScrambles);
+	onMount(fetchScrambles);
 
-const generateScrambleSet = async () => {
-	if (selectedEvent == '333mbf') {
-		console.log('333 Multi-Blind scrambles are not implemented yet');
-		return;
-	}
+	const generateScrambleSet = async () => {
+		if (selectedEvent == "333mbf") {
+			console.error("333 Multi-Blind scrambles are not implemented yet");
+			return;
+		}
 
-	generating = true;
+		generating = true;
 
-	const numScrambles = eventSolves[selectedEvent]! + 2;
+		const numScrambles = eventSolves[selectedEvent]! + 2;
 
-	await authFetch(
-		`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/generate/`,
-		{
-			method: 'POST',
+		await authFetch(`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/generate/`, {
+			method: "POST",
 			headers: {
-				'Content-Type': 'application/json'
+				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
 				count: numScrambles,
-				numSets: selectedCount
-			})
+				numSets: selectedCount,
+			}),
+		});
+
+		await fetchScrambles();
+
+		generating = false;
+	};
+
+	const deleteScramble = async (setId: number) => {
+		const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/`, {
+			method: "DELETE",
+		});
+
+		if (!response.ok) {
+			console.error(response.statusText);
 		}
-	);
 
-	await fetchScrambles();
+		await fetchScrambles();
+	};
 
-	generating = false;
-};
+	const updateVisibility = async (setId: number, visibility: boolean) => {
+		const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/visibility/`, {
+			method: "PATCH",
+			body: JSON.stringify({ visibility }),
+			headers: { "Content-Type": "application/json" },
+		});
 
-const deleteScramble = async (setId: number) => {
-	const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/`, {
-		method: 'DELETE'
-	});
+		if (!response.ok) {
+			console.error(response.statusText);
+		}
 
-	if (!response.ok) {
-		console.error(response.statusText);
-	}
-
-	await fetchScrambles();
-};
-
-const updateVisibility = async (setId: number, visibility: boolean) => {
-	const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/visibility/`, {
-		method: 'PATCH',
-		body: JSON.stringify({ visibility }),
-		headers: { 'Content-Type': 'application/json' }
-	});
-
-	if (!response.ok) {
-		console.error(response.statusText);
-	}
-
-	await fetchScrambles();
-};
+		await fetchScrambles();
+	};
 </script>
 
 <Backbutton />
@@ -122,8 +119,7 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 							aria-label="Select an event"
 						>
 							<span>
-								{eventOptions.find((option) => option.value === selectedEvent)?.label ||
-									'Select Event'}
+								{eventOptions.find((option) => option.value === selectedEvent)?.label || "Select Event"}
 							</span>
 							<svg
 								class="ml-2 h-4 w-4 shrink-0 text-gray-400"
@@ -141,13 +137,13 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 						</Select.Trigger>
 						<Select.Portal>
 							<Select.Content
-								class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+								class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-(--bits-select-anchor-width) min-w-(--bits-select-anchor-width) overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg"
 								sideOffset={4}
 							>
 								<Select.Viewport class="p-1">
 									{#each eventOptions as option (option.value)}
 										<Select.Item
-											class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
+											class="relative flex w-full  cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-gray-100"
 											value={option.value}
 											label={option.label}
 										>
@@ -209,7 +205,7 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 					disabled={!selectedEvent || generating}
 					class="w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 				>
-					{generating ? 'Generating...' : 'Generate Scramble Set'}
+					{generating ? "Generating..." : "Generate Scramble Set"}
 				</button>
 			</div>
 		</div>
@@ -225,9 +221,7 @@ const updateVisibility = async (setId: number, visibility: boolean) => {
 
 				{#if competitionScrambles && competitionScrambles.length > 0}
 					{#each competitionScrambles as eventData (eventData.event)}
-						<div
-							class="mb-4 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-sm"
-						>
+						<div class="mb-4 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-sm">
 							{#each eventData.rounds as roundData (roundData.round)}
 								<div class="flex items-center space-x-4 p-2 ps-4">
 									<div class="min-w-0 font-semibold text-gray-900">

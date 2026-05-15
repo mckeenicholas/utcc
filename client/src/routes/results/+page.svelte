@@ -1,34 +1,29 @@
 <script lang="ts">
-import { type Competition, type CompetitionResults, type Paginated } from '$lib/types';
-import CompetitionResultsDisplay from '$lib/components/CompetitionResultsDisplay.svelte';
-import {
-	fetchJson,
-	formatCompetitionDate,
-	latestCompetitionsURL,
-	latestResultsURL
-} from '$lib/utils';
-import LoadingScreen from '$lib/components/LoadingScreen.svelte';
-import { onMount } from 'svelte';
+	import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
+	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+	import { type Competition, type CompetitionResults, type Paginated } from "$lib/types";
+	import { fetchJson, formatCompetitionDate, latestCompetitionsURL, latestResultsURL } from "$lib/utils";
+	import { onMount } from "svelte";
 
-let latestResults: CompetitionResults | null = $state(null);
-let competitionList: Competition[] | null = $state(null);
+	let latestResults: CompetitionResults | null = $state(null);
+	let competitionList: Competition[] | null = $state(null);
 
-const queryResults = async () => await fetchJson<CompetitionResults>(latestResultsURL);
-const queryCompetitions = async () =>
-	(await fetchJson<Paginated<Competition>>(latestCompetitionsURL)).results.slice(0, 10);
+	const queryResults = async () => await fetchJson<CompetitionResults>(latestResultsURL);
+	const queryCompetitions = async () =>
+		(await fetchJson<Paginated<Competition>>(latestCompetitionsURL)).results.slice(0, 10);
 
-const fetchPageData = async () => {
-	try {
-		const [resultsData, competitions] = await Promise.all([queryResults(), queryCompetitions()]);
+	const fetchPageData = async () => {
+		try {
+			const [resultsData, competitions] = await Promise.all([queryResults(), queryCompetitions()]);
 
-		latestResults = resultsData;
-		competitionList = competitions;
-	} catch (err) {
-		console.log('Error loading main page results', err);
-	}
-};
+			latestResults = resultsData;
+			competitionList = competitions;
+		} catch (err) {
+			console.error("Error loading main page results", err);
+		}
+	};
 
-onMount(fetchPageData);
+	onMount(fetchPageData);
 </script>
 
 <svelte:head>

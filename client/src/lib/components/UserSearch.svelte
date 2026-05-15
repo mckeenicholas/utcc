@@ -1,88 +1,90 @@
 <script lang="ts">
-import type { User } from '$lib/types';
-import { searchUsersByName } from '$lib/userService';
+	import type { User } from "$lib/types";
+	import { searchUsersByName } from "$lib/userService";
 
-interface Props {
-	value: string;
-	onSelect: (user: User) => void;
-	onClear: () => void;
-	onAddUser: () => void;
-	isEditMode: boolean;
-	userSelected: boolean;
-	searchTerm?: string;
-}
-
-let {
-	value = $bindable(''),
-	onSelect,
-	onClear,
-	onAddUser,
-	isEditMode,
-	userSelected,
-	searchTerm = $bindable('')
-}: Props = $props();
-
-let searchResults: User[] = $state([]);
-let loading = $state(false);
-let selectedIndex = $state(-1);
-let showDropdown = $state(false);
-let timeout: number | null = null;
-
-const searchUsers = async (query: string) => {
-	if (!query.trim()) {
-		searchResults = [];
-		return;
+	interface Props {
+		value: string;
+		onSelect: (user: User) => void;
+		onClear: () => void;
+		onAddUser: () => void;
+		isEditMode: boolean;
+		userSelected: boolean;
+		searchTerm?: string;
 	}
 
-	try {
-		searchResults = await searchUsersByName(query);
-	} catch (error) {
-		console.error('User search failed:', error);
-		searchResults = [];
-	}
+	let {
+		value = $bindable(""),
+		onSelect,
+		onClear,
+		onAddUser,
+		isEditMode,
+		userSelected,
+		searchTerm = $bindable(""),
+	}: Props = $props();
 
-	loading = false;
-};
+	let searchResults: User[] = $state([]);
+	let loading = $state(false);
+	let selectedIndex = $state(-1);
+	let showDropdown = $state(false);
+	let timeout: number | null = null;
 
-const debouncedSearch = (query: string) => {
-	if (timeout) clearTimeout(timeout);
-	timeout = setTimeout(() => searchUsers(query), 300);
-};
+	const searchUsers = async (query: string) => {
+		if (!query.trim()) {
+			searchResults = [];
+			return;
+		}
 
-$effect(() => {
-	loading = true;
-	debouncedSearch(searchTerm);
-});
+		try {
+			searchResults = await searchUsersByName(query);
+		} catch (error) {
+			console.error("User search failed:", error);
+			searchResults = [];
+		}
 
-const handleKeyDown = (event: KeyboardEvent) => {
-	const totalItems = searchResults.length + (searchTerm.trim() ? 1 : 0);
-	if (event.key === 'ArrowDown') {
-		event.preventDefault();
-		selectedIndex = (selectedIndex + 1) % totalItems;
-	} else if (event.key === 'ArrowUp') {
-		event.preventDefault();
-		selectedIndex = (selectedIndex - 1 + totalItems) % totalItems;
-	} else if (event.key === 'Enter') {
-		event.preventDefault();
-		if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
-			onSelect(searchResults[selectedIndex]);
-			showDropdown = false;
-		} else if (selectedIndex === searchResults.length) {
-			onAddUser();
+		loading = false;
+	};
+
+	const debouncedSearch = (query: string) => {
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(() => searchUsers(query), 300);
+	};
+
+	$effect(() => {
+		loading = true;
+		debouncedSearch(searchTerm);
+	});
+
+	const handleKeyDown = (event: KeyboardEvent) => {
+		const totalItems = searchResults.length + (searchTerm.trim() ? 1 : 0);
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			selectedIndex = (selectedIndex + 1) % totalItems;
+		} else if (event.key === "ArrowUp") {
+			event.preventDefault();
+			selectedIndex = (selectedIndex - 1 + totalItems) % totalItems;
+		} else if (event.key === "Enter") {
+			event.preventDefault();
+			if (selectedIndex >= 0 && selectedIndex < searchResults.length) {
+				onSelect(searchResults[selectedIndex]);
+				showDropdown = false;
+			} else if (selectedIndex === searchResults.length) {
+				onAddUser();
+				showDropdown = false;
+			}
+		} else if (event.key === "Escape") {
 			showDropdown = false;
 		}
-	} else if (event.key === 'Escape') {
-		showDropdown = false;
-	}
-};
+	};
 
-const handleFocus = () => {
-	showDropdown = true;
-};
+	const handleFocus = () => {
+		showDropdown = true;
+	};
 
-const handleBlur = () => {
-	setTimeout(() => (showDropdown = false), 200);
-};
+	const handleBlur = () => {
+		setTimeout(() => (showDropdown = false), 200);
+	};
 </script>
 
 <div class="relative">
@@ -148,18 +150,14 @@ const handleBlur = () => {
 				? 'bg-blue-50'
 				: 'bg-green-50'}"
 		>
-			<span class={isEditMode ? 'text-blue-800' : 'text-green-80'}
-				>{isEditMode ? 'Editing:' : ''} {value}</span
-			>
+			<span class={isEditMode ? "text-blue-800" : "text-green-80"}>{isEditMode ? "Editing:" : ""} {value}</span>
 			<button
 				type="button"
 				onclick={() => {
-					searchTerm = '';
+					searchTerm = "";
 					onClear();
 				}}
-				class={isEditMode
-					? 'text-blue-600 hover:text-blue-800'
-					: 'text-green-600 hover:text-green-800'}
+				class={isEditMode ? "text-blue-600 hover:text-blue-800" : "text-green-600 hover:text-green-800"}
 			>
 				&times;
 			</button>

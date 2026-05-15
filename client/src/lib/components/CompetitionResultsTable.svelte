@@ -1,32 +1,30 @@
 <script lang="ts">
-import { eventNames, eventSolves, type ResultsTableCompetition, type WCAEvent } from '$lib/types';
-import { getMeanType, renderTime, sortEvents } from '$lib/utils';
-import EventPicker from './EventPicker.svelte';
+	import { eventNames, eventSolves, type ResultsTableCompetition, type WCAEvent } from "$lib/types";
+	import { getMeanType, renderTime, sortEvents } from "$lib/utils";
+	import EventPicker from "./EventPicker.svelte";
 
-interface ResultsTableProp {
-	event: WCAEvent;
-	results: ResultsTableCompetition[];
-}
+	interface ResultsTableProp {
+		event: WCAEvent;
+		results: ResultsTableCompetition[];
+	}
 
-let {
-	results,
-	selectedEvent
-}: {
-	results: ResultsTableProp[];
-	selectedEvent: WCAEvent;
-} = $props();
+	let {
+		results,
+		selectedEvent,
+	}: {
+		results: ResultsTableProp[];
+		selectedEvent: WCAEvent;
+	} = $props();
 
-const validEvents = $derived(results.map((result) => result.event).sort(sortEvents));
+	const validEvents = $derived(results.map((result) => result.event).toSorted(sortEvents));
 
-let selectedEventData = $derived(
-	results.find((event) => event.event === selectedEvent)?.results ?? []
-);
+	let selectedEventData = $derived(results.find((event) => event.event === selectedEvent)?.results ?? []);
 </script>
 
 <div class="overflow-hidden rounded-lg bg-white shadow-sm">
 	{#if results.length > 0}
 		<div class="my-4 flex justify-center">
-			<EventPicker bind:selectedEvent={selectedEvent} events={validEvents} />
+			<EventPicker bind:selectedEvent events={validEvents} />
 		</div>
 
 		<div class="border-b border-gray-200 px-6 pb-4">
@@ -38,24 +36,16 @@ let selectedEventData = $derived(
 			<table class="min-w-full divide-y divide-gray-200">
 				<thead class="bg-gray-50">
 					<tr>
-						<th
-							class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
-						>
+						<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
 							Competition
 						</th>
-						<th
-							class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-						>
+						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
 							Round
 						</th>
-						<th
-							class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-						>
+						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
 							Single
 						</th>
-						<th
-							class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-						>
+						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
 							{getMeanType(selectedEvent)}
 						</th>
 						{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
@@ -82,19 +72,21 @@ let selectedEventData = $derived(
 									{round.round}
 								</td>
 								<td
-									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap {round.singleRecord ? 'text-blue-600' : 'text-gray-900'}"
+									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap {round.singleRecord
+										? 'text-blue-600'
+										: 'text-gray-900'}"
 								>
 									{renderTime(round.single)}
 								</td>
 								<td
-									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap {round.averageRecord ? 'text-blue-600' : 'text-gray-900'}"
+									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap {round.averageRecord
+										? 'text-blue-600'
+										: 'text-gray-900'}"
 								>
 									{renderTime(round.average)}
 								</td>
 								{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
-									<td
-										class="px-6 py-4 text-center font-mono text-sm whitespace-nowrap text-gray-700"
-									>
+									<td class="px-6 py-4 text-center font-mono text-sm whitespace-nowrap text-gray-700">
 										{renderTime(round.times[idx])}
 									</td>
 								{/each}
