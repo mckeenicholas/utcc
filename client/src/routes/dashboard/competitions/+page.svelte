@@ -1,16 +1,16 @@
 <script lang="ts">
-import type { Competition, Paginated, Session } from "$lib/types";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-import authFetch from "$lib/authFetch";
-import { fetchSessions } from "$lib/competitionSessionService";
 import DashboardCompetitionCard from "$lib/components/DashboardCompetitionCard.svelte";
 import DashboardHeader from "$lib/components/DashboardHeader.svelte";
 import DateForm from "$lib/components/DateForm.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
+import authFetch from "$lib/authFetch";
+import { fetchSessions } from "$lib/competitionSessionService";
+import type { Competition, Paginated, Session } from "$lib/types";
 import { BASE_URL, PAGINATION_SIZE, checkLoginStatus, toInt } from "$lib/utils";
-import { onMount } from "svelte";
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);

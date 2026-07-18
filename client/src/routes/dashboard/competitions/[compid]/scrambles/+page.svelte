@@ -1,14 +1,14 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
-import authFetch from "$lib/authFetch";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import ScrambleCard from "$lib/components/ScrambleCard.svelte";
+import { Select } from "bits-ui";
+import authFetch from "$lib/authFetch";
 import { eventNames, eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
 import { BASE_URL } from "$lib/utils";
-import { Select } from "bits-ui";
-import { onMount } from "svelte";
 
 const eventOptions = Object.entries(eventNames)
 	.map(([key, name]) => ({

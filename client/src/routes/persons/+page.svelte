@@ -1,12 +1,12 @@
 <script lang="ts">
-import type { User } from "$lib/types";
+import { onMount } from "svelte";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import PublicUserCard from "$lib/components/PublicUserCard.svelte";
+import type { User } from "$lib/types";
 import { fetchUsers, searchUsersByName } from "$lib/userService";
 import { PAGINATION_SIZE } from "$lib/utils";
-import { onMount } from "svelte";
 
 // State Management
 let users: User[] = $state([]);

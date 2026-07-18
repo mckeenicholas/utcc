@@ -1,7 +1,7 @@
 <script lang="ts">
 import "scramble-display";
-import type { WCAEvent } from "$lib/types";
 import type { ClassValue } from "svelte/elements";
+import type { WCAEvent } from "$lib/types";
 
 interface Props {
 	alg: string;

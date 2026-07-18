@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { CompetitionResults, StudentStatus } from "$lib/types";
+import { onMount } from "svelte";
 import { page } from "$app/stores";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
 import CompetitionScrambleTable from "$lib/components/CompetitionScrambleTable.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import UofTSelector from "$lib/components/UofTSelector.svelte";
+import type { CompetitionResults, StudentStatus } from "$lib/types";
 import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
-import { onMount } from "svelte";
 
 const compId = $page.params.compid;
 

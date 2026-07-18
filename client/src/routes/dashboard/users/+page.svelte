@@ -1,14 +1,14 @@
 <script lang="ts">
-import type { User } from "$lib/types";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import AddUserForm from "$lib/components/AddUserForm.svelte";
 import DashboardHeader from "$lib/components/DashboardHeader.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import UserCard from "$lib/components/UserCard.svelte";
+import type { User } from "$lib/types";
 import { createUser, deleteUserById, fetchUsers, searchUsersByName, updateUser } from "$lib/userService";
 import { PAGINATION_SIZE, checkLoginStatus } from "$lib/utils";
-import { onMount } from "svelte";
 
 // State Management
 let users: User[] = $state([]);

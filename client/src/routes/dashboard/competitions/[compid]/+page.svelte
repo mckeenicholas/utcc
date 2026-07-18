@@ -1,8 +1,7 @@
 <script lang="ts">
-import type { CompetitionResults, Result, User, WCAEvent } from "$lib/types";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
-import authFetch from "$lib/authFetch";
 import CreateUserModal from "$lib/components/CreateUserModal.svelte";
 import ErrorMessage from "$lib/components/ErrorMessage.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
@@ -10,8 +9,9 @@ import PageHeader from "$lib/components/PageHeader.svelte";
 import ResultForm from "$lib/components/ResultForm.svelte";
 import ResultsTable from "$lib/components/ResultsTable.svelte";
 import UserSearch from "$lib/components/UserSearch.svelte";
+import authFetch from "$lib/authFetch";
+import type { CompetitionResults, Result, User, WCAEvent } from "$lib/types";
 import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
-import { onMount } from "svelte";
 
 const compId = $page.params.compid;
 

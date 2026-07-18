@@ -1,4 +1,5 @@
 <script lang="ts">
+import { SvelteURLSearchParams } from "svelte/reactivity";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
@@ -12,7 +13,6 @@ import {
 	eventSolves,
 } from "$lib/types";
 import { BASE_URL, PAGINATION_SIZE, fetchJson, renderTime } from "$lib/utils";
-import { SvelteURLSearchParams } from "svelte/reactivity";
 
 const selectedEvent: WCAEvent = $state("333");
 const isAverage = $state(false);

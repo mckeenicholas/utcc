@@ -8,15 +8,21 @@ export default defineConfig({
 		ignorePatterns: [],
 		printWidth: 120,
 		sortImports: {
-			groups: [
-				"type-import",
-				["value-builtin", "value-external"],
-				"type-internal",
-				"value-internal",
-				["type-parent", "type-sibling", "type-index"],
-				["value-parent", "value-sibling", "value-index"],
-				"unknown",
+			customGroups: [
+				{
+					groupName: "svelte",
+					elementNamePattern: ["svelte", "svelte/*"],
+				},
+				{
+					groupName: "app",
+					elementNamePattern: ["$app", "$app/*"],
+				},
+				{
+					groupName: "lib",
+					elementNamePattern: ["$lib", "$lib/*"],
+				},
 			],
+			groups: ["svelte", "app", ["value-builtin", "value-external"], "lib", "unknown"],
 			newlinesBetween: false,
 		},
 		sortPackageJson: true,

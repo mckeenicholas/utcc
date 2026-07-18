@@ -1,10 +1,11 @@
 <script lang="ts">
-import { fetchSessions } from "$lib/competitionSessionService";
+import { onMount } from "svelte";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import RecordRow from "$lib/components/RecordRow.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
 import UofTSelector from "$lib/components/UofTSelector.svelte";
+import { fetchSessions } from "$lib/competitionSessionService";
 import {
 	eventNames,
 	eventSolves,
@@ -15,7 +16,6 @@ import {
 	type WCAEvent,
 } from "$lib/types";
 import { fetchJson, recordsURL, sortEvents, toInt } from "$lib/utils";
-import { onMount } from "svelte";
 
 let recordsAPIResponse: RecordsApiResponse | null = $state(null);
 const selectedSession: string = $state("-1");

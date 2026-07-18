@@ -1,5 +1,5 @@
-import type { Session } from "$lib/types";
 import authFetch from "$lib/authFetch";
+import type { Session } from "$lib/types";
 import { BASE_URL, fetchJson } from "$lib/utils";
 
 const SESSIONS_API_URL = `${BASE_URL}/api/session/`;

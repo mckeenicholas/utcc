@@ -1,8 +1,8 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import authFetch from "$lib/authFetch";
 import { BASE_URL } from "$lib/utils";
-import { onMount } from "svelte";
 
 let errorMsg = $state("");
 let isLoading = $state(false);

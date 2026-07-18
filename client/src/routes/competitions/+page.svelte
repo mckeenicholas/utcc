@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { Competition, Paginated, Session } from "$lib/types";
-import { fetchSessions } from "$lib/competitionSessionService";
+import { onMount } from "svelte";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import CompetitionCard from "$lib/components/CompetitionCard.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
+import { fetchSessions } from "$lib/competitionSessionService";
+import type { Competition, Paginated, Session } from "$lib/types";
 import { BASE_URL, PAGINATION_SIZE, fetchJson, toInt } from "$lib/utils";
-import { onMount } from "svelte";
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);

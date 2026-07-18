@@ -1,8 +1,8 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import authFetch, { getCsrf } from "$lib/authFetch";
 import { BASE_URL, checkLoginStatus } from "$lib/utils";
-import { onMount } from "svelte";
 
 const username = $state("");
 let password = $state("");

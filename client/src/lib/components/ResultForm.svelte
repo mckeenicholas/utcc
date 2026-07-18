@@ -1,6 +1,6 @@
 <script lang="ts">
-import { eventNames, eventSolves, type Result, type WCAEvent } from "$lib/types";
 import { Select } from "bits-ui";
+import { eventNames, eventSolves, type Result, type WCAEvent } from "$lib/types";
 import ResultEntryField from "./ResultEntryField.svelte";
 
 interface Props {

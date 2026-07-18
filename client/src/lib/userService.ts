@@ -1,5 +1,5 @@
-import type { Paginated, User } from "$lib/types";
 import authFetch from "$lib/authFetch";
+import type { Paginated, User } from "$lib/types";
 import { BASE_URL, fetchJson } from "$lib/utils";
 
 export const fetchUsers = (page = 1): Promise<Paginated<User>> =>

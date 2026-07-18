@@ -1,13 +1,13 @@
 <script lang="ts">
-import type { Session } from "$lib/types";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-import { createSession, deleteSession, fetchSessions, updateSession } from "$lib/competitionSessionService";
 import AddSessionForm from "$lib/components/AddSessionForm.svelte";
 import DashboardHeader from "$lib/components/DashboardHeader.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import SessionCard from "$lib/components/SessionCard.svelte";
+import { createSession, deleteSession, fetchSessions, updateSession } from "$lib/competitionSessionService";
+import type { Session } from "$lib/types";
 import { checkLoginStatus } from "$lib/utils";
-import { onMount } from "svelte";
 
 let sessions: Session[] = $state([]);
 let loading = $state(false);

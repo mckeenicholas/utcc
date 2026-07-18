@@ -1,9 +1,9 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import { type Competition, type CompetitionResults, type Paginated } from "$lib/types";
 import { fetchJson, formatCompetitionDate, latestCompetitionsURL, latestResultsURL } from "$lib/utils";
-import { onMount } from "svelte";
 
 let latestResults: CompetitionResults | null = $state(null);
 let competitionList: Competition[] | null = $state(null);

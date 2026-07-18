@@ -1,8 +1,8 @@
 <script lang="ts">
+import { slide } from "svelte/transition";
+import { Collapsible } from "bits-ui";
 import { type EventResult, eventListIdx, eventNames, type ScrambleKey } from "$lib/types";
 import { scrambleOrder } from "$lib/utils";
-import { Collapsible } from "bits-ui";
-import { slide } from "svelte/transition";
 import CubeIcon from "./CubeIcon.svelte";
 
 const { results }: { results: EventResult[] } = $props();

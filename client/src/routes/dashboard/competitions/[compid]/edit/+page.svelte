@@ -1,14 +1,14 @@
 <script lang="ts">
-import type { Competition, Session } from "$lib/types";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
-import authFetch from "$lib/authFetch";
-import { fetchSessions } from "$lib/competitionSessionService";
 import DateForm from "$lib/components/DateForm.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
+import authFetch from "$lib/authFetch";
+import { fetchSessions } from "$lib/competitionSessionService";
+import type { Competition, Session } from "$lib/types";
 import { BASE_URL, checkLoginStatus, fetchJson, toInt } from "$lib/utils";
-import { onMount } from "svelte";
 
 const id = $page.params.compid;
 

@@ -1,13 +1,13 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
-import authFetch from "$lib/authFetch";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import ScrambleViewer from "$lib/components/ScrambleViewer.svelte";
+import authFetch from "$lib/authFetch";
 import { type ScrambleResponse, eventNames } from "$lib/types";
 import { BASE_URL } from "$lib/utils";
-import { onMount } from "svelte";
 
 let scrambles: string[] = $state([]);
 let extraScrambles: string[] = $state([]);
