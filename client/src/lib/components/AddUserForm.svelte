@@ -1,8 +1,8 @@
 <script lang="ts">
-const { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } = $props();
+const { onAddUser }: { onAddUser: (name: string, studentStatus: string) => Promise<void> } = $props();
 
 let newUserName = $state("");
-let newUserStudentStatus = $state(true);
+let newUserStudentStatus = $state("UTSG");
 let isSubmitting = $state(false);
 
 const handleSubmit = async () => {
@@ -35,17 +35,24 @@ const handleSubmit = async () => {
 				class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
 			/>
 		</div>
-		<div class="flex flex-col">
-			<label for="is-student" class="block text-sm font-medium text-gray-700">Is UofT Student?</label>
-			<div class="mt-1 block py-2">
-				<input type="checkbox" bind:checked={newUserStudentStatus} id="is-student" class="h-4 w-4" />
-			</div>
+		<div class="flex w-36 flex-col">
+			<label for="is-student" class="block text-sm font-medium text-gray-700">Designation</label>
+			<select
+				bind:value={newUserStudentStatus}
+				id="is-student"
+				class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+			>
+				<option value="UTSG">UTSG</option>
+				<option value="UTM">UTM</option>
+				<option value="UTSC">UTSC</option>
+				<option value="Non-UofT">Non-UofT</option>
+			</select>
 		</div>
 		<div>
 			<button
 				onclick={handleSubmit}
 				disabled={!newUserName.trim() || isSubmitting}
-				class="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
+				class="h-[38px] rounded-md bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 			>
 				{isSubmitting ? "Adding..." : "Add User"}
 			</button>

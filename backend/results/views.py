@@ -59,9 +59,24 @@ class CompetitionViewSet(viewsets.ModelViewSet):
             .order_by("-date")
         )
         session_id = self.request.query_params.get("session_id")
+        student_designators = self.request.query_params.getlist("student_designator")
+        ordering = self.request.query_params.get("ordering")
 
         if session_id is not None:
             queryset = queryset.filter(session__id=session_id)
+
+        if student_designators:
+            queryset = queryset.filter(student_designator__in=student_designators)
+
+        if ordering and ordering in [
+            "date",
+            "-date",
+            "name",
+            "-name",
+            "student_designator",
+            "-student_designator",
+        ]:
+            queryset = queryset.order_by(ordering)
 
         return queryset
 
@@ -91,8 +106,7 @@ class ResultViewSet(viewsets.ModelViewSet):
 
         try:
             instance, created = Result.objects.update_or_create(**unique_fields, defaults=defaults)
-        except IntegrityError as e:
-            print(e)
+        except IntegrityError:
 
             return Response(
                 {"detail": "Error creating or updating result."},
@@ -109,7 +123,7 @@ class CompetitionResultsAPIView(APIView):
 
     def get(self, request, competition_id=None, format=None):
         session_id = request.query_params.get("session_id")
-        uoft_status = request.query_params.get("uoft")
+        uoft_statuses = request.query_params.getlist("uoft")
 
         if competition_id:
             competition = get_object_or_404(Competition, pk=competition_id)
@@ -131,10 +145,16 @@ class CompetitionResultsAPIView(APIView):
             .order_by("event", "round")
         )
 
-        if uoft_status == "1":
-            results = results.filter(person__is_uoft_student=True)
-        elif uoft_status == "0":
-            results = results.filter(person__is_uoft_student=False)
+        if uoft_statuses:
+            mapped_statuses = []
+            for s in uoft_statuses:
+                if s in ["1", "uoft"]:
+                    mapped_statuses.extend(["UTSG", "UTM", "UTSC"])
+                elif s in ["0", "non-uoft"]:
+                    mapped_statuses.append("Non-UofT")
+                else:
+                    mapped_statuses.append(s)
+            results = results.filter(person__student_designator__in=mapped_statuses)
 
         scramble_sets = (
             ScrambleSet.objects.filter(competition=competition, visible=True)
@@ -180,7 +200,7 @@ class RecordsListAPIView(APIView):
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
-        uoft_status = request.query_params.get("uoft")
+        uoft_statuses = request.query_params.getlist("uoft")
 
         records = defaultdict(dict)
 
@@ -214,12 +234,17 @@ class RecordsListAPIView(APIView):
             best_singles = best_singles.filter(competition__session_id=session_id)
             best_averages = best_averages.filter(competition__session_id=session_id)
 
-        if uoft_status == "1":
-            best_singles = best_singles.filter(person__is_uoft_student=True)
-            best_averages = best_averages.filter(person__is_uoft_student=True)
-        elif uoft_status == "0":
-            best_singles = best_singles.filter(person__is_uoft_student=False)
-            best_averages = best_averages.filter(person__is_uoft_student=False)
+        if uoft_statuses:
+            mapped_statuses = []
+            for s in uoft_statuses:
+                if s in ["1", "uoft"]:
+                    mapped_statuses.extend(["UTSG", "UTM", "UTSC"])
+                elif s in ["0", "non-uoft"]:
+                    mapped_statuses.append("Non-UofT")
+                else:
+                    mapped_statuses.append(s)
+            best_singles = best_singles.filter(person__student_designator__in=mapped_statuses)
+            best_averages = best_averages.filter(person__student_designator__in=mapped_statuses)
 
         for result in best_averages:
             serializer = RecordDetailSerializer(result, context={"record_type": "average"})
@@ -237,7 +262,7 @@ class RankingsAPIView(APIView):
 
     def get(self, request, format=None):
         session_id = request.query_params.get("session_id")
-        uoft_status = request.query_params.get("uoft")
+        uoft_statuses = request.query_params.getlist("uoft")
 
         event = request.query_params.get("event")
         result_format = request.query_params.get("type")  # 'single' or 'average'
@@ -261,10 +286,16 @@ class RankingsAPIView(APIView):
         if session_id:
             queryset = queryset.filter(competition__session_id=session_id)
 
-        if uoft_status == "1":
-            queryset = queryset.filter(person__is_uoft_student=True)
-        elif uoft_status == "0":
-            queryset = queryset.filter(person__is_uoft_student=False)
+        if uoft_statuses:
+            mapped_statuses = []
+            for s in uoft_statuses:
+                if s in ["1", "uoft"]:
+                    mapped_statuses.extend(["UTSG", "UTM", "UTSC"])
+                elif s in ["0", "non-uoft"]:
+                    mapped_statuses.append("Non-UofT")
+                else:
+                    mapped_statuses.append(s)
+            queryset = queryset.filter(person__student_designator__in=mapped_statuses)
 
         field = "single" if result_format == "single" else "average"
 

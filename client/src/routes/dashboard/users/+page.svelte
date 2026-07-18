@@ -93,7 +93,7 @@ $effect(() => {
 });
 
 // Event Handlers
-const handleAddUser = async (name: string, studentStatus: boolean) => {
+const handleAddUser = async (name: string, studentStatus: string) => {
 	try {
 		const response = await createUser(name, studentStatus);
 		if (response.ok) {
@@ -106,11 +106,11 @@ const handleAddUser = async (name: string, studentStatus: boolean) => {
 	}
 };
 
-const handleSaveUser = async (userId: number, name: string, studentStatus: boolean) => {
+const handleSaveUser = async (userId: number, name: string, studentStatus: string) => {
 	try {
 		const response = await updateUser(userId, name, studentStatus);
 		if (response.ok) {
-			users = users.map((u) => (u.id === userId ? { ...u, name } : u));
+			users = users.map((u) => (u.id === userId ? { ...u, name, student_designator: studentStatus } : u));
 		} else {
 			alert("Failed to update user");
 		}

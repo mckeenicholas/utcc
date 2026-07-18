@@ -19,7 +19,7 @@ import { fetchJson, recordsURL, sortEvents, toInt } from "$lib/utils";
 
 let recordsAPIResponse: RecordsApiResponse | null = $state(null);
 let selectedSession: string = $state("-1");
-let studentStatus: StudentStatus = $state("all");
+let studentStatus: StudentStatus = $state([]);
 let sessions: Session[] = $state([]);
 let loading = $state(true);
 
@@ -31,10 +31,10 @@ const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 		url.searchParams.set("session_id", sessionId.toString());
 	}
 
-	if (uoftStatus === "uoft") {
-		url.searchParams.set("uoft", "1");
-	} else if (uoftStatus === "non-uoft") {
-		url.searchParams.set("uoft", "0");
+	if (uoftStatus.length > 0) {
+		uoftStatus.forEach((status) => {
+			url.searchParams.append("uoft", status);
+		});
 	}
 
 	return url;

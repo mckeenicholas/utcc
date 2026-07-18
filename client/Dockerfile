@@ -10,6 +10,8 @@ FROM oven/bun:latest AS build
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 

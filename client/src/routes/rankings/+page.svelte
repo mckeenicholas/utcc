@@ -19,7 +19,7 @@ let isAverage = $state(false);
 let showAllResults = $state(false);
 let pageNum = $state(1);
 let selectedSession: string = $state("-1");
-let uoftStudentStatus: StudentStatus = $state("all");
+let uoftStudentStatus: StudentStatus = $state([]);
 
 const eventName = $derived(eventNames[selectedEvent]);
 
@@ -81,10 +81,10 @@ $effect(() => {
 	if (selectedSession !== "-1") {
 		urlParams.append("session_id", selectedSession);
 	}
-	if (uoftStudentStatus === "uoft") {
-		urlParams.append("uoft", "1");
-	} else if (uoftStudentStatus === "non-uoft") {
-		urlParams.append("uoft", "0");
+	if (uoftStudentStatus.length > 0) {
+		uoftStudentStatus.forEach((status) => {
+			urlParams.append("uoft", status);
+		});
 	}
 
 	fetchRankings(urlParams);

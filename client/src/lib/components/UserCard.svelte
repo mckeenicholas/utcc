@@ -4,18 +4,18 @@ import type { User } from "$lib/types";
 interface Props {
 	user: User;
 	ondelete: (id: number) => void;
-	onsave: (id: number, name: string, studentStatus: boolean) => void;
+	onsave: (id: number, name: string, studentStatus: string) => void;
 }
 
 const { user, ondelete, onsave }: Props = $props();
 
 let isEditing = $state(false);
 let editUserName = $state("");
-let editUserStudentStatus = $state(false);
+let editUserStudentStatus = $state("UTSG");
 
 const startEdit = () => {
 	editUserName = user.name;
-	editUserStudentStatus = user.is_uoft_student;
+	editUserStudentStatus = user.student_designator;
 	isEditing = true;
 };
 
@@ -33,39 +33,46 @@ const handleSave = () => {
 
 <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
 	<div class="flex items-center justify-between">
-		<div class="flex items-center space-x-3">
-			<div
-				class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg font-medium text-blue-600"
-			>
-				{user.name.charAt(0).toUpperCase()}
-			</div>
-			<div>
-				{#if isEditing}
-					<div class="flex gap-4">
-						<input
-							bind:value={editUserName}
-							onkeydown={(e) => e.key === "Enter" && handleSave()}
-							class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
-						/>
-						<div class="flex flex-col items-center justify-center">
-							<div>
-								<input type="checkbox" bind:checked={editUserStudentStatus} id="is-student-{user.id}" />
-								<label for="is-student-{user.id}">Is UofT Student?</label>
-							</div>
+		<div class="mr-4 flex-1">
+			<div class="flex items-center space-x-3">
+				<div
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-lg font-medium text-blue-600"
+				>
+					{user.name.charAt(0).toUpperCase()}
+				</div>
+				<div class="min-w-0 flex-1">
+					{#if isEditing}
+						<div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+							<input
+								bind:value={editUserName}
+								onkeydown={(e) => e.key === "Enter" && handleSave()}
+								class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+							/>
+							<select
+								bind:value={editUserStudentStatus}
+								class="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+							>
+								<option value="UTSG">UTSG</option>
+								<option value="UTM">UTM</option>
+								<option value="UTSC">UTSC</option>
+								<option value="Non-UofT">Non-UofT</option>
+							</select>
 						</div>
-					</div>
-				{:else}
-					<p class="text-sm font-medium text-gray-900">
-						{user.name}
-						<span class={user.is_uoft_student ? "text-green-500" : "text-red-500"}>
-							{user.is_uoft_student ? "UofT Student" : "Non UofT Student"}</span
-						>
-					</p>
-				{/if}
-				<p class="text-xs text-gray-500">ID: {user.id}</p>
+					{:else}
+						<p class="truncate text-sm font-medium text-gray-900">
+							{user.name}
+							<span
+								class="ml-1 rounded border border-blue-100 bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700"
+							>
+								{user.student_designator}
+							</span>
+						</p>
+					{/if}
+					<p class="mt-1 text-xs text-gray-500">ID: {user.id}</p>
+				</div>
 			</div>
 		</div>
-		<div class="flex space-x-2">
+		<div class="flex shrink-0 space-x-2">
 			{#if isEditing}
 				<button
 					onclick={handleSave}

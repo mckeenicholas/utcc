@@ -56,6 +56,7 @@ const updateCompetitionData = async () => {
 			date: competitionData.date,
 			name: competitionData.name,
 			session: sessionIdToSubmit,
+			student_designator: competitionData.student_designator,
 		};
 
 		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
@@ -148,6 +149,22 @@ const updateCompetitionData = async () => {
 						<div>
 							<div class="mb-2 block text-sm font-medium text-gray-700">Academic Session</div>
 							<SessionSelector bind:value={selectedEditSession} sessionData={sessions} defaultMessage="No Session" />
+						</div>
+
+						<div>
+							<label for="comp-designator" class="mb-2 block text-sm font-medium text-gray-700"
+								>Student Designation</label
+							>
+							<select
+								id="comp-designator"
+								bind:value={competitionData.student_designator}
+								class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+							>
+								<option value="UTSG">UTSG</option>
+								<option value="UTM">UTM</option>
+								<option value="UTSC">UTSC</option>
+								<option value="Non-UofT">Non-UofT</option>
+							</select>
 						</div>
 
 						<!-- Action Buttons -->

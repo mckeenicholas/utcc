@@ -14,7 +14,7 @@ def populate_person_foreign_keys(apps, schema_editor) -> None:
         if result.name in person_cache:
             person = person_cache[result.name]
         else:
-            person, created = Person.objects.get_or_create(name=result.name)
+            person, _created = Person.objects.get_or_create(name=result.name)
 
             person_cache[result.name] = person
 

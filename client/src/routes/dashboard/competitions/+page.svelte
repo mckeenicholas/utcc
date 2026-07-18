@@ -23,6 +23,7 @@ let hasPrevious = $state(false);
 let totalCount = $state(0);
 let selectedSession = $state("-1");
 let createCompSession = $state("-1");
+let createCompDesignator = $state("UTSG");
 let allSessions: Session[] = $state([]);
 
 $effect(() => {
@@ -107,7 +108,12 @@ const createCompetition = async () => {
 	const sessionIdToSubmit = createCompSession === "-1" ? null : toInt(createCompSession);
 
 	const response = await authFetch(`${BASE_URL}/api/competitions/`, {
-		body: JSON.stringify({ date: selectedDate, name: newCompName, session: sessionIdToSubmit }),
+		body: JSON.stringify({
+			date: selectedDate,
+			name: newCompName,
+			session: sessionIdToSubmit,
+			student_designator: createCompDesignator,
+		}),
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -120,6 +126,7 @@ const createCompetition = async () => {
 		newCompName = "";
 		selectedDate = "";
 		createCompSession = "-1";
+		createCompDesignator = "UTSG";
 
 		// Using Goto to not trigger a re-request doesn't seem to work here for some reason
 		globalThis.location.href = `/dashboard/competitions/${newCompetition.id}`;
@@ -155,6 +162,19 @@ const createCompetition = async () => {
 					defaultMessage="No Session"
 					class="mt-0"
 				/>
+				<div>
+					<label for="new-comp-designator" class="block text-sm font-medium text-gray-700">Student Designation</label>
+					<select
+						id="new-comp-designator"
+						bind:value={createCompDesignator}
+						class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+					>
+						<option value="UTSG">UTSG</option>
+						<option value="UTM">UTM</option>
+						<option value="UTSC">UTSC</option>
+						<option value="Non-UofT">Non-UofT</option>
+					</select>
+				</div>
 				<button
 					onclick={createCompetition}
 					disabled={!newCompName || !selectedDate}

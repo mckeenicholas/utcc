@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from users.models import Person
+from users.models import Person, StudentDesignator
 
 THREE_ATTEMPT_EVENTS = {"666", "777", "333bf", "444bf", "555bf", "333fm"}
 
@@ -18,6 +18,11 @@ class Competition(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateField()
     session = models.ForeignKey(CompetitionSession, on_delete=models.SET_NULL, null=True)
+    student_designator = models.CharField(
+        max_length=20,
+        choices=StudentDesignator.choices,
+        default=StudentDesignator.UTSG,
+    )
 
     def __str__(self) -> str:
         return f"{self.name} - {self.date}"
@@ -130,12 +135,11 @@ class Result(models.Model):
                 self.average = self.SpecialTime.NOT_ATTEMPTED
             else:
                 self.average = round(sum(times) / 3)
-        else:  # Average of 5
-            if dnf_count >= 2:
-                self.average = self.SpecialTime.DNF
-            elif num_not_attempted:  # Has any missing times
-                self.average = self.SpecialTime.NOT_ATTEMPTED
-            else:
-                sorted_times = sorted(times, key=self.sort_key)
-                trimmed_sum = sum(sorted_times[1:-1])
-                self.average = round(trimmed_sum / 3)
+        elif dnf_count >= 2:
+            self.average = self.SpecialTime.DNF
+        elif num_not_attempted:  # Has any missing times
+            self.average = self.SpecialTime.NOT_ATTEMPTED
+        else:
+            sorted_times = sorted(times, key=self.sort_key)
+            trimmed_sum = sum(sorted_times[1:-1])
+            self.average = round(trimmed_sum / 3)

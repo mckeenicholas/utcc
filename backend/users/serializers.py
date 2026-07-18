@@ -11,12 +11,13 @@ class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = ["id", "name", "is_uoft_student"]
+        fields = ["id", "name", "student_designator"]
         read_only_fields = ["id"]
 
     def validate_name(self, value):
         """Ensure name is not just whitespace."""
         named_stripped = value.strip()
         if not named_stripped:
-            raise serializers.ValidationError("Name cannot be empty or just whitespace")
+            msg = "Name cannot be empty or just whitespace"
+            raise serializers.ValidationError(msg)
         return named_stripped

@@ -25,7 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def get_env_or_error(key: str) -> str:
     value = os.getenv(key)
     if value is None:
-        raise OSError(f"{key} environment variable must be set!")
+        msg = f"{key} environment variable must be set!"
+        raise OSError(msg)
     return value
 
 

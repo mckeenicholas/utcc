@@ -13,10 +13,10 @@ export const searchUsersByName = (query: string): Promise<User[]> => {
 	return fetchJson(`${BASE_URL}/api/users/persons/search/?name=${encodeURIComponent(query)}`);
 };
 
-export const createUser = (name: string, studentStatus: boolean) => {
-	const data: Omit<User, "id" | "sessions"> = {
-		is_uoft_student: studentStatus,
+export const createUser = (name: string, studentStatus: string) => {
+	const data = {
 		name,
+		student_designator: studentStatus,
 	};
 
 	return authFetch(`${BASE_URL}/api/users/persons/`, {
@@ -26,10 +26,10 @@ export const createUser = (name: string, studentStatus: boolean) => {
 	});
 };
 
-export const updateUser = (userId: number, name: string, studentStatus: boolean) => {
-	const data: Omit<User, "id" | "sessions"> = {
-		is_uoft_student: studentStatus,
+export const updateUser = (userId: number, name: string, studentStatus: string) => {
+	const data = {
 		name,
+		student_designator: studentStatus,
 	};
 
 	return authFetch(`${BASE_URL}/api/users/persons/${userId}/`, {

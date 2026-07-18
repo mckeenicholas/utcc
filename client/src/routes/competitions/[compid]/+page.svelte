@@ -38,18 +38,24 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 		return results;
 	}
 
-	const isUofT = studentStatus === "uoft";
-
 	return results
 		? {
 				...results,
 				results: results.results
 					.map((event) =>
-						Object.assign(event, {
+						Object.assign({}, event, {
 							rounds: event.rounds
 								.map((round) => ({
 									...round,
-									results: round.results.filter((result) => result.is_uoft_student === isUofT),
+									results: round.results.filter((result) => {
+										if (studentStatus === "uoft") {
+											return ["UTSG", "UTM", "UTSC"].includes(result.student_designator);
+										}
+										if (studentStatus === "non-uoft") {
+											return result.student_designator === "Non-UofT";
+										}
+										return result.student_designator === studentStatus;
+									}),
 								}))
 								.filter((round) => round.results.length > 0),
 						}),

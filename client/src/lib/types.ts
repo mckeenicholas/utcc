@@ -14,6 +14,7 @@ export interface Competition {
 	events: WCAEvent[];
 	session: number | null;
 	session_name: string | null;
+	student_designator: string;
 }
 
 export type WCAEvent = keyof typeof eventNames;
@@ -94,7 +95,7 @@ export interface PersonResult extends BaseResult {
 }
 
 export interface PersonResultStudentStatus extends PersonResult {
-	is_uoft_student: boolean;
+	student_designator: string;
 }
 
 export interface Result extends BaseResult {
@@ -151,7 +152,7 @@ export interface RecordsApiResponse {
 export interface User {
 	id: number;
 	name: string;
-	is_uoft_student: boolean;
+	student_designator: string;
 	sessions: Session[];
 }
 
@@ -203,7 +204,7 @@ export interface UserProfileResponse {
 	results: { event: WCAEvent; results: ResultsTableCompetition[] }[];
 }
 
-export type StudentStatus = "all" | "uoft" | "non-uoft";
+export type StudentStatus = string[];
 
 export interface Scramble {
 	id: number;

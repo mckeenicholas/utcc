@@ -3,15 +3,26 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 
 
+class StudentDesignator(models.TextChoices):
+    UTSG = "UTSG", "UTSG"
+    UTM = "UTM", "UTM"
+    UTSC = "UTSC", "UTSC"
+    NON_UOFT = "Non-UofT", "Non-UofT"
+
+
 class Person(models.Model):
     name = models.CharField(max_length=255, validators=[MinLengthValidator(1)])
-    is_uoft_student = models.BooleanField(default=True)
+    student_designator = models.CharField(
+        max_length=20,
+        choices=StudentDesignator.choices,
+        default=StudentDesignator.UTSG,
+    )
 
     def __str__(self) -> str:
-        type = "Yes" if self.is_uoft_student else "No"
-        return f"{self.name} | ID: {self.id} | UofT Student: {type}"
+        return f"{self.name} | ID: {self.id} | Designator: {self.student_designator}"
 
     def clean(self) -> None:
         if not self.name or not self.name.strip():
-            raise ValidationError("Name cannot be empty")
+            msg = "Name cannot be empty"
+            raise ValidationError(msg)
         self.name = self.name.strip()

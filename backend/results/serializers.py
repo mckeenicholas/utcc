@@ -19,7 +19,7 @@ class CompetitionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Competition
-        fields = ["id", "name", "date", "events", "session", "session_name"]
+        fields = ["id", "name", "date", "events", "session", "session_name", "student_designator"]
         read_only_fields = ["id", "events", "session_name"]
 
     def get_events(self, obj):
@@ -59,7 +59,7 @@ class ResultPersonSerializer(serializers.ModelSerializer):
     times = serializers.SerializerMethodField()
     person_name = serializers.CharField(source="person.name", read_only=True)
     person = serializers.IntegerField(source="person.id", read_only=True)
-    is_uoft_student = serializers.BooleanField(source="person.is_uoft_student", read_only=True)
+    student_designator = serializers.CharField(source="person.student_designator", read_only=True)
 
     class Meta:
         model = Result
@@ -70,7 +70,7 @@ class ResultPersonSerializer(serializers.ModelSerializer):
             "single",
             "average",
             "person_name",
-            "is_uoft_student",
+            "student_designator",
         ]
 
     def get_times(self, obj):
