@@ -107,7 +107,6 @@ class ResultViewSet(viewsets.ModelViewSet):
         try:
             instance, created = Result.objects.update_or_create(**unique_fields, defaults=defaults)
         except IntegrityError:
-
             return Response(
                 {"detail": "Error creating or updating result."},
                 status=status.HTTP_400_BAD_REQUEST,
