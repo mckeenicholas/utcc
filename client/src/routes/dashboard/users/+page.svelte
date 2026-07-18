@@ -1,152 +1,152 @@
 <script lang="ts">
-	import type { User } from "$lib/types";
-	import { goto } from "$app/navigation";
-	import AddUserForm from "$lib/components/AddUserForm.svelte";
-	import DashboardHeader from "$lib/components/DashboardHeader.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import PaginationControls from "$lib/components/PaginationControls.svelte";
-	import UserCard from "$lib/components/UserCard.svelte";
-	import { fetchUsers, searchUsersByName, createUser, updateUser, deleteUserById } from "$lib/userService";
-	import { checkLoginStatus, PAGINATION_SIZE } from "$lib/utils";
-	import { onMount } from "svelte";
+import type { User } from "$lib/types";
+import { goto } from "$app/navigation";
+import AddUserForm from "$lib/components/AddUserForm.svelte";
+import DashboardHeader from "$lib/components/DashboardHeader.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import PaginationControls from "$lib/components/PaginationControls.svelte";
+import UserCard from "$lib/components/UserCard.svelte";
+import { fetchUsers, searchUsersByName, createUser, updateUser, deleteUserById } from "$lib/userService";
+import { checkLoginStatus, PAGINATION_SIZE } from "$lib/utils";
+import { onMount } from "svelte";
 
-	// State Management
-	let users: User[] = $state([]);
-	let searchTerm = $state("");
-	let loading = $state(false);
-	let isSearching = $state(false);
-	let searchTimeout: number | null = null;
+// State Management
+let users: User[] = $state([]);
+let searchTerm = $state("");
+let loading = $state(false);
+let isSearching = $state(false);
+let searchTimeout: number | null = null;
 
-	// Pagination State
-	let currentPage = $state(1);
-	let totalPages = $state(1);
-	let hasNext = $state(false);
-	let hasPrevious = $state(false);
-	let totalCount = $state(0);
+// Pagination State
+let currentPage = $state(1);
+let totalPages = $state(1);
+let hasNext = $state(false);
+let hasPrevious = $state(false);
+let totalCount = $state(0);
 
-	const loadUsers = async (page: number = 1) => {
-		loading = true;
-		try {
-			const data = await fetchUsers(page);
-			users = data.results;
-			currentPage = page;
-			totalCount = data.count;
-			hasNext = !!data.next;
-			hasPrevious = !!data.previous;
-			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-		} catch (error) {
-			console.error("Failed to load users:", error);
-			users = [];
-		} finally {
-			loading = false;
-			isSearching = false;
+const loadUsers = async (page: number = 1) => {
+	loading = true;
+	try {
+		const data = await fetchUsers(page);
+		users = data.results;
+		currentPage = page;
+		totalCount = data.count;
+		hasNext = !!data.next;
+		hasPrevious = !!data.previous;
+		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+	} catch (error) {
+		console.error("Failed to load users:", error);
+		users = [];
+	} finally {
+		loading = false;
+		isSearching = false;
+	}
+};
+
+const performSearch = async (query: string) => {
+	isSearching = true;
+	loading = true;
+	try {
+		users = await searchUsersByName(query);
+		// Reset pagination for search results
+		currentPage = 1;
+		totalPages = 1;
+		hasNext = false;
+		hasPrevious = false;
+		totalCount = users.length;
+	} catch (error) {
+		console.error("Search failed:", error);
+		users = [];
+	} finally {
+		loading = false;
+	}
+};
+
+onMount(async () => {
+	const loggedIn = await checkLoginStatus();
+
+	if (!loggedIn) {
+		goto("/dashboard/signin");
+		return;
+	}
+
+	loadUsers(1);
+});
+
+$effect(() => {
+	if (searchTimeout) {
+		clearTimeout(searchTimeout);
+	}
+
+	const query = searchTerm.trim();
+	if (!query) {
+		// If search term is cleared, fetch all users again
+		if (isSearching) {
+			loadUsers(1);
 		}
-	};
+		return;
+	}
 
-	const performSearch = async (query: string) => {
-		isSearching = true;
-		loading = true;
-		try {
-			users = await searchUsersByName(query);
-			// Reset pagination for search results
-			currentPage = 1;
-			totalPages = 1;
-			hasNext = false;
-			hasPrevious = false;
-			totalCount = users.length;
-		} catch (error) {
-			console.error("Search failed:", error);
-			users = [];
-		} finally {
-			loading = false;
-		}
-	};
+	searchTimeout = setTimeout(() => {
+		performSearch(query);
+	}, 300); // 300ms debounce
+});
 
-	onMount(async () => {
-		const loggedIn = await checkLoginStatus();
-
-		if (!loggedIn) {
-			goto("/dashboard/signin");
-			return;
-		}
-
-		loadUsers(1);
-	});
-
-	$effect(() => {
-		if (searchTimeout) {
-			clearTimeout(searchTimeout);
-		}
-
-		const query = searchTerm.trim();
-		if (!query) {
-			// If search term is cleared, fetch all users again
-			if (isSearching) {
-				loadUsers(1);
-			}
-			return;
-		}
-
-		searchTimeout = setTimeout(() => {
-			performSearch(query);
-		}, 300); // 300ms debounce
-	});
-
-	// Event Handlers
-	const handleAddUser = async (name: string, studentStatus: boolean) => {
-		try {
-			const response = await createUser(name, studentStatus);
-			if (response.ok) {
-				// Refresh current view
-				if (searchTerm) {
-					await performSearch(searchTerm);
-				} else {
-					await loadUsers(currentPage);
-				}
-			}
-		} catch (error) {
-			console.error("Failed to create user:", error);
-			alert("Failed to create user");
-		}
-	};
-
-	const handleSaveUser = async (userId: number, name: string, studentStatus: boolean) => {
-		try {
-			const response = await updateUser(userId, name, studentStatus);
-			if (response.ok) {
-				users = users.map((u) => (u.id === userId ? { ...u, name: name } : u));
+// Event Handlers
+const handleAddUser = async (name: string, studentStatus: boolean) => {
+	try {
+		const response = await createUser(name, studentStatus);
+		if (response.ok) {
+			// Refresh current view
+			if (searchTerm) {
+				await performSearch(searchTerm);
 			} else {
-				alert("Failed to update user");
+				await loadUsers(currentPage);
 			}
-		} catch (error) {
-			console.error("Failed to update user:", error);
+		}
+	} catch (error) {
+		console.error("Failed to create user:", error);
+		alert("Failed to create user");
+	}
+};
+
+const handleSaveUser = async (userId: number, name: string, studentStatus: boolean) => {
+	try {
+		const response = await updateUser(userId, name, studentStatus);
+		if (response.ok) {
+			users = users.map((u) => (u.id === userId ? { ...u, name: name } : u));
+		} else {
 			alert("Failed to update user");
 		}
-	};
+	} catch (error) {
+		console.error("Failed to update user:", error);
+		alert("Failed to update user");
+	}
+};
 
-	const handleDeleteUser = async (userId: number) => {
-		if (confirm("Are you sure you want to delete this user?")) {
-			try {
-				const response = await deleteUserById(userId);
-				if (response.ok) {
-					// After deleting, if the page is now empty, go to the previous page
-					const willBeEmpty = users.length === 1;
-					if (willBeEmpty && currentPage > 1 && !isSearching) {
-						loadUsers(currentPage - 1);
-					} else {
-						// Otherwise, just filter out the user locally for faster UI update before a full reload
-						users = users.filter((u) => u.id !== userId);
-						totalCount--;
-					}
+const handleDeleteUser = async (userId: number) => {
+	if (confirm("Are you sure you want to delete this user?")) {
+		try {
+			const response = await deleteUserById(userId);
+			if (response.ok) {
+				// After deleting, if the page is now empty, go to the previous page
+				const willBeEmpty = users.length === 1;
+				if (willBeEmpty && currentPage > 1 && !isSearching) {
+					loadUsers(currentPage - 1);
 				} else {
-					alert("Failed to delete user");
+					// Otherwise, just filter out the user locally for faster UI update before a full reload
+					users = users.filter((u) => u.id !== userId);
+					totalCount--;
 				}
-			} catch (error) {
-				console.error("Failed to delete user:", error);
+			} else {
 				alert("Failed to delete user");
 			}
+		} catch (error) {
+			console.error("Failed to delete user:", error);
+			alert("Failed to delete user");
 		}
-	};
+	}
+};
 </script>
 
 <div class="min-h-screen py-8">

@@ -1,33 +1,33 @@
 <script lang="ts">
-	import { fetchSessions } from "$lib/competitionSessionService";
-	import { type Session, type StudentStatus, type WCAEvent } from "$lib/types";
-	import { onMount } from "svelte";
-	import EventPicker from "./EventPicker.svelte";
-	import SessionSelector from "./SessionSelector.svelte";
-	import ToggleButton from "./ToggleButton.svelte";
-	import UofTSelector from "./UofTSelector.svelte";
+import { fetchSessions } from "$lib/competitionSessionService";
+import { type Session, type StudentStatus, type WCAEvent } from "$lib/types";
+import { onMount } from "svelte";
+import EventPicker from "./EventPicker.svelte";
+import SessionSelector from "./SessionSelector.svelte";
+import ToggleButton from "./ToggleButton.svelte";
+import UofTSelector from "./UofTSelector.svelte";
 
-	interface Props {
-		isAverage: boolean;
-		selectedEvent: WCAEvent;
-		showAll: boolean;
-		session: string;
-		studentStatus: StudentStatus;
-	}
+interface Props {
+	isAverage: boolean;
+	selectedEvent: WCAEvent;
+	showAll: boolean;
+	session: string;
+	studentStatus: StudentStatus;
+}
 
-	let {
-		isAverage = $bindable(),
-		selectedEvent = $bindable(),
-		showAll = $bindable(),
-		session = $bindable(),
-		studentStatus = $bindable(),
-	}: Props = $props();
+let {
+	isAverage = $bindable(),
+	selectedEvent = $bindable(),
+	showAll = $bindable(),
+	session = $bindable(),
+	studentStatus = $bindable(),
+}: Props = $props();
 
-	let sessions: Session[] = $state([]);
+let sessions: Session[] = $state([]);
 
-	onMount(async () => {
-		sessions = await fetchSessions();
-	});
+onMount(async () => {
+	sessions = await fetchSessions();
+});
 </script>
 
 <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">

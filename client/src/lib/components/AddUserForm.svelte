@@ -1,25 +1,25 @@
 <script lang="ts">
-	let { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } = $props();
+let { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } = $props();
 
-	let newUserName = $state("");
-	let newUserStudentStatus = $state(true);
-	let isSubmitting = $state(false);
+let newUserName = $state("");
+let newUserStudentStatus = $state(true);
+let isSubmitting = $state(false);
 
-	const handleSubmit = async () => {
-		if (!newUserName.trim() || isSubmitting) {
-			return;
-		}
+const handleSubmit = async () => {
+	if (!newUserName.trim() || isSubmitting) {
+		return;
+	}
 
-		isSubmitting = true;
-		try {
-			await onAddUser(newUserName, newUserStudentStatus);
-			newUserName = "";
-		} catch (error) {
-			console.error("Failed to add user from form:", error);
-		} finally {
-			isSubmitting = false;
-		}
-	};
+	isSubmitting = true;
+	try {
+		await onAddUser(newUserName, newUserStudentStatus);
+		newUserName = "";
+	} catch (error) {
+		console.error("Failed to add user from form:", error);
+	} finally {
+		isSubmitting = false;
+	}
+};
 </script>
 
 <div class="rounded-lg bg-white p-6 shadow-sm">

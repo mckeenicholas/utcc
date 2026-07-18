@@ -1,41 +1,41 @@
 <script lang="ts">
-	interface Props {
-		compId: string;
-		scrambleSetId: number;
-		setNum: number;
-		visibility: boolean;
-		onSetVisibility: (vis: boolean) => void;
-		onDelete: () => void;
+interface Props {
+	compId: string;
+	scrambleSetId: number;
+	setNum: number;
+	visibility: boolean;
+	onSetVisibility: (vis: boolean) => void;
+	onDelete: () => void;
+}
+
+const { compId, scrambleSetId, setNum, visibility, onSetVisibility, onDelete }: Props = $props();
+
+let editing = $state(false);
+let isVisible = $state(false);
+
+$effect(() => {
+	isVisible = visibility;
+});
+
+const onSave = () => {
+	if (visibility != isVisible) {
+		onSetVisibility(isVisible);
 	}
+	editing = false;
+};
 
-	const { compId, scrambleSetId, setNum, visibility, onSetVisibility, onDelete }: Props = $props();
+const onCancel = () => {
+	isVisible = visibility;
+	editing = false;
+};
 
-	let editing = $state(false);
-	let isVisible = $state(false);
+const onEdit = () => {
+	editing = true;
+};
 
-	$effect(() => {
-		isVisible = visibility;
-	});
-
-	const onSave = () => {
-		if (visibility != isVisible) {
-			onSetVisibility(isVisible);
-		}
-		editing = false;
-	};
-
-	const onCancel = () => {
-		isVisible = visibility;
-		editing = false;
-	};
-
-	const onEdit = () => {
-		editing = true;
-	};
-
-	const onDeleteClick = () => {
-		onDelete();
-	};
+const onDeleteClick = () => {
+	onDelete();
+};
 </script>
 
 <div class="flex w-full items-center justify-between">
@@ -60,9 +60,7 @@
 			</button>
 		{:else}
 			<div
-				class="rounded-md px-3 py-1 text-sm {isVisible
-					? 'bg-red-100  text-red-800'
-					: 'bg-green-100  text-green-800'}"
+				class="rounded-md px-3 py-1 text-sm {isVisible ? 'bg-red-100  text-red-800' : 'bg-green-100  text-green-800'}"
 			>
 				{isVisible ? "Publicly Visible" : "Private"}
 			</div>

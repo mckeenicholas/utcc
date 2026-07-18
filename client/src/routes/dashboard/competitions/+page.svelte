@@ -1,134 +1,132 @@
 <script lang="ts">
-	import type { Competition, Paginated, Session } from "$lib/types";
-	import { goto } from "$app/navigation";
-	import authFetch from "$lib/authFetch";
-	import { fetchSessions } from "$lib/competitionSessionService";
-	import DashboardCompetitionCard from "$lib/components/DashboardCompetitionCard.svelte";
-	import DashboardHeader from "$lib/components/DashboardHeader.svelte";
-	import DateForm from "$lib/components/DateForm.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import PaginationControls from "$lib/components/PaginationControls.svelte";
-	import SessionSelector from "$lib/components/SessionSelector.svelte";
-	import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from "$lib/utils";
-	import { onMount } from "svelte";
+import type { Competition, Paginated, Session } from "$lib/types";
+import { goto } from "$app/navigation";
+import authFetch from "$lib/authFetch";
+import { fetchSessions } from "$lib/competitionSessionService";
+import DashboardCompetitionCard from "$lib/components/DashboardCompetitionCard.svelte";
+import DashboardHeader from "$lib/components/DashboardHeader.svelte";
+import DateForm from "$lib/components/DateForm.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import PaginationControls from "$lib/components/PaginationControls.svelte";
+import SessionSelector from "$lib/components/SessionSelector.svelte";
+import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from "$lib/utils";
+import { onMount } from "svelte";
 
-	let competitions: Competition[] = $state([]);
-	let loading = $state(true);
-	let newCompName = $state("");
-	let selectedDate = $state<string>(new Date().toISOString().split("T")[0]);
-	let currentPage = $state(1);
-	let totalPages = $state(1);
-	let hasNext = $state(false);
-	let hasPrevious = $state(false);
-	let totalCount = $state(0);
-	let selectedSession = $state("-1");
-	let createCompSession = $state("-1");
-	let allSessions: Session[] = $state([]);
+let competitions: Competition[] = $state([]);
+let loading = $state(true);
+let newCompName = $state("");
+let selectedDate = $state<string>(new Date().toISOString().split("T")[0]);
+let currentPage = $state(1);
+let totalPages = $state(1);
+let hasNext = $state(false);
+let hasPrevious = $state(false);
+let totalCount = $state(0);
+let selectedSession = $state("-1");
+let createCompSession = $state("-1");
+let allSessions: Session[] = $state([]);
 
-	$effect(() => {
-		if (selectedSession) {
-			fetchCompetitions(currentPage, parseInt(selectedSession));
-		}
-	});
+$effect(() => {
+	if (selectedSession) {
+		fetchCompetitions(currentPage, parseInt(selectedSession));
+	}
+});
 
-	const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
-		loading = true;
+const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
+	loading = true;
 
-		const url = new URL(`${BASE_URL}/api/competitions/`);
-		url.searchParams.set("page", page.toString());
-		if (sessionId !== -1) {
-			url.searchParams.set("session_id", sessionId.toString());
-		}
+	const url = new URL(`${BASE_URL}/api/competitions/`);
+	url.searchParams.set("page", page.toString());
+	if (sessionId !== -1) {
+		url.searchParams.set("session_id", sessionId.toString());
+	}
 
-		const competitionRes = await authFetch(url);
+	const competitionRes = await authFetch(url);
 
-		if (competitionRes.ok) {
-			const compResJSON: Paginated<Competition> = await competitionRes.json();
-			competitions = compResJSON.results.toSorted(
-				(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-			);
+	if (competitionRes.ok) {
+		const compResJSON: Paginated<Competition> = await competitionRes.json();
+		competitions = compResJSON.results.toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-			currentPage = page;
-			totalCount = compResJSON.count;
-			hasNext = !!compResJSON.next;
-			hasPrevious = !!compResJSON.previous;
-			totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-		} else {
-			console.error("Failed to fetch competitions:", competitionRes.statusText);
-		}
-		loading = false;
-	};
+		currentPage = page;
+		totalCount = compResJSON.count;
+		hasNext = !!compResJSON.next;
+		hasPrevious = !!compResJSON.previous;
+		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
+	} else {
+		console.error("Failed to fetch competitions:", competitionRes.statusText);
+	}
+	loading = false;
+};
 
-	onMount(async () => {
-		const loggedIn = await checkLoginStatus();
+onMount(async () => {
+	const loggedIn = await checkLoginStatus();
 
-		if (!loggedIn) {
-			goto("/dashboard/signin");
-		}
+	if (!loggedIn) {
+		goto("/dashboard/signin");
+	}
 
-		allSessions = await fetchSessions();
-	});
+	allSessions = await fetchSessions();
+});
 
-	const goToNextPage = () => {
-		if (hasNext) {
-			fetchCompetitions(currentPage + 1, parseInt(selectedSession));
-		}
-	};
+const goToNextPage = () => {
+	if (hasNext) {
+		fetchCompetitions(currentPage + 1, parseInt(selectedSession));
+	}
+};
 
-	const goToPreviousPage = () => {
-		if (hasPrevious) {
-			fetchCompetitions(currentPage - 1, parseInt(selectedSession));
-		}
-	};
+const goToPreviousPage = () => {
+	if (hasPrevious) {
+		fetchCompetitions(currentPage - 1, parseInt(selectedSession));
+	}
+};
 
-	const goToPage = (pageNo: number) => {
-		if (pageNo >= 1 && pageNo <= totalPages) {
-			fetchCompetitions(pageNo, parseInt(selectedSession));
-		}
-	};
+const goToPage = (pageNo: number) => {
+	if (pageNo >= 1 && pageNo <= totalPages) {
+		fetchCompetitions(pageNo, parseInt(selectedSession));
+	}
+};
 
-	const deleteCompetition = async (id: number) => {
-		if (confirm("Are you sure you want to delete this competition?")) {
-			const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-				method: "DELETE",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-
-			if (response.ok) {
-				competitions = competitions.filter((c) => c.id !== id);
-				fetchCompetitions(currentPage, parseInt(selectedSession));
-			} else {
-				alert("Failed to delete competition");
-			}
-		}
-	};
-
-	const createCompetition = async () => {
-		const sessionIdToSubmit = createCompSession === "-1" ? null : parseInt(createCompSession);
-
-		const response = await authFetch(`${BASE_URL}/api/competitions/`, {
-			method: "POST",
+const deleteCompetition = async (id: number) => {
+	if (confirm("Are you sure you want to delete this competition?")) {
+		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
+			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ name: newCompName, date: selectedDate, session: sessionIdToSubmit }),
 		});
 
 		if (response.ok) {
-			const newCompetition: Competition = await response.json();
-			// Reset form
-			newCompName = "";
-			selectedDate = "";
-			createCompSession = "-1";
-
-			// Using Goto to not trigger a re-request doesn't seem to work here for some reason
-			window.location.href = `/dashboard/competitions/${newCompetition.id}`;
+			competitions = competitions.filter((c) => c.id !== id);
+			fetchCompetitions(currentPage, parseInt(selectedSession));
 		} else {
-			alert("Failed to create competition");
+			alert("Failed to delete competition");
 		}
-	};
+	}
+};
+
+const createCompetition = async () => {
+	const sessionIdToSubmit = createCompSession === "-1" ? null : parseInt(createCompSession);
+
+	const response = await authFetch(`${BASE_URL}/api/competitions/`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ name: newCompName, date: selectedDate, session: sessionIdToSubmit }),
+	});
+
+	if (response.ok) {
+		const newCompetition: Competition = await response.json();
+		// Reset form
+		newCompName = "";
+		selectedDate = "";
+		createCompSession = "-1";
+
+		// Using Goto to not trigger a re-request doesn't seem to work here for some reason
+		window.location.href = `/dashboard/competitions/${newCompetition.id}`;
+	} else {
+		alert("Failed to create competition");
+	}
+};
 </script>
 
 <div class="min-h-screen py-8">

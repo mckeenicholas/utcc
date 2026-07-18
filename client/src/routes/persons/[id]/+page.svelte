@@ -1,51 +1,51 @@
 <script lang="ts">
-	import { page } from "$app/stores";
-	import Backbutton from "$lib/components/Backbutton.svelte";
-	import CompetitionResultsTable from "$lib/components/CompetitionResultsTable.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import PersonalRecordsTable from "$lib/components/PersonalRecordsTable.svelte";
-	import SessionSelector from "$lib/components/SessionSelector.svelte";
-	import { type ProfileResponse, type Session, type UserProfileResponse, type WCAEvent } from "$lib/types";
-	import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from "$lib/utils";
+import { page } from "$app/stores";
+import Backbutton from "$lib/components/Backbutton.svelte";
+import CompetitionResultsTable from "$lib/components/CompetitionResultsTable.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import PersonalRecordsTable from "$lib/components/PersonalRecordsTable.svelte";
+import SessionSelector from "$lib/components/SessionSelector.svelte";
+import { type ProfileResponse, type Session, type UserProfileResponse, type WCAEvent } from "$lib/types";
+import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from "$lib/utils";
 
-	const personId = $page.params.id;
-	let selectedEvent: WCAEvent = $state("333");
-	let selectedSession: string = $state("-1");
-	let profileResults = $state<UserProfileResponse | null>(null);
-	let allSessions: Session[] = $state([]);
-	let loading = $state(true);
-	let error = $state("");
+const personId = $page.params.id;
+let selectedEvent: WCAEvent = $state("333");
+let selectedSession: string = $state("-1");
+let profileResults = $state<UserProfileResponse | null>(null);
+let allSessions: Session[] = $state([]);
+let loading = $state(true);
+let error = $state("");
 
-	const fetchProfileResults = async (session_id: string) => {
-		try {
-			const url = new URL(`${BASE_URL}/api/users/${personId}/results/`);
+const fetchProfileResults = async (session_id: string) => {
+	try {
+		const url = new URL(`${BASE_URL}/api/users/${personId}/results/`);
 
-			if (session_id !== "-1") {
-				url.searchParams.append("session_id", session_id);
-			}
-
-			const response = await fetchJson<ProfileResponse>(url);
-
-			allSessions = response.person.sessions;
-
-			const personalRecords = processPersonalRecords(response.records);
-			const resultsTableContent = response.results.map(generateRecordsForEvent);
-
-			profileResults = {
-				records: personalRecords,
-				results: resultsTableContent,
-				name: response.person.name,
-			} as unknown as UserProfileResponse;
-		} catch (err) {
-			error = "Unable to fetch user profile.";
-		} finally {
-			loading = false;
+		if (session_id !== "-1") {
+			url.searchParams.append("session_id", session_id);
 		}
-	};
 
-	$effect(() => {
-		fetchProfileResults(selectedSession);
-	});
+		const response = await fetchJson<ProfileResponse>(url);
+
+		allSessions = response.person.sessions;
+
+		const personalRecords = processPersonalRecords(response.records);
+		const resultsTableContent = response.results.map(generateRecordsForEvent);
+
+		profileResults = {
+			records: personalRecords,
+			results: resultsTableContent,
+			name: response.person.name,
+		} as unknown as UserProfileResponse;
+	} catch (err) {
+		error = "Unable to fetch user profile.";
+	} finally {
+		loading = false;
+	}
+};
+
+$effect(() => {
+	fetchProfileResults(selectedSession);
+});
 </script>
 
 <svelte:head>

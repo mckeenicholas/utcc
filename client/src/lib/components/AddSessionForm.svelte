@@ -1,20 +1,20 @@
 <script lang="ts">
-	import DateForm from "./DateForm.svelte";
+import DateForm from "./DateForm.svelte";
 
-	interface Props {
-		onAddSession: (name: string, date: string) => Promise<void>;
+interface Props {
+	onAddSession: (name: string, date: string) => Promise<void>;
+}
+let { onAddSession }: Props = $props();
+
+let newSessionName = $state("");
+let startDate = $state<string>(new Date().toISOString().split("T")[0]);
+
+const handleSubmit = async () => {
+	if (newSessionName.trim()) {
+		await onAddSession(newSessionName.trim(), startDate);
+		newSessionName = "";
 	}
-	let { onAddSession }: Props = $props();
-
-	let newSessionName = $state("");
-	let startDate = $state<string>(new Date().toISOString().split("T")[0]);
-
-	const handleSubmit = async () => {
-		if (newSessionName.trim()) {
-			await onAddSession(newSessionName.trim(), startDate);
-			newSessionName = "";
-		}
-	};
+};
 </script>
 
 <div class="mb-8 rounded-lg bg-white p-6 shadow-sm">

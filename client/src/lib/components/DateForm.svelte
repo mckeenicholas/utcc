@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { parseDate } from "@internationalized/date";
-	import { DatePicker } from "bits-ui";
+import { parseDate } from "@internationalized/date";
+import { DatePicker } from "bits-ui";
 
-	let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: string; label?: string } = $props();
+let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: string; label?: string } = $props();
 </script>
 
 <DatePicker.Root
@@ -61,12 +61,7 @@
 							class="inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-gray-100"
 						>
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M15 19l-7-7 7-7"
-								/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 							</svg>
 						</DatePicker.PrevButton>
 						<DatePicker.Heading class="text-sm font-medium" />
@@ -74,12 +69,7 @@
 							class="inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors hover:bg-gray-100"
 						>
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M9 5l7 7-7 7"
-								/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 							</svg>
 						</DatePicker.NextButton>
 					</DatePicker.Header>
@@ -89,9 +79,7 @@
 								<DatePicker.GridHead>
 									<DatePicker.GridRow class="mb-1 flex w-full justify-between">
 										{#each weekdays as day (day)}
-											<DatePicker.HeadCell
-												class="w-9 rounded-md text-xs font-normal text-gray-500"
-											>
+											<DatePicker.HeadCell class="w-9 rounded-md text-xs font-normal text-gray-500">
 												<div>{day.slice(0, 2)}</div>
 											</DatePicker.HeadCell>
 										{/each}
@@ -101,11 +89,7 @@
 									{#each month.weeks as weekDates (weekDates)}
 										<DatePicker.GridRow class="flex w-full">
 											{#each weekDates as date (date)}
-												<DatePicker.Cell
-													{date}
-													month={month.value}
-													class="relative h-9 w-9 p-0 text-center text-sm"
-												>
+												<DatePicker.Cell {date} month={month.value} class="relative h-9 w-9 p-0 text-center text-sm">
 													<DatePicker.Day
 														class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-sm font-normal whitespace-nowrap text-gray-900 transition-colors hover:bg-gray-100 data-disabled:pointer-events-none data-disabled:text-gray-300 data-outside-month:pointer-events-none data-outside-month:text-gray-400 data-selected:bg-gray-900 data-selected:text-white data-unavailable:text-gray-300 data-unavailable:line-through"
 													>

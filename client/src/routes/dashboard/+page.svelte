@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-	import DashboardHeader from "$lib/components/DashboardHeader.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import { checkLoginStatus } from "$lib/utils";
-	import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import DashboardHeader from "$lib/components/DashboardHeader.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import { checkLoginStatus } from "$lib/utils";
+import { onMount } from "svelte";
 
-	let loading = $state(true);
+let loading = $state(true);
 
-	onMount(async () => {
-		const loggedIn = await checkLoginStatus();
+onMount(async () => {
+	const loggedIn = await checkLoginStatus();
 
-		if (!loggedIn) {
-			goto("/dashboard/signin");
-			return;
-		}
+	if (!loggedIn) {
+		goto("/dashboard/signin");
+		return;
+	}
 
-		loading = false;
-	});
+	loading = false;
+});
 </script>
 
 {#if loading}
@@ -57,9 +57,7 @@
 				>
 					<div class="flex items-center space-x-3">
 						<div>
-							<h2
-								class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-green-600"
-							>
+							<h2 class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-green-600">
 								User Management
 							</h2>
 							<p class="mt-1 text-sm text-gray-600">Add, edit, and manage user accounts</p>
@@ -80,9 +78,7 @@
 				>
 					<div class="flex items-center space-x-3">
 						<div>
-							<h2
-								class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-orange-400"
-							>
+							<h2 class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-orange-400">
 								Session Management
 							</h2>
 							<p class="mt-1 text-sm text-gray-600">Add, edit, and manage academic sessions</p>

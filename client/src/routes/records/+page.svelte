@@ -1,66 +1,66 @@
 <script lang="ts">
-	import type { EventRecords, RecordsApiResponse, Session, StudentStatus, WCAEvent } from "$lib/types";
-	import { fetchSessions } from "$lib/competitionSessionService";
-	import Backbutton from "$lib/components/Backbutton.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import RecordRow from "$lib/components/RecordRow.svelte";
-	import SessionSelector from "$lib/components/SessionSelector.svelte";
-	import UofTSelector from "$lib/components/UofTSelector.svelte";
-	import { eventSolves, eventNames } from "$lib/types";
-	import { fetchJson, recordsURL, sortEvents } from "$lib/utils";
-	import { onMount } from "svelte";
+import type { EventRecords, RecordsApiResponse, Session, StudentStatus, WCAEvent } from "$lib/types";
+import { fetchSessions } from "$lib/competitionSessionService";
+import Backbutton from "$lib/components/Backbutton.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import RecordRow from "$lib/components/RecordRow.svelte";
+import SessionSelector from "$lib/components/SessionSelector.svelte";
+import UofTSelector from "$lib/components/UofTSelector.svelte";
+import { eventSolves, eventNames } from "$lib/types";
+import { fetchJson, recordsURL, sortEvents } from "$lib/utils";
+import { onMount } from "svelte";
 
-	let recordsAPIResponse: RecordsApiResponse | null = $state(null);
-	let selectedSession: string = $state("-1");
-	let studentStatus: StudentStatus = $state("all");
-	let sessions: Session[] = $state([]);
-	let loading = $state(true);
+let recordsAPIResponse: RecordsApiResponse | null = $state(null);
+let selectedSession: string = $state("-1");
+let studentStatus: StudentStatus = $state("all");
+let sessions: Session[] = $state([]);
+let loading = $state(true);
 
-	let innerWidth = $state(0);
+let innerWidth = $state(0);
 
-	const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
-		const url = new URL(recordsURL);
-		if (sessionId !== -1) {
-			url.searchParams.set("session_id", sessionId.toString());
-		}
+const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
+	const url = new URL(recordsURL);
+	if (sessionId !== -1) {
+		url.searchParams.set("session_id", sessionId.toString());
+	}
 
-		if (uoftStatus == "uoft") {
-			url.searchParams.set("uoft", "1");
-		} else if (uoftStatus == "non-uoft") {
-			url.searchParams.set("uoft", "0");
-		}
+	if (uoftStatus == "uoft") {
+		url.searchParams.set("uoft", "1");
+	} else if (uoftStatus == "non-uoft") {
+		url.searchParams.set("uoft", "0");
+	}
 
-		return url;
-	};
+	return url;
+};
 
-	$effect(() => {
-		fetchRecords(parseInt(selectedSession), studentStatus);
-	});
+$effect(() => {
+	fetchRecords(parseInt(selectedSession), studentStatus);
+});
 
-	const fetchRecords = async (sessionId: number, uoftStatus: StudentStatus) => {
-		try {
-			loading = true;
-			recordsAPIResponse = await fetchJson<RecordsApiResponse>(sessionRecordsURL(sessionId, uoftStatus));
-		} catch (error) {
-			console.error("Failed to fetch records:", error);
-		} finally {
-			loading = false;
-		}
-	};
+const fetchRecords = async (sessionId: number, uoftStatus: StudentStatus) => {
+	try {
+		loading = true;
+		recordsAPIResponse = await fetchJson<RecordsApiResponse>(sessionRecordsURL(sessionId, uoftStatus));
+	} catch (error) {
+		console.error("Failed to fetch records:", error);
+	} finally {
+		loading = false;
+	}
+};
 
-	onMount(async () => {
-		sessions = await fetchSessions();
-	});
+onMount(async () => {
+	sessions = await fetchSessions();
+});
 
-	let recordsDisplay = $derived.by(() => {
-		if (!recordsAPIResponse) {
-			return [];
-		}
+let recordsDisplay = $derived.by(() => {
+	if (!recordsAPIResponse) {
+		return [];
+	}
 
-		const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
-		recordEntries.sort((a, b) => sortEvents(a[0] as WCAEvent, b[0] as WCAEvent));
-		return recordEntries;
-	});
+	const recordEntries = Object.entries(recordsAPIResponse) as [WCAEvent, EventRecords][];
+	recordEntries.sort((a, b) => sortEvents(a[0] as WCAEvent, b[0] as WCAEvent));
+	return recordEntries;
+});
 </script>
 
 <svelte:window bind:innerWidth />
@@ -99,20 +99,12 @@
 							<table class="min-w-full divide-y divide-gray-200">
 								<thead>
 									<tr>
-										<th
-											class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
-											>Type</th
-										>
-										<th
-											class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
-											>Name</th
-										>
-										<th
-											class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+										<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Type</th>
+										<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Name</th>
+										<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Competition</th
 										>
-										<th
-											class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+										<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Result</th
 										>
 										{#each Array.from({ length: eventSolves[eventKey]! }).keys() as idx (idx)}

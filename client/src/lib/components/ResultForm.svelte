@@ -1,64 +1,64 @@
 <script lang="ts">
-	import type { WCAEvent, Result } from "$lib/types";
-	import { eventNames, eventSolves } from "$lib/types";
-	import { Select } from "bits-ui";
-	import ResultEntryField from "./ResultEntryField.svelte";
+import type { WCAEvent, Result } from "$lib/types";
+import { eventNames, eventSolves } from "$lib/types";
+import { Select } from "bits-ui";
+import ResultEntryField from "./ResultEntryField.svelte";
 
-	interface Props {
-		formData: {
-			event: WCAEvent;
-			round: number;
-			time1: number;
-			time2: number;
-			time3: number;
-			time4: number;
-			time5: number;
-		};
-		editingResult: Result | null;
-		submitting: boolean;
-		onSubmit: () => void;
-		onCancel: () => void;
-		additionalValidation?: boolean;
-	}
-
-	let {
-		formData = $bindable(),
-		editingResult,
-		submitting,
-		onSubmit,
-		onCancel,
-		additionalValidation = true,
-	}: Props = $props();
-
-	const getAttemptCount = (event: WCAEvent): number => {
-		return eventSolves[event] || 5;
+interface Props {
+	formData: {
+		event: WCAEvent;
+		round: number;
+		time1: number;
+		time2: number;
+		time3: number;
+		time4: number;
+		time5: number;
 	};
+	editingResult: Result | null;
+	submitting: boolean;
+	onSubmit: () => void;
+	onCancel: () => void;
+	additionalValidation?: boolean;
+}
 
-	const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
-		value: key,
-		label: name,
-	}));
+let {
+	formData = $bindable(),
+	editingResult,
+	submitting,
+	onSubmit,
+	onCancel,
+	additionalValidation = true,
+}: Props = $props();
 
-	const selectedEventLabel = $derived.by(() => {
-		const selected = eventOptions.find((option) => option.value === formData.event);
-		return selected ? selected.label : "Select an event";
-	});
+const getAttemptCount = (event: WCAEvent): number => {
+	return eventSolves[event] || 5;
+};
 
-	const areRequiredFieldsFilled = $derived(formData.event && formData.round > 0 && additionalValidation);
+const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
+	value: key,
+	label: name,
+}));
 
-	const handleKeydown = (event: KeyboardEvent) => {
-		if (event.key === "Enter") {
-			onSubmit();
-		} else if (event.key === "ArrowUp" || event.key === "-") {
-			event.preventDefault();
-			const inputs = document.querySelectorAll(".time-input");
-			const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
-			const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
-			if (prevInput) {
-				prevInput.focus();
-			}
+const selectedEventLabel = $derived.by(() => {
+	const selected = eventOptions.find((option) => option.value === formData.event);
+	return selected ? selected.label : "Select an event";
+});
+
+const areRequiredFieldsFilled = $derived(formData.event && formData.round > 0 && additionalValidation);
+
+const handleKeydown = (event: KeyboardEvent) => {
+	if (event.key === "Enter") {
+		onSubmit();
+	} else if (event.key === "ArrowUp" || event.key === "-") {
+		event.preventDefault();
+		const inputs = document.querySelectorAll(".time-input");
+		const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
+		const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
+		if (prevInput) {
+			prevInput.focus();
 		}
-	};
+	}
+};
 </script>
 
 <div class="my-4 flex items-center justify-between">
@@ -96,12 +96,7 @@
 									{#if selected}
 										<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
 											<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M5 13l4 4L19 7"
-												/>
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 											</svg>
 										</span>
 									{/if}

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { Competition } from "$lib/types";
-	import { formatCompetitionDate } from "$lib/utils";
+import type { Competition } from "$lib/types";
+import { formatCompetitionDate } from "$lib/utils";
 
-	interface Props {
-		competition: Competition | null;
-		backUrl?: string;
-		backText?: string;
-	}
+interface Props {
+	competition: Competition | null;
+	backUrl?: string;
+	backText?: string;
+}
 
-	let { competition, backUrl = "/dashboard", backText = "Back to Dashboard" }: Props = $props();
+let { competition, backUrl = "/dashboard", backText = "Back to Dashboard" }: Props = $props();
 </script>
 
 <div class="mb-8 flex items-center justify-between">

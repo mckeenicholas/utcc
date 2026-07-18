@@ -1,45 +1,45 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-	import authFetch from "$lib/authFetch";
-	import { BASE_URL } from "$lib/utils";
-	import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import authFetch from "$lib/authFetch";
+import { BASE_URL } from "$lib/utils";
+import { onMount } from "svelte";
 
-	let errorMsg = $state("");
-	let isLoading = $state(false);
-	let showFallback = $state(true);
+let errorMsg = $state("");
+let isLoading = $state(false);
+let showFallback = $state(true);
 
-	const signOut = async () => {
-		try {
-			const response = await authFetch(`${BASE_URL}/api/users/auth/logout/`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
+const signOut = async () => {
+	try {
+		const response = await authFetch(`${BASE_URL}/api/users/auth/logout/`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 
-			if (response.ok) {
-				setTimeout(() => {
-					goto("/dashboard/signin");
-				}, 1000);
-			} else {
-				const data = await response.json();
-				errorMsg = data.message || "Logout failed";
-				isLoading = false;
-				showFallback = true;
-			}
-		} catch {
-			errorMsg = "Network error during logout";
+		if (response.ok) {
+			setTimeout(() => {
+				goto("/dashboard/signin");
+			}, 1000);
+		} else {
+			const data = await response.json();
+			errorMsg = data.message || "Logout failed";
 			isLoading = false;
 			showFallback = true;
 		}
+	} catch {
+		errorMsg = "Network error during logout";
+		isLoading = false;
+		showFallback = true;
+	}
 
-		setTimeout(() => {
-			showFallback = true;
-			isLoading = false;
-		}, 3000);
-	};
+	setTimeout(() => {
+		showFallback = true;
+		isLoading = false;
+	}, 3000);
+};
 
-	onMount(signOut);
+onMount(signOut);
 </script>
 
 <div class="flex min-h-screen items-center justify-center">

@@ -1,26 +1,26 @@
 <script lang="ts">
-	import type { Session } from "$lib/types";
-	import type { ClassValue } from "svelte/elements";
-	import { Select } from "bits-ui";
+import type { Session } from "$lib/types";
+import type { ClassValue } from "svelte/elements";
+import { Select } from "bits-ui";
 
-	let {
-		value = $bindable(),
-		defaultMessage = "All sessions",
-		class: classProps,
-		sessionData,
-	}: {
-		value: string;
-		defaultMessage?: string;
-		class?: ClassValue;
-		sessionData: Session[];
-	} = $props();
+let {
+	value = $bindable(),
+	defaultMessage = "All sessions",
+	class: classProps,
+	sessionData,
+}: {
+	value: string;
+	defaultMessage?: string;
+	class?: ClassValue;
+	sessionData: Session[];
+} = $props();
 
-	let sessions = $derived([
-		{ value: "-1", label: defaultMessage },
-		...(sessionData?.map((s) => ({ value: s.id.toString(), label: s.name })) ?? []),
-	]);
+let sessions = $derived([
+	{ value: "-1", label: defaultMessage },
+	...(sessionData?.map((s) => ({ value: s.id.toString(), label: s.name })) ?? []),
+]);
 
-	const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.label : defaultMessage);
+const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.label : defaultMessage);
 </script>
 
 <div class="w-full sm:w-48">
@@ -50,12 +50,7 @@
 								{#if selected}
 									<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
 										<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M5 13l4 4L19 7"
-											/>
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 										</svg>
 									</span>
 								{/if}

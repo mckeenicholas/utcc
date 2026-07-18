@@ -1,32 +1,32 @@
 <script lang="ts">
-	import "scramble-display";
-	import type { WCAEvent } from "$lib/types";
-	import type { ClassValue } from "svelte/elements";
+import "scramble-display";
+import type { WCAEvent } from "$lib/types";
+import type { ClassValue } from "svelte/elements";
 
-	interface Props {
-		alg: string;
-		eventId: WCAEvent;
-		class?: ClassValue;
-		width?: string;
-		height?: string;
+interface Props {
+	alg: string;
+	eventId: WCAEvent;
+	class?: ClassValue;
+	width?: string;
+	height?: string;
+}
+
+let { alg, eventId, class: className = "", width = "auto", height = "auto" }: Props = $props();
+
+let scaleAmount = $derived.by(() => {
+	switch (eventId) {
+		case "666":
+		case "777":
+		case "555":
+		case "444":
+		case "444bf":
+		case "555bf":
+		case "skewb":
+			return 1.25;
+		default:
+			return 1;
 	}
-
-	let { alg, eventId, class: className = "", width = "auto", height = "auto" }: Props = $props();
-
-	let scaleAmount = $derived.by(() => {
-		switch (eventId) {
-			case "666":
-			case "777":
-			case "555":
-			case "444":
-			case "444bf":
-			case "555bf":
-			case "skewb":
-				return 1.25;
-			default:
-				return 1;
-		}
-	});
+});
 </script>
 
 <div class={className} style="display: flex; justify-content: center; align-items: center; scale: {scaleAmount}">

@@ -1,41 +1,41 @@
 <script lang="ts">
-	import { type User } from "$lib/types";
-	import { createUser } from "$lib/userService";
+import { type User } from "$lib/types";
+import { createUser } from "$lib/userService";
 
-	let {
-		show,
-		initialName = "",
-		onClose,
-		onUserCreated,
-	}: {
-		show: boolean;
-		initialName?: string;
-		onClose: () => void;
-		onUserCreated: (user: User) => void;
-	} = $props();
+let {
+	show,
+	initialName = "",
+	onClose,
+	onUserCreated,
+}: {
+	show: boolean;
+	initialName?: string;
+	onClose: () => void;
+	onUserCreated: (user: User) => void;
+} = $props();
 
-	let creatingUser = $state(false);
-	let isUofTStudent = $state(true);
+let creatingUser = $state(false);
+let isUofTStudent = $state(true);
 
-	const handleCreateUser = async () => {
-		if (!initialName.trim()) {
-			return;
+const handleCreateUser = async () => {
+	if (!initialName.trim()) {
+		return;
+	}
+	creatingUser = true;
+
+	try {
+		const response = await createUser(initialName, isUofTStudent);
+		if (response.ok) {
+			const newUser: User = await response.json();
+			onUserCreated(newUser);
+			onClose();
 		}
-		creatingUser = true;
-
-		try {
-			const response = await createUser(initialName, isUofTStudent);
-			if (response.ok) {
-				const newUser: User = await response.json();
-				onUserCreated(newUser);
-				onClose();
-			}
-		} catch (error) {
-			console.error("Failed to create user:", error);
-		} finally {
-			creatingUser = false;
-		}
-	};
+	} catch (error) {
+		console.error("Failed to create user:", error);
+	} finally {
+		creatingUser = false;
+	}
+};
 </script>
 
 {#if show}

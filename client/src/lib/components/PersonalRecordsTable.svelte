@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { eventNames, type ProfileRecordDetail, type WCAEvent } from "$lib/types";
-	import { renderTime } from "$lib/utils";
+import { eventNames, type ProfileRecordDetail, type WCAEvent } from "$lib/types";
+import { renderTime } from "$lib/utils";
 
-	let { records }: { records: [string, ProfileRecordDetail][] } = $props();
+let { records }: { records: [string, ProfileRecordDetail][] } = $props();
 </script>
 
 <div class="mb-8 overflow-hidden rounded-lg bg-white shadow-sm">
@@ -13,15 +13,9 @@
 		<table class="min-w-full divide-y divide-gray-200">
 			<thead class="bg-gray-50">
 				<tr>
-					<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-						Event
-					</th>
-					<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
-						Single
-					</th>
-					<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
-						Average
-					</th>
+					<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"> Event </th>
+					<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"> Single </th>
+					<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"> Average </th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-gray-200 bg-white">

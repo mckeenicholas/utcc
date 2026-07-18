@@ -1,32 +1,32 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
-	import { goto } from "$app/navigation";
-	import { navigationCount, decrementNavigationCount } from "$lib/stores/navigation";
+import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
+import { navigationCount, decrementNavigationCount } from "$lib/stores/navigation";
 
-	const getParentRoute = (path = window.location.pathname) => {
-		if (path.endsWith("/")) {
-			path = path.slice(0, -1);
-		}
+const getParentRoute = (path = window.location.pathname) => {
+	if (path.endsWith("/")) {
+		path = path.slice(0, -1);
+	}
 
-		return path.slice(0, path.lastIndexOf("/")) || "/";
-	};
+	return path.slice(0, path.lastIndexOf("/")) || "/";
+};
 
-	const goBack = () => {
-		if (!browser) {
-			return;
-		}
+const goBack = () => {
+	if (!browser) {
+		return;
+	}
 
-		const currentNavigationCount = $navigationCount;
+	const currentNavigationCount = $navigationCount;
 
-		if (currentNavigationCount > 1) {
-			decrementNavigationCount(2);
-			window.history.back();
-		} else {
-			const parentRoute = getParentRoute();
-			decrementNavigationCount();
-			goto(parentRoute);
-		}
-	};
+	if (currentNavigationCount > 1) {
+		decrementNavigationCount(2);
+		window.history.back();
+	} else {
+		const parentRoute = getParentRoute();
+		decrementNavigationCount();
+		goto(parentRoute);
+	}
+};
 </script>
 
 <div class="ms-2 mt-2">

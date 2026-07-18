@@ -1,29 +1,29 @@
 <script lang="ts">
-	import { eventNames, eventSolves, type CompetitionResults, type PersonResult, type WCAEvent } from "$lib/types";
-	import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
+import { eventNames, eventSolves, type CompetitionResults, type PersonResult, type WCAEvent } from "$lib/types";
+import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
 
-	const BREAKPOINT = 835;
+const BREAKPOINT = 835;
 
-	let { competitionResults }: { competitionResults: CompetitionResults } = $props();
+let { competitionResults }: { competitionResults: CompetitionResults } = $props();
 
-	let sortedResults = $derived(
-		competitionResults.results
-			.map(({ event, rounds }) => ({
-				event,
-				rounds: rounds.map(({ round, results }) => ({
-					round,
-					results: results.slice().toSorted((a, b) => compareResults(a, b)),
-				})),
-			}))
-			.toSorted((a, b) => sortEvents(a.event, b.event)),
-	);
+let sortedResults = $derived(
+	competitionResults.results
+		.map(({ event, rounds }) => ({
+			event,
+			rounds: rounds.map(({ round, results }) => ({
+				round,
+				results: results.slice().toSorted((a, b) => compareResults(a, b)),
+			})),
+		}))
+		.toSorted((a, b) => sortEvents(a.event, b.event)),
+);
 
-	let innerWidth = $state<number>(0);
-	let selectedPerson = $state<PersonResult | null>(null);
-	let selectedEvent = $state<WCAEvent>("333");
-	let showModal = $state<boolean>(false);
+let innerWidth = $state<number>(0);
+let selectedPerson = $state<PersonResult | null>(null);
+let selectedEvent = $state<WCAEvent>("333");
+let showModal = $state<boolean>(false);
 
-	let trimResults = $derived(innerWidth < BREAKPOINT);
+let trimResults = $derived(innerWidth < BREAKPOINT);
 </script>
 
 <svelte:window bind:innerWidth />
@@ -42,12 +42,8 @@
 							<table class="min-w-full divide-y divide-gray-200">
 								<thead class="">
 									<tr>
-										<th
-											class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-											>#</th
-										>
-										<th
-											class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+										<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">#</th>
+										<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>Name</th
 										>
 										{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
@@ -58,12 +54,9 @@
 												Solve {idx + 1}
 											</th>
 										{/each}
-										<th
-											class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase"
-											>Best</th
+										<th class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase">Best</th
 										>
-										<th
-											class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase"
+										<th class="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase"
 											>{getMeanType(event)}</th
 										>
 									</tr>
@@ -85,14 +78,10 @@
 												showModal = true;
 											}}
 										>
-											<td
-												class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
-											>
+											<td class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900">
 												{index + 1}
 											</td>
-											<td
-												class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900"
-											>
+											<td class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900">
 												<a href="/persons/{roundPerson.person}" class="hover:text-gray-400">
 													{roundPerson.person_name}
 												</a>
@@ -105,14 +94,10 @@
 													{renderTime(time)}
 												</td>
 											{/each}
-											<td
-												class="px-6 py-4 text-right font-mono text-sm font-medium whitespace-nowrap text-gray-900"
-											>
+											<td class="px-6 py-4 text-right font-mono text-sm font-medium whitespace-nowrap text-gray-900">
 												{renderTime(roundPerson.single)}
 											</td>
-											<td
-												class="px-6 py-4 text-right font-mono text-sm font-medium whitespace-nowrap text-gray-900"
-											>
+											<td class="px-6 py-4 text-right font-mono text-sm font-medium whitespace-nowrap text-gray-900">
 												{renderTime(roundPerson.average)}
 											</td>
 										</tr>
@@ -197,7 +182,7 @@
 {/if}
 
 <style>
-	.backdrop {
-		background-color: rgba(0, 0, 0, 0.5);
-	}
+.backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+}
 </style>

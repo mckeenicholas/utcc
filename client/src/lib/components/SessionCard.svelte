@@ -1,51 +1,51 @@
 <script lang="ts">
-	import type { Competition, Session } from "$lib/types";
-	import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
-	import LoadingScreen from "./LoadingScreen.svelte";
+import type { Competition, Session } from "$lib/types";
+import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
+import LoadingScreen from "./LoadingScreen.svelte";
 
-	interface Props {
-		session: Session;
-		onDelete: (id: number) => void;
-		onSave: (id: number, name: string, date: string) => void;
+interface Props {
+	session: Session;
+	onDelete: (id: number) => void;
+	onSave: (id: number, name: string, date: string) => void;
+}
+
+let { session, onDelete, onSave }: Props = $props();
+
+let isEditing = $state(false);
+let editSessionName = $state("");
+let editSessionDate = $state("");
+let showModal = $state(false);
+let sessionCompetitions: Competition[] = $state([]);
+let competitionsLoading = $state(false);
+
+$effect(() => {
+	if (showModal) {
+		fetchSessionCompetitions();
 	}
+});
 
-	let { session, onDelete, onSave }: Props = $props();
+const fetchSessionCompetitions = async () => {
+	competitionsLoading = true;
+	sessionCompetitions = await fetchJson<Competition[]>(`${BASE_URL}/api/session/${session.id}/competitions`);
+	competitionsLoading = false;
+};
 
-	let isEditing = $state(false);
-	let editSessionName = $state("");
-	let editSessionDate = $state("");
-	let showModal = $state(false);
-	let sessionCompetitions: Competition[] = $state([]);
-	let competitionsLoading = $state(false);
+const startEdit = () => {
+	editSessionName = session.name;
+	editSessionDate = session.start_date;
+	isEditing = true;
+};
 
-	$effect(() => {
-		if (showModal) {
-			fetchSessionCompetitions();
-		}
-	});
+const cancelEdit = () => {
+	isEditing = false;
+};
 
-	const fetchSessionCompetitions = async () => {
-		competitionsLoading = true;
-		sessionCompetitions = await fetchJson<Competition[]>(`${BASE_URL}/api/session/${session.id}/competitions`);
-		competitionsLoading = false;
-	};
-
-	const startEdit = () => {
-		editSessionName = session.name;
-		editSessionDate = session.start_date;
-		isEditing = true;
-	};
-
-	const cancelEdit = () => {
-		isEditing = false;
-	};
-
-	const handleSave = () => {
-		if (editSessionName.trim()) {
-			onSave(session.id, editSessionName.trim(), editSessionDate);
-		}
-		isEditing = false;
-	};
+const handleSave = () => {
+	if (editSessionName.trim()) {
+		onSave(session.id, editSessionName.trim(), editSessionDate);
+	}
+	isEditing = false;
+};
 </script>
 
 <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
@@ -79,10 +79,7 @@
 				>
 					Save
 				</button>
-				<button
-					onclick={cancelEdit}
-					class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-800 hover:bg-gray-200"
-				>
+				<button onclick={cancelEdit} class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-800 hover:bg-gray-200">
 					Cancel
 				</button>
 			{:else}

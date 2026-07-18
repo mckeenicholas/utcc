@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { eventNames, eventSolves, type ResultsTableCompetition, type WCAEvent } from "$lib/types";
-	import { getMeanType, renderTime, sortEvents } from "$lib/utils";
-	import EventPicker from "./EventPicker.svelte";
+import { eventNames, eventSolves, type ResultsTableCompetition, type WCAEvent } from "$lib/types";
+import { getMeanType, renderTime, sortEvents } from "$lib/utils";
+import EventPicker from "./EventPicker.svelte";
 
-	interface ResultsTableProp {
-		event: WCAEvent;
-		results: ResultsTableCompetition[];
-	}
+interface ResultsTableProp {
+	event: WCAEvent;
+	results: ResultsTableCompetition[];
+}
 
-	let {
-		results,
-		selectedEvent,
-	}: {
-		results: ResultsTableProp[];
-		selectedEvent: WCAEvent;
-	} = $props();
+let {
+	results,
+	selectedEvent,
+}: {
+	results: ResultsTableProp[];
+	selectedEvent: WCAEvent;
+} = $props();
 
-	const validEvents = $derived(results.map((result) => result.event).toSorted(sortEvents));
+const validEvents = $derived(results.map((result) => result.event).toSorted(sortEvents));
 
-	let selectedEventData = $derived(results.find((event) => event.event === selectedEvent)?.results ?? []);
+let selectedEventData = $derived(results.find((event) => event.event === selectedEvent)?.results ?? []);
 </script>
 
 <div class="overflow-hidden rounded-lg bg-white shadow-sm">
@@ -39,19 +39,13 @@
 						<th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
 							Competition
 						</th>
-						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Round
-						</th>
-						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
-							Single
-						</th>
+						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"> Round </th>
+						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"> Single </th>
 						<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
 							{getMeanType(selectedEvent)}
 						</th>
 						{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
-							<th
-								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-							>
+							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
 								Solve {idx + 1}
 							</th>
 						{/each}

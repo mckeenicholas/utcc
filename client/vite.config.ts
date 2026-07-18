@@ -6,6 +6,9 @@ export default defineConfig({
 	fmt: {
 		ignorePatterns: [],
 		printWidth: 120,
+		svelte: {
+			indentScriptAndStyle: false,
+		},
 		sortImports: {
 			groups: [
 				"type-import",
@@ -22,7 +25,7 @@ export default defineConfig({
 		sortTailwindcss: {
 			stylesheet: "./src/app.css",
 		},
-		svelte: true,
+		useTabs: true,
 	},
 	plugins: [tailwindcss(), sveltekit()],
 	worker: {

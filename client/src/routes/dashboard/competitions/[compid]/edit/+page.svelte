@@ -1,87 +1,84 @@
 <script lang="ts">
-	import type { Competition, Session } from "$lib/types";
-	import { goto } from "$app/navigation";
-	import { page } from "$app/stores";
-	import authFetch from "$lib/authFetch";
-	import { fetchSessions } from "$lib/competitionSessionService";
-	import DateForm from "$lib/components/DateForm.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import SessionSelector from "$lib/components/SessionSelector.svelte";
-	import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
-	import { onMount } from "svelte";
+import type { Competition, Session } from "$lib/types";
+import { goto } from "$app/navigation";
+import { page } from "$app/stores";
+import authFetch from "$lib/authFetch";
+import { fetchSessions } from "$lib/competitionSessionService";
+import DateForm from "$lib/components/DateForm.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import SessionSelector from "$lib/components/SessionSelector.svelte";
+import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
+import { onMount } from "svelte";
 
-	const id = $page.params.compid;
+const id = $page.params.compid;
 
-	let competitionData: Competition | null = $state(null);
-	let isLoading = $state(true);
-	let currentErrorMessage = $state<string | null>(null);
-	let selectedEditSession: string = $state("-1");
-	let sessions: Session[] = $state([]);
+let competitionData: Competition | null = $state(null);
+let isLoading = $state(true);
+let currentErrorMessage = $state<string | null>(null);
+let selectedEditSession: string = $state("-1");
+let sessions: Session[] = $state([]);
 
-	onMount(async () => {
-		try {
-			const [competitionDataResponse, sessionsResponse, loggedIn] = await Promise.all([
-				fetchJson<Competition>(`${BASE_URL}/api/competitions/${id}/`),
-				fetchSessions(),
-				checkLoginStatus(),
-			]);
+onMount(async () => {
+	try {
+		const [competitionDataResponse, sessionsResponse, loggedIn] = await Promise.all([
+			fetchJson<Competition>(`${BASE_URL}/api/competitions/${id}/`),
+			fetchSessions(),
+			checkLoginStatus(),
+		]);
 
-			if (!loggedIn) {
-				goto("/dashboard/signin");
-			}
-
-			competitionData = competitionDataResponse;
-			sessions = sessionsResponse;
-
-			selectedEditSession = competitionData.session ? competitionData.session.toString() : "-1";
-		} catch (error) {
-			currentErrorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
-			console.error(error);
-		} finally {
-			isLoading = false;
-		}
-	});
-
-	const updateCompetitionData = async () => {
-		if (!competitionData) {
-			return;
+		if (!loggedIn) {
+			goto("/dashboard/signin");
 		}
 
-		currentErrorMessage = null;
+		competitionData = competitionDataResponse;
+		sessions = sessionsResponse;
 
-		try {
-			const sessionIdToSubmit = selectedEditSession === "-1" ? null : parseInt(selectedEditSession);
+		selectedEditSession = competitionData.session ? competitionData.session.toString() : "-1";
+	} catch (error) {
+		currentErrorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+		console.error(error);
+	} finally {
+		isLoading = false;
+	}
+});
 
-			const payload = {
-				name: competitionData.name,
-				date: competitionData.date,
-				session: sessionIdToSubmit,
-			};
+const updateCompetitionData = async () => {
+	if (!competitionData) {
+		return;
+	}
 
-			const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
+	currentErrorMessage = null;
 
-			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
+	try {
+		const sessionIdToSubmit = selectedEditSession === "-1" ? null : parseInt(selectedEditSession);
 
-				const errorMessage = Object.entries(errorData).reduce(
-					(prev, [field, msg]) => `${prev}\n${field}: ${msg}`,
-					"",
-				);
-				throw new Error(errorMessage);
-			}
+		const payload = {
+			name: competitionData.name,
+			date: competitionData.date,
+			session: sessionIdToSubmit,
+		};
 
-			goto("/dashboard/competitions");
-		} catch (error) {
-			currentErrorMessage = error instanceof Error ? error.message : "An update error occurred.";
-			console.error(error);
+		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+
+			const errorMessage = Object.entries(errorData).reduce((prev, [field, msg]) => `${prev}\n${field}: ${msg}`, "");
+			throw new Error(errorMessage);
 		}
-	};
+
+		goto("/dashboard/competitions");
+	} catch (error) {
+		currentErrorMessage = error instanceof Error ? error.message : "An update error occurred.";
+		console.error(error);
+	}
+};
 </script>
 
 {#if isLoading}
@@ -96,12 +93,7 @@
 							class="inline-flex items-center rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
 						>
 							<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M15 19l-7-7 7-7"
-								/>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 							</svg>
 							Back to Competitions
 						</div>
@@ -139,9 +131,7 @@
 
 					<div class="space-y-6">
 						<div>
-							<label for="compname" class="mb-2 block text-sm font-medium text-gray-700">
-								Competition Name
-							</label>
+							<label for="compname" class="mb-2 block text-sm font-medium text-gray-700"> Competition Name </label>
 							<input
 								id="compname"
 								bind:value={competitionData.name}
@@ -157,11 +147,7 @@
 
 						<div>
 							<div class="mb-2 block text-sm font-medium text-gray-700">Academic Session</div>
-							<SessionSelector
-								bind:value={selectedEditSession}
-								sessionData={sessions}
-								defaultMessage="No Session"
-							/>
+							<SessionSelector bind:value={selectedEditSession} sessionData={sessions} defaultMessage="No Session" />
 						</div>
 
 						<!-- Action Buttons -->
@@ -171,12 +157,7 @@
 								class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none"
 							>
 								<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"
-									/>
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 								</svg>
 								Save Changes
 							</button>

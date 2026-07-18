@@ -1,54 +1,50 @@
 <script lang="ts">
-	import type { ScrambleKey } from "$lib/types";
-	import { eventListIdx, eventNames, type EventResult } from "$lib/types";
-	import { scrambleOrder } from "$lib/utils";
-	import { Collapsible } from "bits-ui";
-	import { slide } from "svelte/transition";
-	import CubeIcon from "./CubeIcon.svelte";
+import type { ScrambleKey } from "$lib/types";
+import { eventListIdx, eventNames, type EventResult } from "$lib/types";
+import { scrambleOrder } from "$lib/utils";
+import { Collapsible } from "bits-ui";
+import { slide } from "svelte/transition";
+import CubeIcon from "./CubeIcon.svelte";
 
-	let { results }: { results: EventResult[] } = $props();
+let { results }: { results: EventResult[] } = $props();
 
-	let scrambles = $derived(
-		results
-			.map((result) => ({
-				event: result.event,
-				rounds: result.rounds
-					.map((round) => ({
-						roundNum: round.round,
-						sets: round.scramble_sets
-							.map((set) => {
-								const setScrambles = set.scrambles
-									.map((scramble) => ({
-										num: scramble.scramble_num.toString(),
-										scramble: scramble.scramble,
-									}))
-									.filter((s) => s.scramble && s.scramble.length > 0)
-									.toSorted(
-										(a, b) =>
-											scrambleOrder[a.num as ScrambleKey].idx -
-											scrambleOrder[b.num as ScrambleKey].idx,
-									);
+let scrambles = $derived(
+	results
+		.map((result) => ({
+			event: result.event,
+			rounds: result.rounds
+				.map((round) => ({
+					roundNum: round.round,
+					sets: round.scramble_sets
+						.map((set) => {
+							const setScrambles = set.scrambles
+								.map((scramble) => ({
+									num: scramble.scramble_num.toString(),
+									scramble: scramble.scramble,
+								}))
+								.filter((s) => s.scramble && s.scramble.length > 0)
+								.toSorted((a, b) => scrambleOrder[a.num as ScrambleKey].idx - scrambleOrder[b.num as ScrambleKey].idx);
 
-								return {
-									num: set.scramble_set,
-									scrambles: setScrambles,
-								};
-							})
-							.filter((set) => set.scrambles.length > 0)
-							.toSorted((a, b) => a.num - b.num),
-					}))
-					.filter((round) => round.sets.length > 0)
-					.toSorted((a, b) => a.roundNum - b.roundNum),
-			}))
-			.filter((event) => event.rounds.length > 0)
-			.toSorted((a, b) => eventListIdx[a.event] - eventListIdx[b.event]),
-	);
+							return {
+								num: set.scramble_set,
+								scrambles: setScrambles,
+							};
+						})
+						.filter((set) => set.scrambles.length > 0)
+						.toSorted((a, b) => a.num - b.num),
+				}))
+				.filter((round) => round.sets.length > 0)
+				.toSorted((a, b) => a.roundNum - b.roundNum),
+		}))
+		.filter((event) => event.rounds.length > 0)
+		.toSorted((a, b) => eventListIdx[a.event] - eventListIdx[b.event]),
+);
 
-	let isOpen = $state<boolean[]>([]);
+let isOpen = $state<boolean[]>([]);
 
-	$effect(() => {
-		isOpen = Array.from({ length: results.length }).fill(false) as boolean[];
-	});
+$effect(() => {
+	isOpen = Array.from({ length: results.length }).fill(false) as boolean[];
+});
 </script>
 
 <div class="space-y-4">
@@ -59,9 +55,7 @@
 	{#each scrambles as eventScramble, idx (idx)}
 		<div class="overflow-hidden rounded-lg bg-white shadow-sm">
 			<Collapsible.Root bind:open={isOpen[idx]}>
-				<Collapsible.Trigger
-					class="w-full bg-white transition-colors duration-100 ease-in-out hover:bg-gray-100"
-				>
+				<Collapsible.Trigger class="w-full bg-white transition-colors duration-100 ease-in-out hover:bg-gray-100">
 					<div class="flex items-center justify-between px-4 py-2">
 						<div class="flex items-center space-x-3">
 							<CubeIcon event={eventScramble.event} />
@@ -92,9 +86,7 @@
 								<div class="space-y-4">
 									{#each scrambleRound.sets as scrambleSet (scrambleSet.num)}
 										<div>
-											<h5
-												class="border-b border-gray-200 pb-2 align-middle text-sm font-medium text-gray-600"
-											>
+											<h5 class="border-b border-gray-200 pb-2 align-middle text-sm font-medium text-gray-600">
 												Scramble Set {scrambleSet.num}
 											</h5>
 
@@ -106,9 +98,7 @@
 														>
 															{scrambleOrder[scramble.num.toString() as ScrambleKey].name}
 														</span>
-														<code
-															class="align-middle font-mono text-sm break-all whitespace-pre-wrap text-gray-800"
-														>
+														<code class="align-middle font-mono text-sm break-all whitespace-pre-wrap text-gray-800">
 															{scramble.scramble}
 														</code>
 													</div>

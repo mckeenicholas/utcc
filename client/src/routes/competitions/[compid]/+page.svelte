@@ -1,62 +1,62 @@
 <script lang="ts">
-	import type { CompetitionResults, StudentStatus } from "$lib/types";
-	import { page } from "$app/stores";
-	import Backbutton from "$lib/components/Backbutton.svelte";
-	import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
-	import CompetitionScrambleTable from "$lib/components/CompetitionScrambleTable.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import UofTSelector from "$lib/components/UofTSelector.svelte";
-	import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
-	import { onMount } from "svelte";
+import type { CompetitionResults, StudentStatus } from "$lib/types";
+import { page } from "$app/stores";
+import Backbutton from "$lib/components/Backbutton.svelte";
+import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
+import CompetitionScrambleTable from "$lib/components/CompetitionScrambleTable.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import UofTSelector from "$lib/components/UofTSelector.svelte";
+import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
+import { onMount } from "svelte";
 
-	const compId = $page.params.compid;
+const compId = $page.params.compid;
 
-	let studentStatus: StudentStatus = $state("all");
-	let loading = $state(true);
-	let error = $state(false);
-	let results: CompetitionResults | null = $state(null);
+let studentStatus: StudentStatus = $state("all");
+let loading = $state(true);
+let error = $state(false);
+let results: CompetitionResults | null = $state(null);
 
-	const fetchTimes = async () => {
-		loading = true;
+const fetchTimes = async () => {
+	loading = true;
 
-		const url = new URL(`${BASE_URL}/api/competitions/${compId}/results/`);
+	const url = new URL(`${BASE_URL}/api/competitions/${compId}/results/`);
 
-		try {
-			results = await fetchJson<CompetitionResults>(url);
-		} catch (err) {
-			console.error("Failed to fetch results:", err);
-		} finally {
-			loading = false;
-		}
-	};
+	try {
+		results = await fetchJson<CompetitionResults>(url);
+	} catch (err) {
+		console.error("Failed to fetch results:", err);
+	} finally {
+		loading = false;
+	}
+};
 
-	onMount(fetchTimes);
+onMount(fetchTimes);
 
-	const filteredResults: CompetitionResults | null = $derived.by(() => {
-		if (studentStatus === "all") {
-			return results;
-		}
+const filteredResults: CompetitionResults | null = $derived.by(() => {
+	if (studentStatus === "all") {
+		return results;
+	}
 
-		const isUofT = studentStatus === "uoft";
+	const isUofT = studentStatus === "uoft";
 
-		return results
-			? {
-					...results,
-					results: results.results
-						.map((event) =>
-							Object.assign(event, {
-								rounds: event.rounds
-									.map((round) => ({
-										...round,
-										results: round.results.filter((result) => result.is_uoft_student === isUofT),
-									}))
-									.filter((round) => round.results.length > 0),
-							}),
-						)
-						.filter((event) => event.rounds.length > 0),
-				}
-			: null;
-	});
+	return results
+		? {
+				...results,
+				results: results.results
+					.map((event) =>
+						Object.assign(event, {
+							rounds: event.rounds
+								.map((round) => ({
+									...round,
+									results: round.results.filter((result) => result.is_uoft_student === isUofT),
+								}))
+								.filter((round) => round.results.length > 0),
+						}),
+					)
+					.filter((event) => event.rounds.length > 0),
+			}
+		: null;
+});
 </script>
 
 <svelte:head>
@@ -77,9 +77,7 @@
 						{filteredResults.competition.name}
 					</h1>
 					<p class="mt-2 text-gray-600">
-						{filteredResults.competition.session_name
-							? `${filteredResults.competition.session_name} Session - `
-							: ""}
+						{filteredResults.competition.session_name ? `${filteredResults.competition.session_name} Session - ` : ""}
 						Date: {formatCompetitionDate(filteredResults.competition.date)}
 					</p>
 				</div>

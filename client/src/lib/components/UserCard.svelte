@@ -1,34 +1,34 @@
 <script lang="ts">
-	import type { User } from "$lib/types";
+import type { User } from "$lib/types";
 
-	interface Props {
-		user: User;
-		ondelete: (id: number) => void;
-		onsave: (id: number, name: string, studentStatus: boolean) => void;
-	}
+interface Props {
+	user: User;
+	ondelete: (id: number) => void;
+	onsave: (id: number, name: string, studentStatus: boolean) => void;
+}
 
-	let { user, ondelete, onsave }: Props = $props();
+let { user, ondelete, onsave }: Props = $props();
 
-	let isEditing = $state(false);
-	let editUserName = $state("");
-	let editUserStudentStatus = $state(false);
+let isEditing = $state(false);
+let editUserName = $state("");
+let editUserStudentStatus = $state(false);
 
-	const startEdit = () => {
-		editUserName = user.name;
-		editUserStudentStatus = user.is_uoft_student;
-		isEditing = true;
-	};
+const startEdit = () => {
+	editUserName = user.name;
+	editUserStudentStatus = user.is_uoft_student;
+	isEditing = true;
+};
 
-	const cancelEdit = () => {
+const cancelEdit = () => {
+	isEditing = false;
+};
+
+const handleSave = () => {
+	if (editUserName.trim()) {
+		onsave(user.id, editUserName, editUserStudentStatus);
 		isEditing = false;
-	};
-
-	const handleSave = () => {
-		if (editUserName.trim()) {
-			onsave(user.id, editUserName, editUserStudentStatus);
-			isEditing = false;
-		}
-	};
+	}
+};
 </script>
 
 <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
@@ -74,10 +74,7 @@
 				>
 					Save
 				</button>
-				<button
-					onclick={cancelEdit}
-					class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-800 hover:bg-gray-200"
-				>
+				<button onclick={cancelEdit} class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-800 hover:bg-gray-200">
 					Cancel
 				</button>
 			{:else}

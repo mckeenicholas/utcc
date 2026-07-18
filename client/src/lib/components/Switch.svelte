@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { ClassValue } from "svelte/elements";
-	import { Label, Switch, useId } from "bits-ui";
+import type { ClassValue } from "svelte/elements";
+import { Label, Switch, useId } from "bits-ui";
 
-	let {
-		id = useId(),
-		label,
-		checked = $bindable(false),
-		class: classProps,
-	}: { id?: string; label: string; checked?: boolean; class?: ClassValue } = $props();
+let {
+	id = useId(),
+	label,
+	checked = $bindable(false),
+	class: classProps,
+}: { id?: string; label: string; checked?: boolean; class?: ClassValue } = $props();
 </script>
 
 <div class="me-2 flex items-center gap-x-2 {classProps}">

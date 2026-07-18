@@ -1,96 +1,96 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
-	import { page } from "$app/state";
-	import authFetch from "$lib/authFetch";
-	import Backbutton from "$lib/components/Backbutton.svelte";
-	import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-	import ScrambleCard from "$lib/components/ScrambleCard.svelte";
-	import { eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
-	import { eventNames } from "$lib/types";
-	import { BASE_URL } from "$lib/utils";
-	import { Select } from "bits-ui";
-	import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { page } from "$app/state";
+import authFetch from "$lib/authFetch";
+import Backbutton from "$lib/components/Backbutton.svelte";
+import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import ScrambleCard from "$lib/components/ScrambleCard.svelte";
+import { eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
+import { eventNames } from "$lib/types";
+import { BASE_URL } from "$lib/utils";
+import { Select } from "bits-ui";
+import { onMount } from "svelte";
 
-	const eventOptions = Object.entries(eventNames)
-		.map(([key, name]) => ({
-			value: key,
-			label: name,
-		}))
-		.toSorted((a, b) => eventListIdx[a.value as WCAEvent] - eventListIdx[b.value as WCAEvent]);
+const eventOptions = Object.entries(eventNames)
+	.map(([key, name]) => ({
+		value: key,
+		label: name,
+	}))
+	.toSorted((a, b) => eventListIdx[a.value as WCAEvent] - eventListIdx[b.value as WCAEvent]);
 
-	const compId = page.params.compid;
+const compId = page.params.compid;
 
-	let competitionScrambles: CompetitionScrambleSets | null = $state(null);
-	let selectedEvent: WCAEvent = $state("333");
-	let selectedRound = $state(1);
-	let selectedCount = $state(1);
-	let loading = $state(true);
-	let generating = $state(false);
+let competitionScrambles: CompetitionScrambleSets | null = $state(null);
+let selectedEvent: WCAEvent = $state("333");
+let selectedRound = $state(1);
+let selectedCount = $state(1);
+let loading = $state(true);
+let generating = $state(false);
 
-	const fetchScrambles = async () => {
-		const response = await authFetch(`${BASE_URL}/api/competitions/${compId}/scrambles/`);
+const fetchScrambles = async () => {
+	const response = await authFetch(`${BASE_URL}/api/competitions/${compId}/scrambles/`);
 
-		if (response.status == 403) {
-			goto("/dashboard/signin");
-		}
+	if (response.status == 403) {
+		goto("/dashboard/signin");
+	}
 
-		competitionScrambles = await response.json();
-		loading = false;
-	};
+	competitionScrambles = await response.json();
+	loading = false;
+};
 
-	onMount(fetchScrambles);
+onMount(fetchScrambles);
 
-	const generateScrambleSet = async () => {
-		if (selectedEvent == "333mbf") {
-			console.error("333 Multi-Blind scrambles are not implemented yet");
-			return;
-		}
+const generateScrambleSet = async () => {
+	if (selectedEvent == "333mbf") {
+		console.error("333 Multi-Blind scrambles are not implemented yet");
+		return;
+	}
 
-		generating = true;
+	generating = true;
 
-		const numScrambles = eventSolves[selectedEvent]! + 2;
+	const numScrambles = eventSolves[selectedEvent]! + 2;
 
-		await authFetch(`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/generate/`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				count: numScrambles,
-				numSets: selectedCount,
-			}),
-		});
+	await authFetch(`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/generate/`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			count: numScrambles,
+			numSets: selectedCount,
+		}),
+	});
 
-		await fetchScrambles();
+	await fetchScrambles();
 
-		generating = false;
-	};
+	generating = false;
+};
 
-	const deleteScramble = async (setId: number) => {
-		const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/`, {
-			method: "DELETE",
-		});
+const deleteScramble = async (setId: number) => {
+	const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/`, {
+		method: "DELETE",
+	});
 
-		if (!response.ok) {
-			console.error(response.statusText);
-		}
+	if (!response.ok) {
+		console.error(response.statusText);
+	}
 
-		await fetchScrambles();
-	};
+	await fetchScrambles();
+};
 
-	const updateVisibility = async (setId: number, visibility: boolean) => {
-		const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/visibility/`, {
-			method: "PATCH",
-			body: JSON.stringify({ visibility }),
-			headers: { "Content-Type": "application/json" },
-		});
+const updateVisibility = async (setId: number, visibility: boolean) => {
+	const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/visibility/`, {
+		method: "PATCH",
+		body: JSON.stringify({ visibility }),
+		headers: { "Content-Type": "application/json" },
+	});
 
-		if (!response.ok) {
-			console.error(response.statusText);
-		}
+	if (!response.ok) {
+		console.error(response.statusText);
+	}
 
-		await fetchScrambles();
-	};
+	await fetchScrambles();
+};
 </script>
 
 <Backbutton />
@@ -99,9 +99,7 @@
 		{#if generating}
 			<div class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
 				<div class="flex items-center">
-					<div
-						class="me-4 h-6 w-6 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
-					></div>
+					<div class="me-4 h-6 w-6 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"></div>
 					<p class="font-medium text-blue-700">Generating scrambles.</p>
 				</div>
 			</div>
@@ -121,18 +119,8 @@
 							<span>
 								{eventOptions.find((option) => option.value === selectedEvent)?.label || "Select Event"}
 							</span>
-							<svg
-								class="ml-2 h-4 w-4 shrink-0 text-gray-400"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M19 9l-7 7-7-7"
-								/>
+							<svg class="ml-2 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 							</svg>
 						</Select.Trigger>
 						<Select.Portal>
@@ -149,15 +137,8 @@
 										>
 											{#snippet children({ selected })}
 												{#if selected}
-													<span
-														class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center"
-													>
-														<svg
-															class="h-4 w-4"
-															fill="none"
-															stroke="currentColor"
-															viewBox="0 0 24 24"
-														>
+													<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+														<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path
 																stroke-linecap="round"
 																stroke-linejoin="round"
