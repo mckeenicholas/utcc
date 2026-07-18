@@ -12,7 +12,7 @@ import { PAGINATION_SIZE, checkLoginStatus } from "$lib/utils";
 
 // State Management
 let users: User[] = $state([]);
-const searchTerm = $state("");
+let searchTerm = $state("");
 let loading = $state(false);
 let isSearching = $state(false);
 let searchTimeout: number | null = null;

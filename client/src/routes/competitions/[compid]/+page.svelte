@@ -11,7 +11,7 @@ import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
 
 const compId = $page.params.compid;
 
-const studentStatus: StudentStatus = $state("all");
+let studentStatus: StudentStatus = $state("all");
 let loading = $state(true);
 let hasError = $state(false);
 let results: CompetitionResults | null = $state(null);

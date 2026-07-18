@@ -21,7 +21,7 @@ let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
-const selectedSession = $state("-1");
+let selectedSession = $state("-1");
 let createCompSession = $state("-1");
 let allSessions: Session[] = $state([]);
 

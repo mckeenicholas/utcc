@@ -9,8 +9,8 @@ import { type ProfileResponse, type Session, type UserProfileResponse, type WCAE
 import { BASE_URL, fetchJson, generateRecordsForEvent, processPersonalRecords } from "$lib/utils";
 
 const personId = $page.params.id;
-const selectedEvent: WCAEvent = $state("333");
-const selectedSession: string = $state("-1");
+let selectedEvent: WCAEvent = $state("333");
+let selectedSession: string = $state("-1");
 let profileResults = $state<UserProfileResponse | null>(null);
 let allSessions: Session[] = $state([]);
 let loading = $state(true);

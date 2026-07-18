@@ -20,9 +20,9 @@ const eventOptions = Object.entries(eventNames)
 const compId = page.params.compid;
 
 let competitionScrambles: CompetitionScrambleSets | null = $state(null);
-const selectedEvent: WCAEvent = $state("333");
-const selectedRound = $state(1);
-const selectedCount = $state(1);
+let selectedEvent: WCAEvent = $state("333");
+let selectedRound = $state(1);
+let selectedCount = $state(1);
 let loading = $state(true);
 let generating = $state(false);
 

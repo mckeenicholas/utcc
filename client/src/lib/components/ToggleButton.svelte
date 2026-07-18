@@ -5,7 +5,7 @@ interface Props {
 	rightLabel: string;
 }
 
-const { value = $bindable(), leftLabel, rightLabel }: Props = $props();
+let { value = $bindable(), leftLabel, rightLabel }: Props = $props();
 </script>
 
 <div class="inline-flex rounded-md border border-gray-200 bg-white">

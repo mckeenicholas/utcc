@@ -14,7 +14,7 @@ const { session, onDelete, onSave }: Props = $props();
 let isEditing = $state(false);
 let editSessionName = $state("");
 let editSessionDate = $state("");
-const showModal = $state(false);
+let showModal = $state(false);
 let sessionCompetitions: Competition[] = $state([]);
 let competitionsLoading = $state(false);
 

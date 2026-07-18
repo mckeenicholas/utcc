@@ -8,13 +8,12 @@ interface Props {
 
 import { toInt } from "$lib/utils";
 
-let { value = $bindable(0) }: Props = $props();
-const { placeholder = "Enter time", id, disabled = false }: Props = $props();
+let { value = $bindable(0), placeholder = "Enter time", id, disabled = false }: Props = $props();
 
 const DNF_KEYS = new Set(["d", "D", "/", "#"]);
 const DNS_KEYS = new Set(["s", "S", "*"]);
 
-const ref: HTMLInputElement | null = $state(null);
+let ref: HTMLInputElement | null = $state(null);
 
 const toCentiseconds = (input: string): number => {
 	if (input === "") {

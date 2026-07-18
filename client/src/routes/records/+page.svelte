@@ -18,12 +18,12 @@ import {
 import { fetchJson, recordsURL, sortEvents, toInt } from "$lib/utils";
 
 let recordsAPIResponse: RecordsApiResponse | null = $state(null);
-const selectedSession: string = $state("-1");
-const studentStatus: StudentStatus = $state("all");
+let selectedSession: string = $state("-1");
+let studentStatus: StudentStatus = $state("all");
 let sessions: Session[] = $state([]);
 let loading = $state(true);
 
-const innerWidth = $state(0);
+let innerWidth = $state(0);
 
 const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 	const url = new URL(recordsURL);

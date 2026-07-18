@@ -8,7 +8,7 @@ interface ResultsTableProp {
 	results: ResultsTableCompetition[];
 }
 
-const {
+let {
 	results,
 	selectedEvent,
 }: {

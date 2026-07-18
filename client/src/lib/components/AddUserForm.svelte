@@ -2,7 +2,7 @@
 const { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } = $props();
 
 let newUserName = $state("");
-const newUserStudentStatus = $state(true);
+let newUserStudentStatus = $state(true);
 let isSubmitting = $state(false);
 
 const handleSubmit = async () => {

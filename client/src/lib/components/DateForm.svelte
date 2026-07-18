@@ -2,7 +2,7 @@
 import { parseDate } from "@internationalized/date";
 import { DatePicker } from "bits-ui";
 
-const { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: string; label?: string } = $props();
+let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: string; label?: string } = $props();
 </script>
 
 <DatePicker.Root

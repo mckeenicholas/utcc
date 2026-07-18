@@ -8,7 +8,7 @@ interface Props {
 	events?: WCAEvent[];
 }
 
-const { selectedEvent = $bindable(), events }: Props = $props();
+let { selectedEvent = $bindable(), events }: Props = $props();
 
 const eventList = $derived(events ?? WCAEventList.toSorted(sortEvents));
 </script>

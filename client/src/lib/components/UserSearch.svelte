@@ -12,7 +12,7 @@ interface Props {
 	searchTerm?: string;
 }
 
-const {
+let {
 	value = $bindable(""),
 	onSelect,
 	onClear,
@@ -27,6 +27,13 @@ let loading = $state(false);
 let selectedIndex = $state(-1);
 let showDropdown = $state(false);
 let timeout: number | null = null;
+let inputRef: HTMLInputElement | null = $state(null);
+
+$effect(() => {
+	if (!userSelected && inputRef) {
+		inputRef.focus();
+	}
+});
 
 const searchUsers = async (query: string) => {
 	if (!query.trim()) {
@@ -90,6 +97,7 @@ const handleBlur = () => {
 <div class="relative">
 	{#if !userSelected}
 		<input
+			bind:this={inputRef}
 			type="text"
 			placeholder="Type to search users..."
 			bind:value={searchTerm}

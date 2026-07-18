@@ -5,7 +5,7 @@ interface Props {
 	vertical?: boolean;
 }
 
-const { selectedIndex = $bindable(), labels, vertical = false }: Props = $props();
+let { selectedIndex = $bindable(), labels, vertical = false }: Props = $props();
 </script>
 
 <div class="flex rounded-md border border-gray-200 bg-white {vertical && 'w-full flex-col'}">

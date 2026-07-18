@@ -3,7 +3,7 @@ import type { ClassValue } from "svelte/elements";
 import { Select } from "bits-ui";
 import type { Session } from "$lib/types";
 
-const {
+let {
 	value = $bindable(),
 	defaultMessage = "All sessions",
 	class: classProps,

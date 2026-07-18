@@ -14,12 +14,12 @@ import {
 } from "$lib/types";
 import { BASE_URL, PAGINATION_SIZE, fetchJson, renderTime } from "$lib/utils";
 
-const selectedEvent: WCAEvent = $state("333");
-const isAverage = $state(false);
-const showAllResults = $state(false);
+let selectedEvent: WCAEvent = $state("333");
+let isAverage = $state(false);
+let showAllResults = $state(false);
 let pageNum = $state(1);
-const selectedSession: string = $state("-1");
-const uoftStudentStatus: StudentStatus = $state("all");
+let selectedSession: string = $state("-1");
+let uoftStudentStatus: StudentStatus = $state("all");
 
 const eventName = $derived(eventNames[selectedEvent]);
 

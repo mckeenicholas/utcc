@@ -4,7 +4,7 @@ import { goto } from "$app/navigation";
 import authFetch, { getCsrf } from "$lib/authFetch";
 import { BASE_URL, checkLoginStatus } from "$lib/utils";
 
-const username = $state("");
+let username = $state("");
 let password = $state("");
 let errrorMsg = $state("");
 

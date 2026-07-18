@@ -18,10 +18,10 @@ const sortedResults = $derived(
 		.toSorted((a, b) => sortEvents(a.event, b.event)),
 );
 
-const innerWidth = $state<number>(0);
-const selectedPerson = $state<PersonResult | null>(null);
-const selectedEvent = $state<WCAEvent>("333");
-const showModal = $state<boolean>(false);
+let innerWidth = $state<number>(0);
+let selectedPerson = $state<PersonResult | null>(null);
+let selectedEvent = $state<WCAEvent>("333");
+let showModal = $state<boolean>(false);
 
 const trimResults = $derived(innerWidth < BREAKPOINT);
 </script>

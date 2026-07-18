@@ -7,7 +7,7 @@ interface Props {
 const { onAddSession }: Props = $props();
 
 let newSessionName = $state("");
-const startDate = $state<string>(new Date().toISOString().split("T")[0]);
+let startDate = $state<string>(new Date().toISOString().split("T")[0]);
 
 const handleSubmit = async () => {
 	if (newSessionName.trim()) {

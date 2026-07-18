@@ -18,7 +18,7 @@ let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
 let allSessions: Session[] = $state([]);
-const selectedSession: string = $state("-1");
+let selectedSession: string = $state("-1");
 
 $effect(() => {
 	if (selectedSession) {
