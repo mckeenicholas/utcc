@@ -1,8 +1,8 @@
 <script lang="ts">
-let { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } = $props();
+const { onAddUser }: { onAddUser: (name: string, studentStatus: boolean) => Promise<void> } = $props();
 
 let newUserName = $state("");
-let newUserStudentStatus = $state(true);
+const newUserStudentStatus = $state(true);
 let isSubmitting = $state(false);
 
 const handleSubmit = async () => {

@@ -3,7 +3,7 @@ interface Props {
 	message: string | null;
 }
 
-let { message }: Props = $props();
+const { message }: Props = $props();
 </script>
 
 {#if message}

@@ -2,11 +2,14 @@
 import type { RecordInstance, WCAEvent } from "$lib/types";
 import { getMeanType, renderTime } from "$lib/utils";
 
-let { record, eventKey, type }: { record: RecordInstance | undefined; eventKey: WCAEvent; type: "Single" | "Average" } =
-	$props();
+const {
+	record,
+	eventKey,
+	type,
+}: { record: RecordInstance | undefined; eventKey: WCAEvent; type: "Single" | "Average" } = $props();
 
-let recordType = $derived.by(() => {
-	if (type == "Single") {
+const recordType = $derived.by(() => {
+	if (type === "Single") {
 		return "Single";
 	}
 

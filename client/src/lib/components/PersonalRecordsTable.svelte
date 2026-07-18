@@ -1,8 +1,8 @@
 <script lang="ts">
-import { eventNames, type ProfileRecordDetail, type WCAEvent } from "$lib/types";
+import { type ProfileRecordDetail, type WCAEvent, eventNames } from "$lib/types";
 import { renderTime } from "$lib/utils";
 
-let { records }: { records: [string, ProfileRecordDetail][] } = $props();
+const { records }: { records: [string, ProfileRecordDetail][] } = $props();
 </script>
 
 <div class="mb-8 overflow-hidden rounded-lg bg-white shadow-sm">

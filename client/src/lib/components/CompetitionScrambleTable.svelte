@@ -1,14 +1,13 @@
 <script lang="ts">
-import type { ScrambleKey } from "$lib/types";
-import { eventListIdx, eventNames, type EventResult } from "$lib/types";
+import { type EventResult, eventListIdx, eventNames, type ScrambleKey } from "$lib/types";
 import { scrambleOrder } from "$lib/utils";
 import { Collapsible } from "bits-ui";
 import { slide } from "svelte/transition";
 import CubeIcon from "./CubeIcon.svelte";
 
-let { results }: { results: EventResult[] } = $props();
+const { results }: { results: EventResult[] } = $props();
 
-let scrambles = $derived(
+const scrambles = $derived(
 	results
 		.map((result) => ({
 			event: result.event,

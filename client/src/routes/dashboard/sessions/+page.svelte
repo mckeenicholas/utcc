@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Session } from "$lib/types";
 import { goto } from "$app/navigation";
-import { fetchSessions, createSession, updateSession, deleteSession } from "$lib/competitionSessionService";
+import { createSession, deleteSession, fetchSessions, updateSession } from "$lib/competitionSessionService";
 import AddSessionForm from "$lib/components/AddSessionForm.svelte";
 import DashboardHeader from "$lib/components/DashboardHeader.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
@@ -56,7 +56,7 @@ const handleSaveSession = async (sessionId: number, name: string, date: string) 
 		const response = await updateSession(sessionId, name, date);
 		if (response.ok) {
 			sessions = sessions
-				.map((s) => (s.id === sessionId ? { id: s.id, name: name, start_date: date } : s))
+				.map((s) => (s.id === sessionId ? { id: s.id, name, start_date: date } : s))
 				.toSorted((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
 		} else {
 			alert("Failed to update session");

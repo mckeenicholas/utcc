@@ -11,9 +11,9 @@ import { onMount } from "svelte";
 
 const compId = $page.params.compid;
 
-let studentStatus: StudentStatus = $state("all");
+const studentStatus: StudentStatus = $state("all");
 let loading = $state(true);
-let error = $state(false);
+let hasError = $state(false);
 let results: CompetitionResults | null = $state(null);
 
 const fetchTimes = async () => {
@@ -23,8 +23,9 @@ const fetchTimes = async () => {
 
 	try {
 		results = await fetchJson<CompetitionResults>(url);
-	} catch (err) {
-		console.error("Failed to fetch results:", err);
+	} catch (error) {
+		console.error("Failed to fetch results:", error);
+		hasError = true;
 	} finally {
 		loading = false;
 	}
@@ -70,7 +71,7 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 	<div class="mx-auto max-w-6xl px-4">
 		{#if loading}
 			<LoadingScreen message="Loading Results" inline={true} minHeight="30rem" />
-		{:else if !error && filteredResults}
+		{:else if !hasError && filteredResults}
 			<div class="mb-8 flex items-start justify-between">
 				<div>
 					<h1 class="text-3xl font-bold text-gray-900">

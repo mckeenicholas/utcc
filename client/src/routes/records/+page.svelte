@@ -1,22 +1,29 @@
 <script lang="ts">
-import type { EventRecords, RecordsApiResponse, Session, StudentStatus, WCAEvent } from "$lib/types";
 import { fetchSessions } from "$lib/competitionSessionService";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import RecordRow from "$lib/components/RecordRow.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
 import UofTSelector from "$lib/components/UofTSelector.svelte";
-import { eventSolves, eventNames } from "$lib/types";
-import { fetchJson, recordsURL, sortEvents } from "$lib/utils";
+import {
+	eventNames,
+	eventSolves,
+	type EventRecords,
+	type RecordsApiResponse,
+	type Session,
+	type StudentStatus,
+	type WCAEvent,
+} from "$lib/types";
+import { fetchJson, recordsURL, sortEvents, toInt } from "$lib/utils";
 import { onMount } from "svelte";
 
 let recordsAPIResponse: RecordsApiResponse | null = $state(null);
-let selectedSession: string = $state("-1");
-let studentStatus: StudentStatus = $state("all");
+const selectedSession: string = $state("-1");
+const studentStatus: StudentStatus = $state("all");
 let sessions: Session[] = $state([]);
 let loading = $state(true);
 
-let innerWidth = $state(0);
+const innerWidth = $state(0);
 
 const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 	const url = new URL(recordsURL);
@@ -24,9 +31,9 @@ const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 		url.searchParams.set("session_id", sessionId.toString());
 	}
 
-	if (uoftStatus == "uoft") {
+	if (uoftStatus === "uoft") {
 		url.searchParams.set("uoft", "1");
-	} else if (uoftStatus == "non-uoft") {
+	} else if (uoftStatus === "non-uoft") {
 		url.searchParams.set("uoft", "0");
 	}
 
@@ -34,7 +41,7 @@ const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 };
 
 $effect(() => {
-	fetchRecords(parseInt(selectedSession), studentStatus);
+	fetchRecords(toInt(selectedSession) ?? -1, studentStatus);
 });
 
 const fetchRecords = async (sessionId: number, uoftStatus: StudentStatus) => {
@@ -52,7 +59,7 @@ onMount(async () => {
 	sessions = await fetchSessions();
 });
 
-let recordsDisplay = $derived.by(() => {
+const recordsDisplay = $derived.by(() => {
 	if (!recordsAPIResponse) {
 		return [];
 	}

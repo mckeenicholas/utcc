@@ -1,5 +1,5 @@
 <script lang="ts">
-import { eventNames, eventSolves, type ResultsTableCompetition, type WCAEvent } from "$lib/types";
+import { type ResultsTableCompetition, type WCAEvent, eventNames, eventSolves } from "$lib/types";
 import { getMeanType, renderTime, sortEvents } from "$lib/utils";
 import EventPicker from "./EventPicker.svelte";
 
@@ -8,7 +8,7 @@ interface ResultsTableProp {
 	results: ResultsTableCompetition[];
 }
 
-let {
+const {
 	results,
 	selectedEvent,
 }: {
@@ -18,7 +18,7 @@ let {
 
 const validEvents = $derived(results.map((result) => result.event).toSorted(sortEvents));
 
-let selectedEventData = $derived(results.find((event) => event.event === selectedEvent)?.results ?? []);
+const selectedEventData = $derived(results.find((event) => event.event === selectedEvent)?.results ?? []);
 </script>
 
 <div class="overflow-hidden rounded-lg bg-white shadow-sm">

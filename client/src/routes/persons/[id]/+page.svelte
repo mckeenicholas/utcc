@@ -6,11 +6,11 @@ import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PersonalRecordsTable from "$lib/components/PersonalRecordsTable.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
 import { type ProfileResponse, type Session, type UserProfileResponse, type WCAEvent } from "$lib/types";
-import { BASE_URL, processPersonalRecords, generateRecordsForEvent, fetchJson } from "$lib/utils";
+import { BASE_URL, fetchJson, generateRecordsForEvent, processPersonalRecords } from "$lib/utils";
 
 const personId = $page.params.id;
-let selectedEvent: WCAEvent = $state("333");
-let selectedSession: string = $state("-1");
+const selectedEvent: WCAEvent = $state("333");
+const selectedSession: string = $state("-1");
 let profileResults = $state<UserProfileResponse | null>(null);
 let allSessions: Session[] = $state([]);
 let loading = $state(true);
@@ -32,11 +32,11 @@ const fetchProfileResults = async (session_id: string) => {
 		const resultsTableContent = response.results.map(generateRecordsForEvent);
 
 		profileResults = {
+			name: response.person.name,
 			records: personalRecords,
 			results: resultsTableContent,
-			name: response.person.name,
 		} as unknown as UserProfileResponse;
-	} catch (err) {
+	} catch {
 		error = "Unable to fetch user profile.";
 	} finally {
 		loading = false;

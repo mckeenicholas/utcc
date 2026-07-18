@@ -2,7 +2,7 @@
 import type { ClassValue } from "svelte/elements";
 import { Label, Switch, useId } from "bits-ui";
 
-let {
+const {
 	id = useId(),
 	label,
 	checked = $bindable(false),

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { CompetitionResults, Result, WCAEvent, User } from "$lib/types";
+import type { CompetitionResults, Result, User, WCAEvent } from "$lib/types";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import authFetch from "$lib/authFetch";
@@ -93,19 +93,19 @@ $effect(() => {
 		formData.time5 = existing.times[4] || 0;
 		// Convert to the Result format for editing
 		editingResult = {
-			id: existing.id,
-			person_name: existing.person_name,
-			person: existing.person,
+			average: existing.average,
 			competition: Number(compId),
 			event: formData.event,
+			id: existing.id,
+			person: existing.person,
+			person_name: existing.person_name,
 			round: formData.round,
+			single: existing.single,
 			time1: existing.times[0] || 0,
 			time2: existing.times[1] || 0,
 			time3: existing.times[2] || 0,
 			time4: existing.times[3] || 0,
 			time5: existing.times[4] || 0,
-			single: existing.single,
-			average: existing.average,
 		};
 	} else {
 		resetFormTimes();
@@ -144,13 +144,13 @@ const submitResult = async () => {
 
 	try {
 		await authFetch(url, {
-			method,
-			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
 				...formData,
-				person: selectedPersonId,
 				competition: Number(compId),
+				person: selectedPersonId,
 			}),
+			headers: { "Content-Type": "application/json" },
+			method,
 		});
 		resetForm();
 		await fetchData(false);
@@ -162,7 +162,7 @@ const submitResult = async () => {
 };
 
 const editResult = (result: Result) => {
-	window.scrollTo({ top: 0, behavior: "smooth" });
+	window.scrollTo({ behavior: "smooth", top: 0 });
 
 	editingResult = result;
 	selectedPersonId = result.person;

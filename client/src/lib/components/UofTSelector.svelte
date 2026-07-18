@@ -2,27 +2,33 @@
 import type { StudentStatus } from "$lib/types";
 import MultiButton from "./MultiButton.svelte";
 
-let { status = $bindable(), vertical = false }: { status: StudentStatus; vertical?: boolean } = $props();
+const { status = $bindable(), vertical = false }: { status: StudentStatus; vertical?: boolean } = $props();
 
 const getIndex = (studentStatus: StudentStatus) => {
 	switch (studentStatus) {
-		case "uoft":
+		case "uoft": {
 			return 1;
-		case "non-uoft":
+		}
+		case "non-uoft": {
 			return 2;
-		default:
+		}
+		default: {
 			return 0;
+		}
 	}
 };
 
 const getStatus = (index: number) => {
 	switch (index) {
-		case 1:
+		case 1: {
 			return "uoft";
-		case 2:
+		}
+		case 2: {
 			return "non-uoft";
-		default:
+		}
+		default: {
 			return "all";
+		}
 	}
 };
 </script>

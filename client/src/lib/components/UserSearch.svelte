@@ -12,7 +12,7 @@ interface Props {
 	searchTerm?: string;
 }
 
-let {
+const {
 	value = $bindable(""),
 	onSelect,
 	onClear,

@@ -7,7 +7,7 @@ import { fetchSessions } from "$lib/competitionSessionService";
 import DateForm from "$lib/components/DateForm.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
-import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
+import { BASE_URL, checkLoginStatus, fetchJson, toInt } from "$lib/utils";
 import { onMount } from "svelte";
 
 const id = $page.params.compid;
@@ -50,20 +50,20 @@ const updateCompetitionData = async () => {
 	currentErrorMessage = null;
 
 	try {
-		const sessionIdToSubmit = selectedEditSession === "-1" ? null : parseInt(selectedEditSession);
+		const sessionIdToSubmit = selectedEditSession === "-1" ? null : toInt(selectedEditSession);
 
 		const payload = {
-			name: competitionData.name,
 			date: competitionData.date,
+			name: competitionData.name,
 			session: sessionIdToSubmit,
 		};
 
 		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-			method: "PUT",
+			body: JSON.stringify(payload),
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(payload),
+			method: "PUT",
 		});
 
 		if (!response.ok) {

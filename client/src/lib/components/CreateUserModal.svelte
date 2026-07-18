@@ -2,7 +2,7 @@
 import { type User } from "$lib/types";
 import { createUser } from "$lib/userService";
 
-let {
+const {
 	show,
 	initialName = "",
 	onClose,
@@ -15,7 +15,7 @@ let {
 } = $props();
 
 let creatingUser = $state(false);
-let isUofTStudent = $state(true);
+const isUofTStudent = $state(true);
 
 const handleCreateUser = async () => {
 	if (!initialName.trim()) {

@@ -4,10 +4,10 @@ import DateForm from "./DateForm.svelte";
 interface Props {
 	onAddSession: (name: string, date: string) => Promise<void>;
 }
-let { onAddSession }: Props = $props();
+const { onAddSession }: Props = $props();
 
 let newSessionName = $state("");
-let startDate = $state<string>(new Date().toISOString().split("T")[0]);
+const startDate = $state<string>(new Date().toISOString().split("T")[0]);
 
 const handleSubmit = async () => {
 	if (newSessionName.trim()) {

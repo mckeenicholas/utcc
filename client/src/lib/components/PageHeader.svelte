@@ -8,7 +8,7 @@ interface Props {
 	backText?: string;
 }
 
-let { competition, backUrl = "/dashboard", backText = "Back to Dashboard" }: Props = $props();
+const { competition, backUrl = "/dashboard", backText = "Back to Dashboard" }: Props = $props();
 </script>
 
 <div class="mb-8 flex items-center justify-between">

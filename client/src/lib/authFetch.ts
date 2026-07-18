@@ -17,9 +17,9 @@ const authFetch = (url: string | URL, options: RequestInit = {}): Promise<Respon
 
 	const config: RequestInit = {
 		...options,
-		headers: headers,
+		headers,
 		credentials: "include",
-		// mode: 'same-origin'
+		// Mode: 'same-origin'
 	};
 
 	return fetch(url, config);

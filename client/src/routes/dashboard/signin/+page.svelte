@@ -4,17 +4,17 @@ import authFetch, { getCsrf } from "$lib/authFetch";
 import { BASE_URL, checkLoginStatus } from "$lib/utils";
 import { onMount } from "svelte";
 
-let username = $state("");
+const username = $state("");
 let password = $state("");
 let errrorMsg = $state("");
 
 const logIn = async () => {
 	const response = await authFetch(`${BASE_URL}/api/users/auth/login/`, {
-		method: "POST",
+		body: JSON.stringify({ password, username }),
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username, password }),
+		method: "POST",
 	});
 
 	if (response.ok) {

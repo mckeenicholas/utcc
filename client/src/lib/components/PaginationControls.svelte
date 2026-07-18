@@ -11,7 +11,7 @@ interface PaginationControlsProps {
 	onPrevious: () => void;
 }
 
-let {
+const {
 	currentPage,
 	totalPages,
 	totalCount,

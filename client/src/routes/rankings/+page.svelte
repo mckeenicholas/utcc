@@ -4,22 +4,22 @@ import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import RankingSelector from "$lib/components/RankingSelector.svelte";
 import {
-	eventNames,
-	eventSolves,
 	type Paginated,
 	type RecordInstance,
 	type StudentStatus,
 	type WCAEvent,
+	eventNames,
+	eventSolves,
 } from "$lib/types";
-import { BASE_URL, fetchJson, PAGINATION_SIZE, renderTime } from "$lib/utils";
+import { BASE_URL, PAGINATION_SIZE, fetchJson, renderTime } from "$lib/utils";
 import { SvelteURLSearchParams } from "svelte/reactivity";
 
-let selectedEvent: WCAEvent = $state("333");
-let isAverage = $state(false);
-let showAllResults = $state(false);
+const selectedEvent: WCAEvent = $state("333");
+const isAverage = $state(false);
+const showAllResults = $state(false);
 let pageNum = $state(1);
-let selectedSession: string = $state("-1");
-let uoftStudentStatus: StudentStatus = $state("all");
+const selectedSession: string = $state("-1");
+const uoftStudentStatus: StudentStatus = $state("all");
 
 const eventName = $derived(eventNames[selectedEvent]);
 
@@ -39,8 +39,8 @@ const fetchRankings = async (urlParams: URLSearchParams) => {
 		results = response;
 		currentPage = pageNum;
 		totalCount = response.count;
-		hasNext = !!response.next;
-		hasPrevious = !!response.previous;
+		hasNext = Boolean(response.next);
+		hasPrevious = Boolean(response.previous);
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 	} catch (error) {
 		console.error("Failed to fetch rankings:", error);
@@ -62,7 +62,7 @@ const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
 $effect(() => {
 	// oxlint-disable-next-line @typescript-eslint/no-unused-vars
-	const _ = { selectedEvent, isAverage, showAllResults, selectedSession, uoftStudentStatus };
+	const _ = { isAverage, selectedEvent, selectedSession, showAllResults, uoftStudentStatus };
 	pageNum = 1;
 });
 
@@ -72,18 +72,18 @@ $effect(() => {
 	}
 
 	const urlParams = new SvelteURLSearchParams({
-		event: selectedEvent,
-		type: isAverage ? "average" : "single",
 		all: showAllResults.toString(),
+		event: selectedEvent,
 		page: pageNum.toString(),
+		type: isAverage ? "average" : "single",
 	});
 
 	if (selectedSession !== "-1") {
 		urlParams.append("session_id", selectedSession);
 	}
-	if (uoftStudentStatus == "uoft") {
+	if (uoftStudentStatus === "uoft") {
 		urlParams.append("uoft", "1");
-	} else if (uoftStudentStatus == "non-uoft") {
+	} else if (uoftStudentStatus === "non-uoft") {
 		urlParams.append("uoft", "0");
 	}
 

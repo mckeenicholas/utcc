@@ -5,7 +5,7 @@ import authFetch from "$lib/authFetch";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import ScrambleViewer from "$lib/components/ScrambleViewer.svelte";
-import { eventNames, type ScrambleResponse } from "$lib/types";
+import { type ScrambleResponse, eventNames } from "$lib/types";
 import { BASE_URL } from "$lib/utils";
 import { onMount } from "svelte";
 
@@ -19,7 +19,7 @@ const { compid, set } = page.params;
 const fetchScrambles = async () => {
 	const scrambleResponse = await authFetch(`${BASE_URL}/api/scrambles/${compid}/${set}/`);
 
-	if (scrambleResponse.status == 403) {
+	if (scrambleResponse.status === 403) {
 		goto("/dashboard/signin");
 	}
 

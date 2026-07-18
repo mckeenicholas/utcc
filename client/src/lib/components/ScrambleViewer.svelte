@@ -12,8 +12,8 @@ interface Props {
 const { scrambles, extras, event }: Props = $props();
 
 // Store heights for each row
-let scrambleCellHeights: number[] = $state([]);
-let extraCellHeights: number[] = $state([]);
+const scrambleCellHeights: number[] = $state([]);
+const extraCellHeights: number[] = $state([]);
 
 const cubeImageMaxHeight = $derived(Math.max(...scrambleCellHeights, ...extraCellHeights, 180));
 const cubeImageMaxWidth = $derived(cubeImageMaxHeight * 1.33);

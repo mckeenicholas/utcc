@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { ClassValue } from "svelte/elements";
-import { eventNames, type WCAEvent } from "$lib/types";
+import { type WCAEvent, eventNames } from "$lib/types";
 import "../icons.css";
 import { Tooltip } from "bits-ui";
 

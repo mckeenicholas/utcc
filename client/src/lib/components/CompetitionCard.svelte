@@ -7,7 +7,7 @@ interface Props {
 	competition: Competition;
 }
 
-let { competition }: Props = $props();
+const { competition }: Props = $props();
 </script>
 
 <div class="overflow-hidden rounded-lg bg-white ps-6 shadow">

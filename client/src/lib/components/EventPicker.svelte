@@ -1,5 +1,5 @@
 <script lang="ts">
-import { WCAEventList, type WCAEvent } from "$lib/types";
+import { type WCAEvent, WCAEventList } from "$lib/types";
 import { sortEvents } from "$lib/utils";
 import CubeIcon from "./CubeIcon.svelte";
 
@@ -8,7 +8,7 @@ interface Props {
 	events?: WCAEvent[];
 }
 
-let { selectedEvent = $bindable(), events }: Props = $props();
+const { selectedEvent = $bindable(), events }: Props = $props();
 
 const eventList = $derived(events ?? WCAEventList.toSorted(sortEvents));
 </script>

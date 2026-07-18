@@ -1,9 +1,9 @@
 <script lang="ts">
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
-import { navigationCount, decrementNavigationCount } from "$lib/stores/navigation";
+import { decrementNavigationCount, navigationCount } from "$lib/stores/navigation";
 
-const getParentRoute = (path = window.location.pathname) => {
+const getParentRoute = (path = globalThis.location.pathname) => {
 	if (path.endsWith("/")) {
 		path = path.slice(0, -1);
 	}
@@ -20,7 +20,7 @@ const goBack = () => {
 
 	if (currentNavigationCount > 1) {
 		decrementNavigationCount(2);
-		window.history.back();
+		globalThis.history.back();
 	} else {
 		const parentRoute = getParentRoute();
 		decrementNavigationCount();

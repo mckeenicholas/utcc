@@ -3,7 +3,7 @@ import type { Session } from "$lib/types";
 import type { ClassValue } from "svelte/elements";
 import { Select } from "bits-ui";
 
-let {
+const {
 	value = $bindable(),
 	defaultMessage = "All sessions",
 	class: classProps,
@@ -15,9 +15,9 @@ let {
 	sessionData: Session[];
 } = $props();
 
-let sessions = $derived([
-	{ value: "-1", label: defaultMessage },
-	...(sessionData?.map((s) => ({ value: s.id.toString(), label: s.name })) ?? []),
+const sessions = $derived([
+	{ label: defaultMessage, value: "-1" },
+	...(sessionData?.map((s) => ({ label: s.name, value: s.id.toString() })) ?? []),
 ]);
 
 const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.label : defaultMessage);

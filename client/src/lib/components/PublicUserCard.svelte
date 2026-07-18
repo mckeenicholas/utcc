@@ -5,7 +5,7 @@ interface Props {
 	user: User;
 }
 
-let { user }: Props = $props();
+const { user }: Props = $props();
 </script>
 
 <a href="/persons/{user.id}">

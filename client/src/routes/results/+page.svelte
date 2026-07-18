@@ -9,8 +9,10 @@ let latestResults: CompetitionResults | null = $state(null);
 let competitionList: Competition[] | null = $state(null);
 
 const queryResults = async () => await fetchJson<CompetitionResults>(latestResultsURL);
-const queryCompetitions = async () =>
-	(await fetchJson<Paginated<Competition>>(latestCompetitionsURL)).results.slice(0, 10);
+const queryCompetitions = async () => {
+	const data = await fetchJson<Paginated<Competition>>(latestCompetitionsURL);
+	return data.results.slice(0, 10);
+};
 
 const fetchPageData = async () => {
 	try {
@@ -18,8 +20,8 @@ const fetchPageData = async () => {
 
 		latestResults = resultsData;
 		competitionList = competitions;
-	} catch (err) {
-		console.error("Error loading main page results", err);
+	} catch (error) {
+		console.error("Error loading main page results", error);
 	}
 };
 

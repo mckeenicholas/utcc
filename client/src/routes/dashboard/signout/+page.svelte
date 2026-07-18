@@ -11,10 +11,10 @@ let showFallback = $state(true);
 const signOut = async () => {
 	try {
 		const response = await authFetch(`${BASE_URL}/api/users/auth/logout/`, {
-			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
+			method: "POST",
 		});
 
 		if (response.ok) {

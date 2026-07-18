@@ -1,12 +1,14 @@
 import { dev } from "$app/environment";
 import {
-	eventListIdx,
-	eventSolves,
-	type PersonalRecords,
 	type PersonResult,
+	type PersonalRecords,
 	type ProfileEventResult,
+	type ProfileRecordDetail,
 	type ProfileRoundResult,
 	type WCAEvent,
+	eventListIdx,
+	eventSolves,
+	isWCAEvent,
 } from "./types";
 
 export const BASE_URL = dev ? "http://localhost:8000" : "https://utcc.nmckee.org";
@@ -18,6 +20,17 @@ export const recordsURL = `${BASE_URL}/api/records/`;
 
 export const PAGINATION_SIZE = 20;
 
+export const toInt = (str: string): number | null => {
+	if (str.trim() === "") {
+		return null;
+	}
+	const num = Number(str);
+	if (Number.isNaN(num) || !Number.isFinite(num)) {
+		return null;
+	}
+	return Number(num.toFixed(0));
+};
+
 const compareTime = (time1: number, time2: number) => {
 	if (time1 > 0 && time2 > 0) {
 		return time1 - time2;
@@ -28,10 +41,10 @@ const compareTime = (time1: number, time2: number) => {
 	if (time1 > 0 && time2 < 0) {
 		return -1;
 	}
-	if (time1 == 0 && time2 != 0) {
+	if (time1 === 0 && time2 !== 0) {
 		return 1;
 	}
-	if (time1 != 0 && time2 == 0) {
+	if (time1 !== 0 && time2 === 0) {
 		return -1;
 	}
 
@@ -40,7 +53,7 @@ const compareTime = (time1: number, time2: number) => {
 
 export const compareResults = (person1: PersonResult, person2: PersonResult): number => {
 	const averageComparison = compareTime(person1.average, person2.average);
-	if (averageComparison != 0) {
+	if (averageComparison !== 0) {
 		return averageComparison;
 	}
 
@@ -52,11 +65,11 @@ export const renderTime = (time: number | null): string => {
 		return "";
 	}
 
-	if (time == -2) {
+	if (time === -2) {
 		return "DNS";
 	}
 
-	if (time == -1) {
+	if (time === -1) {
 		return "DNF";
 	}
 
@@ -74,10 +87,12 @@ export const renderTime = (time: number | null): string => {
 
 // Formats data in correct order for person records table.
 export const processPersonalRecords = (records: PersonalRecords) => {
-	const recordEntries = Object.entries(records);
+	const recordEntries = Object.entries(records).filter((entry): entry is [WCAEvent, ProfileRecordDetail] =>
+		isWCAEvent(entry[0]),
+	);
 	recordEntries.sort((a, b) => {
-		const eventA = a[0] as WCAEvent;
-		const eventB = b[0] as WCAEvent;
+		const [eventA] = a;
+		const [eventB] = b;
 		return eventListIdx[eventA] - eventListIdx[eventB];
 	});
 	return recordEntries;
@@ -90,8 +105,8 @@ export const generateRecordsForEvent = (results: ProfileEventResult) => {
 			...comp,
 			rounds: comp.rounds.map((round) => ({
 				...round,
-				singleRecord: false,
 				averageRecord: false,
+				singleRecord: false,
 			})),
 		}))
 		.toSorted((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -100,25 +115,19 @@ export const generateRecordsForEvent = (results: ProfileEventResult) => {
 	let averageRecordTime = Infinity;
 
 	for (const competition of processedResults) {
-		const bestSingleRound = competition.rounds.reduce(
-			(best, current) => {
-				if (current.single > 0 && current.single < (best?.single || Infinity)) {
-					return current;
-				}
-				return best;
-			},
-			null as ProfileRoundResult | null,
-		);
+		const bestSingleRound = competition.rounds.reduce<ProfileRoundResult | null>((best, current) => {
+			if (current.single > 0 && current.single < (best?.single ?? Infinity)) {
+				return current;
+			}
+			return best;
+		}, null);
 
-		const bestAverageRound = competition.rounds.reduce(
-			(best, current) => {
-				if (current.average > 0 && current.average < (best?.average || Infinity)) {
-					return current;
-				}
-				return best;
-			},
-			null as ProfileRoundResult | null,
-		);
+		const bestAverageRound = competition.rounds.reduce<ProfileRoundResult | null>((best, current) => {
+			if (current.average > 0 && current.average < (best?.average ?? Infinity)) {
+				return current;
+			}
+			return best;
+		}, null);
 
 		if (bestSingleRound && bestSingleRound.single < singleRecordTime) {
 			singleRecordTime = bestSingleRound.single;
@@ -135,7 +144,7 @@ export const generateRecordsForEvent = (results: ProfileEventResult) => {
 };
 
 export const getMeanType = (event: WCAEvent) => {
-	if (eventSolves[event] == 3) {
+	if (eventSolves[event] === 3) {
 		return "Mean";
 	}
 
@@ -165,13 +174,11 @@ export const fetchJson = async <T>(url: string | URL, options?: RequestInit): Pr
 	return data;
 };
 
-export const sortEvents = (a: WCAEvent, b: WCAEvent) => {
-	return eventListIdx[a] - eventListIdx[b];
-};
+export const sortEvents = (a: WCAEvent, b: WCAEvent) => eventListIdx[a] - eventListIdx[b];
 
 export const scrambleOrder = {
-	"-2": { idx: 7, name: "E2" },
 	"-1": { idx: 6, name: "E1" },
+	"-2": { idx: 7, name: "E2" },
 	"1": { idx: 1, name: "1" },
 	"2": { idx: 2, name: "2" },
 	"3": { idx: 3, name: "3" },
@@ -185,17 +192,17 @@ export const formatScramble = (scrambleStr: string, event: WCAEvent) => {
 	const cubeMaxMoveLength = 4; // Maximum length of a move (e.g., "3Rw'")
 	const sq1ClockMaxMoveLength = 8;
 
-	if (event == "minx") {
-		const lines = scrambleStr.split("\n").map((line) => line + " ");
+	if (event === "minx") {
+		const lines = scrambleStr.split("\n").map((line) => `${line} `);
 		return { lines, numLines: lines.length };
 	}
 
-	const splitChar = event == "sq1" ? " / " : " ";
+	const splitChar = event === "sq1" ? " / " : " ";
 	const moves = scrambleStr.split(splitChar);
 	const lines = [];
 
-	const movesPerLine = event == "sq1" || event == "clock" ? sq1ClockMovesPerLine : cubeMovesPerLine;
-	const maxMoveLength = event == "sq1" || event == "clock" ? sq1ClockMaxMoveLength : cubeMaxMoveLength;
+	const movesPerLine = event === "sq1" || event === "clock" ? sq1ClockMovesPerLine : cubeMovesPerLine;
+	const maxMoveLength = event === "sq1" || event === "clock" ? sq1ClockMaxMoveLength : cubeMaxMoveLength;
 
 	for (let i = 0; i < moves.length; i += movesPerLine) {
 		const lineMoves = moves.slice(i, i + movesPerLine);
@@ -218,5 +225,5 @@ export const formatScramble = (scrambleStr: string, event: WCAEvent) => {
 		lines.push(paddedMoves.join(splitChar));
 	}
 
-	return { lines: lines, numLines: lines.length };
+	return { lines, numLines: lines.length };
 };

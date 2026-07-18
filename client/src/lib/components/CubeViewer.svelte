@@ -11,9 +11,9 @@ interface Props {
 	height?: string;
 }
 
-let { alg, eventId, class: className = "", width = "auto", height = "auto" }: Props = $props();
+const { alg, eventId, class: className = "", width = "auto", height = "auto" }: Props = $props();
 
-let scaleAmount = $derived.by(() => {
+const scaleAmount = $derived.by(() => {
 	switch (eventId) {
 		case "666":
 		case "777":
@@ -21,10 +21,12 @@ let scaleAmount = $derived.by(() => {
 		case "444":
 		case "444bf":
 		case "555bf":
-		case "skewb":
+		case "skewb": {
 			return 1.25;
-		default:
+		}
+		default: {
 			return 1;
+		}
 	}
 });
 </script>

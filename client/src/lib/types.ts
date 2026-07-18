@@ -19,64 +19,66 @@ export interface Competition {
 export type WCAEvent = keyof typeof eventNames;
 
 export const eventNames = {
-	"333": "3x3x3 Cube",
 	"222": "2x2x2 Cube",
-	"444": "4x4x4 Cube",
-	"555": "5x5x5 Cube",
-	"666": "6x6x6 Cube",
-	"777": "7x7x7 Cube",
+	"333": "3x3x3 Cube",
 	"333bf": "3x3x3 Blindfolded",
 	"333fm": "3x3x3 Fewest Moves",
+	"333mbf": "3x3x3 Multi-Blind",
 	"333oh": "3x3x3 One-Handed",
+	"444": "4x4x4 Cube",
+	"444bf": "4x4x4 Blindfolded",
+	"555": "5x5x5 Cube",
+	"555bf": "5x5x5 Blindfolded",
+	"666": "6x6x6 Cube",
+	"777": "7x7x7 Cube",
+	clock: "Clock",
 	minx: "Megaminx",
 	pyram: "Pyraminx",
-	clock: "Clock",
 	skewb: "Skewb",
 	sq1: "Square-1",
-	"444bf": "4x4x4 Blindfolded",
-	"555bf": "5x5x5 Blindfolded",
-	"333mbf": "3x3x3 Multi-Blind",
 } as const;
 
-export const WCAEventList = Object.keys(eventNames) as WCAEvent[];
+export const isWCAEvent = (key: string): key is WCAEvent => key in eventNames;
+
+export const WCAEventList = Object.keys(eventNames).filter((key) => isWCAEvent(key));
 
 export const eventSolves: Partial<Record<WCAEvent, number>> = {
-	"333": 5,
 	"222": 5,
-	"444": 5,
-	"555": 5,
-	"666": 3,
-	"777": 3,
+	"333": 5,
 	"333bf": 3,
 	"333fm": 3,
 	"333oh": 5,
+	"444": 5,
+	"444bf": 3,
+	"555": 5,
+	"555bf": 3,
+	"666": 3,
+	"777": 3,
+	clock: 5,
 	minx: 5,
 	pyram: 5,
-	clock: 5,
 	skewb: 5,
 	sq1: 5,
-	"444bf": 3,
-	"555bf": 3,
 } as const;
 
 export const eventListIdx: Record<WCAEvent, number> = {
-	"333": 0,
 	"222": 1,
-	"444": 2,
-	"555": 3,
-	"666": 4,
-	"777": 5,
+	"333": 0,
 	"333bf": 6,
 	"333fm": 7,
+	"333mbf": 16,
 	"333oh": 8,
+	"444": 2,
+	"444bf": 14,
+	"555": 3,
+	"555bf": 15,
+	"666": 4,
+	"777": 5,
 	clock: 9,
 	minx: 10,
 	pyram: 11,
 	skewb: 12,
 	sq1: 13,
-	"444bf": 14,
-	"555bf": 15,
-	"333mbf": 16,
 } as const;
 
 export interface BaseResult {

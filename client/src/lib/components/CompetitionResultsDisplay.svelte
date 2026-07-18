@@ -1,29 +1,29 @@
 <script lang="ts">
-import { eventNames, eventSolves, type CompetitionResults, type PersonResult, type WCAEvent } from "$lib/types";
+import { type CompetitionResults, type PersonResult, type WCAEvent, eventNames, eventSolves } from "$lib/types";
 import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
 
 const BREAKPOINT = 835;
 
-let { competitionResults }: { competitionResults: CompetitionResults } = $props();
+const { competitionResults }: { competitionResults: CompetitionResults } = $props();
 
-let sortedResults = $derived(
+const sortedResults = $derived(
 	competitionResults.results
 		.map(({ event, rounds }) => ({
 			event,
 			rounds: rounds.map(({ round, results }) => ({
+				results: [...results].toSorted((a, b) => compareResults(a, b)),
 				round,
-				results: results.slice().toSorted((a, b) => compareResults(a, b)),
 			})),
 		}))
 		.toSorted((a, b) => sortEvents(a.event, b.event)),
 );
 
-let innerWidth = $state<number>(0);
-let selectedPerson = $state<PersonResult | null>(null);
-let selectedEvent = $state<WCAEvent>("333");
-let showModal = $state<boolean>(false);
+const innerWidth = $state<number>(0);
+const selectedPerson = $state<PersonResult | null>(null);
+const selectedEvent = $state<WCAEvent>("333");
+const showModal = $state<boolean>(false);
 
-let trimResults = $derived(innerWidth < BREAKPOINT);
+const trimResults = $derived(innerWidth < BREAKPOINT);
 </script>
 
 <svelte:window bind:innerWidth />

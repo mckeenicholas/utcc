@@ -9,12 +9,12 @@ interface Props {
 	onSave: (id: number, name: string, date: string) => void;
 }
 
-let { session, onDelete, onSave }: Props = $props();
+const { session, onDelete, onSave }: Props = $props();
 
 let isEditing = $state(false);
 let editSessionName = $state("");
 let editSessionDate = $state("");
-let showModal = $state(false);
+const showModal = $state(false);
 let sessionCompetitions: Competition[] = $state([]);
 let competitionsLoading = $state(false);
 

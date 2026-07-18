@@ -6,13 +6,13 @@ import DashboardHeader from "$lib/components/DashboardHeader.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import UserCard from "$lib/components/UserCard.svelte";
-import { fetchUsers, searchUsersByName, createUser, updateUser, deleteUserById } from "$lib/userService";
-import { checkLoginStatus, PAGINATION_SIZE } from "$lib/utils";
+import { createUser, deleteUserById, fetchUsers, searchUsersByName, updateUser } from "$lib/userService";
+import { PAGINATION_SIZE, checkLoginStatus } from "$lib/utils";
 import { onMount } from "svelte";
 
 // State Management
 let users: User[] = $state([]);
-let searchTerm = $state("");
+const searchTerm = $state("");
 let loading = $state(false);
 let isSearching = $state(false);
 let searchTimeout: number | null = null;
@@ -24,15 +24,15 @@ let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
 
-const loadUsers = async (page: number = 1) => {
+const loadUsers = async (page = 1) => {
 	loading = true;
 	try {
 		const data = await fetchUsers(page);
 		users = data.results;
 		currentPage = page;
 		totalCount = data.count;
-		hasNext = !!data.next;
-		hasPrevious = !!data.previous;
+		hasNext = Boolean(data.next);
+		hasPrevious = Boolean(data.previous);
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 	} catch (error) {
 		console.error("Failed to load users:", error);
@@ -98,11 +98,7 @@ const handleAddUser = async (name: string, studentStatus: boolean) => {
 		const response = await createUser(name, studentStatus);
 		if (response.ok) {
 			// Refresh current view
-			if (searchTerm) {
-				await performSearch(searchTerm);
-			} else {
-				await loadUsers(currentPage);
-			}
+			await (searchTerm ? performSearch(searchTerm) : loadUsers(currentPage));
 		}
 	} catch (error) {
 		console.error("Failed to create user:", error);
@@ -114,7 +110,7 @@ const handleSaveUser = async (userId: number, name: string, studentStatus: boole
 	try {
 		const response = await updateUser(userId, name, studentStatus);
 		if (response.ok) {
-			users = users.map((u) => (u.id === userId ? { ...u, name: name } : u));
+			users = users.map((u) => (u.id === userId ? { ...u, name } : u));
 		} else {
 			alert("Failed to update user");
 		}

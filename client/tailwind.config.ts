@@ -4,9 +4,9 @@ import typography from "@tailwindcss/typography";
 export default {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 
+	plugins: [typography],
+
 	theme: {
 		extend: {},
 	},
-
-	plugins: [typography],
 } satisfies Config;

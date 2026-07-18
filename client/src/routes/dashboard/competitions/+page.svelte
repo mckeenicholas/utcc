@@ -9,7 +9,7 @@ import DateForm from "$lib/components/DateForm.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
-import { BASE_URL, checkLoginStatus, PAGINATION_SIZE } from "$lib/utils";
+import { BASE_URL, PAGINATION_SIZE, checkLoginStatus, toInt } from "$lib/utils";
 import { onMount } from "svelte";
 
 let competitions: Competition[] = $state([]);
@@ -21,17 +21,17 @@ let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
-let selectedSession = $state("-1");
+const selectedSession = $state("-1");
 let createCompSession = $state("-1");
 let allSessions: Session[] = $state([]);
 
 $effect(() => {
 	if (selectedSession) {
-		fetchCompetitions(currentPage, parseInt(selectedSession));
+		fetchCompetitions(currentPage, toInt(selectedSession) ?? -1);
 	}
 });
 
-const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
+const fetchCompetitions = async (page = 1, sessionId = -1) => {
 	loading = true;
 
 	const url = new URL(`${BASE_URL}/api/competitions/`);
@@ -48,8 +48,8 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 
 		currentPage = page;
 		totalCount = compResJSON.count;
-		hasNext = !!compResJSON.next;
-		hasPrevious = !!compResJSON.previous;
+		hasNext = Boolean(compResJSON.next);
+		hasPrevious = Boolean(compResJSON.previous);
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 	} else {
 		console.error("Failed to fetch competitions:", competitionRes.statusText);
@@ -69,34 +69,34 @@ onMount(async () => {
 
 const goToNextPage = () => {
 	if (hasNext) {
-		fetchCompetitions(currentPage + 1, parseInt(selectedSession));
+		fetchCompetitions(currentPage + 1, toInt(selectedSession) ?? -1);
 	}
 };
 
 const goToPreviousPage = () => {
 	if (hasPrevious) {
-		fetchCompetitions(currentPage - 1, parseInt(selectedSession));
+		fetchCompetitions(currentPage - 1, toInt(selectedSession) ?? -1);
 	}
 };
 
 const goToPage = (pageNo: number) => {
 	if (pageNo >= 1 && pageNo <= totalPages) {
-		fetchCompetitions(pageNo, parseInt(selectedSession));
+		fetchCompetitions(pageNo, toInt(selectedSession) ?? -1);
 	}
 };
 
 const deleteCompetition = async (id: number) => {
 	if (confirm("Are you sure you want to delete this competition?")) {
 		const response = await authFetch(`${BASE_URL}/api/competitions/${id}/`, {
-			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
 			},
+			method: "DELETE",
 		});
 
 		if (response.ok) {
 			competitions = competitions.filter((c) => c.id !== id);
-			fetchCompetitions(currentPage, parseInt(selectedSession));
+			fetchCompetitions(currentPage, toInt(selectedSession) ?? -1);
 		} else {
 			alert("Failed to delete competition");
 		}
@@ -104,14 +104,14 @@ const deleteCompetition = async (id: number) => {
 };
 
 const createCompetition = async () => {
-	const sessionIdToSubmit = createCompSession === "-1" ? null : parseInt(createCompSession);
+	const sessionIdToSubmit = createCompSession === "-1" ? null : toInt(createCompSession);
 
 	const response = await authFetch(`${BASE_URL}/api/competitions/`, {
-		method: "POST",
+		body: JSON.stringify({ date: selectedDate, name: newCompName, session: sessionIdToSubmit }),
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ name: newCompName, date: selectedDate, session: sessionIdToSubmit }),
+		method: "POST",
 	});
 
 	if (response.ok) {
@@ -122,7 +122,7 @@ const createCompetition = async () => {
 		createCompSession = "-1";
 
 		// Using Goto to not trigger a re-request doesn't seem to work here for some reason
-		window.location.href = `/dashboard/competitions/${newCompetition.id}`;
+		globalThis.location.href = `/dashboard/competitions/${newCompetition.id}`;
 	} else {
 		alert("Failed to create competition");
 	}

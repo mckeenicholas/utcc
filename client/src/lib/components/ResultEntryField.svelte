@@ -6,17 +6,15 @@ interface Props {
 	disabled?: boolean;
 }
 
-let { value = $bindable(0), placeholder = "Enter time", id, disabled = false }: Props = $props();
+import { toInt } from "$lib/utils";
+
+let { value = $bindable(0) }: Props = $props();
+const { placeholder = "Enter time", id, disabled = false }: Props = $props();
 
 const DNF_KEYS = new Set(["d", "D", "/", "#"]);
 const DNS_KEYS = new Set(["s", "S", "*"]);
 
-let ref: HTMLInputElement | null = $state(null);
-
-const toInt = (input: string): number | null => {
-	const int = parseInt(input);
-	return isNaN(int) ? null : int;
-};
+const ref: HTMLInputElement | null = $state(null);
 
 const toCentiseconds = (input: string): number => {
 	if (input === "") {
@@ -28,11 +26,11 @@ const toCentiseconds = (input: string): number => {
 	if (input === "DNS") {
 		return -2;
 	}
-	const num = toInt(input.replaceAll(/\D/g, "")) || 0;
+	const num = toInt(input.replaceAll(/\D/gu, "")) || 0;
 	return (
-		Math.floor(num / 1000000) * 360000 +
-		Math.floor((num % 1000000) / 10000) * 6000 +
-		Math.floor((num % 10000) / 100) * 100 +
+		Math.floor(num / 1_000_000) * 360_000 +
+		Math.floor((num % 1_000_000) / 10_000) * 6000 +
+		Math.floor((num % 10_000) / 100) * 100 +
 		(num % 100)
 	);
 };
@@ -47,31 +45,31 @@ const toClockFormat = (centiseconds: number): string => {
 	if (centiseconds === -2) {
 		return "DNS";
 	}
-	if (centiseconds == null || !Number.isFinite(centiseconds) || centiseconds < 0) {
+	if (centiseconds === null || !Number.isFinite(centiseconds) || centiseconds < 0) {
 		return "";
 	}
 	return new Date(centiseconds * 10)
 		.toISOString()
 		.slice(11, 22)
-		.replaceAll(/^[0:]*(?!\.)/g, "");
+		.replaceAll(/^[0:]*(?!\.)/gu, "");
 };
 
 let displayValue = $derived(toClockFormat(value));
 
 const reformatInput = (input: string): string => {
-	const number = toInt(input.replaceAll(/\D/g, "")) || 0;
+	const number = toInt(input.replaceAll(/\D/gu, "")) || 0;
 	if (number === 0) {
 		return "";
 	}
 
-	const str = "00000000" + number.toString().slice(0, 8);
-	const match = str.match(/(\d\d)(\d\d)(\d\d)(\d\d)$/);
+	const str = `00000000${number.toString().slice(0, 8)}`;
+	const match = str.match(/(\d\d)(\d\d)(\d\d)(\d\d)$/u);
 	if (!match) {
 		return "";
 	}
 
 	const [, hh, mm, ss, cc] = match;
-	return `${hh}:${mm}:${ss}.${cc}`.replaceAll(/^[0:]*(?!\.)/g, "");
+	return `${hh}:${mm}:${ss}.${cc}`.replaceAll(/^[0:]*(?!\.)/gu, "");
 };
 
 const handleInput = (event: Event) => {
@@ -101,22 +99,22 @@ const resetIfInvalid = (input: string) => {
 const handleUnfocus = () => {
 	const input = displayValue.trim();
 
-	if (input == "") {
+	if (input === "") {
 		value = 0;
 		return;
 	}
 
-	if (input == "DNF") {
+	if (input === "DNF") {
 		value = -1;
 		return;
 	}
 
-	if (input == "DNS") {
+	if (input === "DNS") {
 		value = -2;
 		return;
 	}
 
-	const timeParts = input.split(/[:.]/).toReversed();
+	const timeParts = input.split(/[:.]/u).toReversed();
 
 	if (timeParts.length >= 2) {
 		resetIfInvalid(timeParts[1]);
@@ -133,7 +131,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 	if (event.key === "Enter" || event.key === "ArrowDown" || event.key === "+") {
 		event.preventDefault();
 		const inputs = document.querySelectorAll(".time-input");
-		const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
+		const currentIndex = [...inputs].indexOf(event.target as HTMLInputElement);
 		const nextInput = inputs[currentIndex + 1] as HTMLInputElement;
 		if (nextInput) {
 			nextInput.focus();
@@ -146,7 +144,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 	} else if (event.key === "ArrowUp" || event.key === "-") {
 		event.preventDefault();
 		const inputs = document.querySelectorAll(".time-input");
-		const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
+		const currentIndex = [...inputs].indexOf(event.target as HTMLInputElement);
 		const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
 		if (prevInput) {
 			prevInput.focus();

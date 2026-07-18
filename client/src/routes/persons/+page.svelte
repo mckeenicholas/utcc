@@ -10,7 +10,7 @@ import { onMount } from "svelte";
 
 // State Management
 let users: User[] = $state([]);
-let searchTerm = $state("");
+const searchTerm = $state("");
 let loading = $state(false);
 let isSearching = $state(false);
 let searchTimeout: number | null = null;
@@ -22,15 +22,15 @@ let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
 
-const loadUsers = async (page: number = 1) => {
+const loadUsers = async (page = 1) => {
 	loading = true;
 	try {
 		const data = await fetchUsers(page);
 		users = data.results;
 		currentPage = page;
 		totalCount = data.count;
-		hasNext = !!data.next;
-		hasPrevious = !!data.previous;
+		hasNext = Boolean(data.next);
+		hasPrevious = Boolean(data.previous);
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
 	} catch (error) {
 		console.error("Failed to load users:", error);

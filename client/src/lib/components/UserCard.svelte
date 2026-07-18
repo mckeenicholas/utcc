@@ -7,7 +7,7 @@ interface Props {
 	onsave: (id: number, name: string, studentStatus: boolean) => void;
 }
 
-let { user, ondelete, onsave }: Props = $props();
+const { user, ondelete, onsave }: Props = $props();
 
 let isEditing = $state(false);
 let editUserName = $state("");

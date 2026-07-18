@@ -18,7 +18,7 @@ $effect(() => {
 });
 
 const onSave = () => {
-	if (visibility != isVisible) {
+	if (visibility !== isVisible) {
 		onSetVisibility(isVisible);
 	}
 	editing = false;

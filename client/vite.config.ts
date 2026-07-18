@@ -3,12 +3,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+	// @ts-expect-error - fmt and lint are custom properties for vp tool
 	fmt: {
 		ignorePatterns: [],
 		printWidth: 120,
-		svelte: {
-			indentScriptAndStyle: false,
-		},
 		sortImports: {
 			groups: [
 				"type-import",
@@ -25,6 +23,9 @@ export default defineConfig({
 		sortTailwindcss: {
 			stylesheet: "./src/app.css",
 		},
+		svelte: {
+			indentScriptAndStyle: false,
+		},
 		useTabs: true,
 	},
 	plugins: [tailwindcss(), sveltekit()],
@@ -32,26 +33,42 @@ export default defineConfig({
 		format: "es",
 	},
 	lint: {
+		categories: {
+			correctness: "error",
+			pedantic: "warn",
+			perf: "error",
+			style: "warn",
+			suspicious: "error",
+		},
+		globals: {
+			$derived: "readonly",
+			$effect: "readonly",
+			$props: "readonly",
+			$state: "readonly",
+		},
 		options: {
 			typeAware: true,
 			typeCheck: true,
 		},
 		plugins: ["unicorn", "typescript", "oxc"],
-		categories: {
-			correctness: "error",
-			perf: "error",
-			suspicious: "error",
-		},
 		rules: {
-			"eslint/no-await-in-loop": "off",
-			"no-console": ["error", { allow: ["error"] }],
 			curly: "error",
-		},
-		globals: {
-			$state: "readonly",
-			$props: "readonly",
-			$derived: "readonly",
-			$effect: "readonly",
+			"eslint/no-await-in-loop": "off",
+			"id-length": "off",
+			"max-statements": "off",
+			"no-console": ["error", { allow: ["error"] }],
+			"no-inline-comments": "off",
+			"no-magic-numbers": "off",
+			"no-null": "off",
+			"no-ternary": "off",
+			"no-unsafe-assignment": "off",
+			"prefer-named-capture-group": "off",
+			"prefer-readonly-parameter-types": "off",
+			"sort-imports": "off",
+			"strict-boolean-expressions": "off",
+			"filename-case": "off",
+			"sort-keys": "off",
+			"max-params": "off",
 		},
 	},
 });

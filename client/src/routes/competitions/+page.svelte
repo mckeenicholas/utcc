@@ -6,29 +6,29 @@ import CompetitionCard from "$lib/components/CompetitionCard.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
-import { BASE_URL, fetchJson, PAGINATION_SIZE } from "$lib/utils";
+import { BASE_URL, PAGINATION_SIZE, fetchJson, toInt } from "$lib/utils";
 import { onMount } from "svelte";
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);
-let error = $state<string | null>(null);
+let errorMessage = $state<string | null>(null);
 let currentPage = $state(1);
 let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
 let allSessions: Session[] = $state([]);
-let selectedSession: string = $state("-1");
+const selectedSession: string = $state("-1");
 
 $effect(() => {
 	if (selectedSession) {
-		fetchCompetitions(currentPage, parseInt(selectedSession));
+		fetchCompetitions(currentPage, toInt(selectedSession) ?? -1);
 	}
 });
 
-const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
+const fetchCompetitions = async (page = 1, sessionId = -1) => {
 	loading = true;
-	error = null;
+	errorMessage = null;
 
 	try {
 		const url = new URL(`${BASE_URL}/api/competitions/`);
@@ -42,12 +42,12 @@ const fetchCompetitions = async (page: number = 1, sessionId: number = -1) => {
 		competitions = data.results;
 		currentPage = page;
 		totalCount = data.count;
-		hasNext = !!data.next;
-		hasPrevious = !!data.previous;
+		hasNext = Boolean(data.next);
+		hasPrevious = Boolean(data.previous);
 		totalPages = Math.ceil(totalCount / PAGINATION_SIZE);
-	} catch (err) {
-		console.error("Error fetching competitions:", err);
-		error = "Failed to load competitions. Please try again later.";
+	} catch (error) {
+		console.error("Error fetching competitions:", error);
+		errorMessage = "Failed to load competitions. Please try again later.";
 	} finally {
 		loading = false;
 	}
@@ -59,19 +59,19 @@ onMount(async () => {
 
 const goToNextPage = () => {
 	if (hasNext) {
-		fetchCompetitions(currentPage + 1, parseInt(selectedSession));
+		fetchCompetitions(currentPage + 1, toInt(selectedSession) ?? -1);
 	}
 };
 
 const goToPreviousPage = () => {
 	if (hasPrevious) {
-		fetchCompetitions(currentPage - 1, parseInt(selectedSession));
+		fetchCompetitions(currentPage - 1, toInt(selectedSession) ?? -1);
 	}
 };
 
 const goToPage = (page: number) => {
 	if (page >= 1 && page <= totalPages) {
-		fetchCompetitions(page, parseInt(selectedSession));
+		fetchCompetitions(page, toInt(selectedSession) ?? -1);
 	}
 };
 </script>
@@ -94,7 +94,7 @@ const goToPage = (page: number) => {
 
 		{#if loading}
 			<LoadingScreen message="Loading Competitions" />
-		{:else if error}
+		{:else if errorMessage}
 			<div class="rounded-lg bg-red-50 p-6 text-center shadow-sm">
 				<div class="mx-auto h-12 w-12 text-red-400">
 					<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +107,7 @@ const goToPage = (page: number) => {
 					</svg>
 				</div>
 				<h3 class="mt-4 text-lg font-medium text-red-900">Error Loading Competitions</h3>
-				<p class="mt-2 text-red-700">{error}</p>
+				<p class="mt-2 text-red-700">{errorMessage}</p>
 				<button
 					onclick={() => window.location.reload()}
 					class="mt-4 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"

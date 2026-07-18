@@ -5,32 +5,31 @@ import authFetch from "$lib/authFetch";
 import Backbutton from "$lib/components/Backbutton.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import ScrambleCard from "$lib/components/ScrambleCard.svelte";
-import { eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
-import { eventNames } from "$lib/types";
+import { eventNames, eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
 import { BASE_URL } from "$lib/utils";
 import { Select } from "bits-ui";
 import { onMount } from "svelte";
 
 const eventOptions = Object.entries(eventNames)
 	.map(([key, name]) => ({
-		value: key,
 		label: name,
+		value: key,
 	}))
 	.toSorted((a, b) => eventListIdx[a.value as WCAEvent] - eventListIdx[b.value as WCAEvent]);
 
 const compId = page.params.compid;
 
 let competitionScrambles: CompetitionScrambleSets | null = $state(null);
-let selectedEvent: WCAEvent = $state("333");
-let selectedRound = $state(1);
-let selectedCount = $state(1);
+const selectedEvent: WCAEvent = $state("333");
+const selectedRound = $state(1);
+const selectedCount = $state(1);
 let loading = $state(true);
 let generating = $state(false);
 
 const fetchScrambles = async () => {
 	const response = await authFetch(`${BASE_URL}/api/competitions/${compId}/scrambles/`);
 
-	if (response.status == 403) {
+	if (response.status === 403) {
 		goto("/dashboard/signin");
 	}
 
@@ -41,7 +40,7 @@ const fetchScrambles = async () => {
 onMount(fetchScrambles);
 
 const generateScrambleSet = async () => {
-	if (selectedEvent == "333mbf") {
+	if (selectedEvent === "333mbf") {
 		console.error("333 Multi-Blind scrambles are not implemented yet");
 		return;
 	}
@@ -51,14 +50,14 @@ const generateScrambleSet = async () => {
 	const numScrambles = eventSolves[selectedEvent]! + 2;
 
 	await authFetch(`${BASE_URL}/api/scrambles/${compId}/${selectedEvent}/${selectedRound}/generate/`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
 		body: JSON.stringify({
 			count: numScrambles,
 			numSets: selectedCount,
 		}),
+		headers: {
+			"Content-Type": "application/json",
+		},
+		method: "POST",
 	});
 
 	await fetchScrambles();
@@ -80,9 +79,9 @@ const deleteScramble = async (setId: number) => {
 
 const updateVisibility = async (setId: number, visibility: boolean) => {
 	const response = await authFetch(`${BASE_URL}/api/scrambles/${compId}/${setId}/visibility/`, {
-		method: "PATCH",
 		body: JSON.stringify({ visibility }),
 		headers: { "Content-Type": "application/json" },
+		method: "PATCH",
 	});
 
 	if (!response.ok) {

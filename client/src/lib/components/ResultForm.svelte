@@ -1,6 +1,5 @@
 <script lang="ts">
-import type { WCAEvent, Result } from "$lib/types";
-import { eventNames, eventSolves } from "$lib/types";
+import { eventNames, eventSolves, type Result, type WCAEvent } from "$lib/types";
 import { Select } from "bits-ui";
 import ResultEntryField from "./ResultEntryField.svelte";
 
@@ -21,7 +20,7 @@ interface Props {
 	additionalValidation?: boolean;
 }
 
-let {
+const {
 	formData = $bindable(),
 	editingResult,
 	submitting,
@@ -30,13 +29,11 @@ let {
 	additionalValidation = true,
 }: Props = $props();
 
-const getAttemptCount = (event: WCAEvent): number => {
-	return eventSolves[event] || 5;
-};
+const getAttemptCount = (event: WCAEvent): number => eventSolves[event] || 5;
 
 const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
-	value: key,
 	label: name,
+	value: key,
 }));
 
 const selectedEventLabel = $derived.by(() => {
@@ -52,7 +49,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 	} else if (event.key === "ArrowUp" || event.key === "-") {
 		event.preventDefault();
 		const inputs = document.querySelectorAll(".time-input");
-		const currentIndex = Array.from(inputs).indexOf(event.target as HTMLInputElement);
+		const currentIndex = [...inputs].indexOf(event.target as HTMLInputElement);
 		const prevInput = inputs[currentIndex - 1] as HTMLInputElement;
 		if (prevInput) {
 			prevInput.focus();

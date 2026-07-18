@@ -1,6 +1,12 @@
 <script lang="ts">
-import type { Result, WCAEvent, CompetitionResults, PersonResult } from "$lib/types";
-import { eventNames, eventSolves } from "$lib/types";
+import {
+	eventNames,
+	eventSolves,
+	type CompetitionResults,
+	type PersonResult,
+	type Result,
+	type WCAEvent,
+} from "$lib/types";
 import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
 
 interface Props {
@@ -9,7 +15,7 @@ interface Props {
 	onDelete: (resultId: number) => void;
 }
 
-let { competitionResults, onEdit, onDelete }: Props = $props();
+const { competitionResults, onEdit, onDelete }: Props = $props();
 
 const resultsObj = $derived.by(() => {
 	if (!competitionResults) {
@@ -33,27 +39,23 @@ const resultsObj = $derived.by(() => {
 	};
 });
 
-const getAttemptCount = (event: WCAEvent): number => {
-	return eventSolves[event] || 5;
-};
+const getAttemptCount = (event: WCAEvent): number => eventSolves[event] || 5;
 
-const convertToResult = (personResult: PersonResult, event: WCAEvent, round: number, compId: number): Result => {
-	return {
-		id: personResult.id,
-		person_name: personResult.person_name,
-		person: personResult.person,
-		competition: compId,
-		event,
-		round,
-		time1: personResult.times[0] || 0,
-		time2: personResult.times[1] || 0,
-		time3: personResult.times[2] || 0,
-		time4: personResult.times[3] || 0,
-		time5: personResult.times[4] || 0,
-		single: personResult.single,
-		average: personResult.average,
-	};
-};
+const convertToResult = (personResult: PersonResult, event: WCAEvent, round: number, compId: number): Result => ({
+	average: personResult.average,
+	competition: compId,
+	event,
+	id: personResult.id,
+	person: personResult.person,
+	person_name: personResult.person_name,
+	round,
+	single: personResult.single,
+	time1: personResult.times[0] || 0,
+	time2: personResult.times[1] || 0,
+	time3: personResult.times[2] || 0,
+	time4: personResult.times[3] || 0,
+	time5: personResult.times[4] || 0,
+});
 </script>
 
 <div class="rounded-lg bg-white p-6 shadow-sm">

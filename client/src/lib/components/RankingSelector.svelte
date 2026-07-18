@@ -15,7 +15,7 @@ interface Props {
 	studentStatus: StudentStatus;
 }
 
-let {
+const {
 	isAverage = $bindable(),
 	selectedEvent = $bindable(),
 	showAll = $bindable(),
