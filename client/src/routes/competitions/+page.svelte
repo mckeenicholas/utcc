@@ -112,30 +112,30 @@ const goToPage = (page: number) => {
 
 <Backbutton />
 <div class="min-h-screen bg-gray-50 py-8">
-	<div class="mx-auto max-w-6xl px-4">
+	<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 		<div class="mb-6">
-			<h1 class="text-3xl font-bold text-gray-900">All Competitions</h1>
-			<p class="mt-2 text-gray-600">Browse club-sanctioned competitions</p>
+			<h1 class="text-3xl font-extrabold tracking-tight text-gray-900">All Competitions</h1>
+			<p class="mt-2 text-base text-gray-600">Browse club-sanctioned competitions</p>
 		</div>
 
 		<!-- Filter Bar -->
 		<div
-			class="mb-8 flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between"
+			class="mb-8 flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between"
 		>
 			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-				<span class="text-sm font-medium text-gray-700">Academic Session:</span>
+				<span class="text-sm font-bold text-gray-700">Academic Session:</span>
 				<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="shadow-sm" />
 			</div>
 			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-				<span class="text-sm font-medium text-gray-700">Designation:</span>
+				<span class="text-sm font-bold text-gray-700">Designation:</span>
 				<UofTSelector bind:status={selectedDesignator} />
 			</div>
 			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-				<span class="text-sm font-medium text-gray-700">Sort by:</span>
+				<span class="text-sm font-bold text-gray-700">Sort by:</span>
 				<div class="w-full sm:w-48">
 					<Select.Root items={sortOptions} bind:value={selectedOrdering} type="single">
 						<Select.Trigger
-							class="flex h-[38px] w-full cursor-pointer items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-left text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+							class="flex h-[38px] w-full cursor-pointer items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm font-medium text-gray-700 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 							aria-label="Select sorting order"
 						>
 							<span>{selectedOrderingLabel}</span>
@@ -145,19 +145,19 @@ const goToPage = (page: number) => {
 						</Select.Trigger>
 						<Select.Portal>
 							<Select.Content
-								class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg"
+								class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
 								sideOffset={4}
 							>
 								<Select.Viewport class="p-1">
 									{#each sortOptions as option (option.value)}
 										<Select.Item
-											class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
+											class="relative flex w-full cursor-default items-center rounded-md py-1.5 pr-2 pl-8 text-sm font-medium text-gray-700 outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
 											value={option.value}
 											label={option.label}
 										>
 											{#snippet children({ selected })}
 												{#if selected}
-													<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+													<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center text-blue-600">
 														<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path
 																stroke-linecap="round"
@@ -181,9 +181,11 @@ const goToPage = (page: number) => {
 		</div>
 
 		{#if loading}
-			<LoadingScreen message="Loading Competitions" />
+			<div class="flex min-h-[300px] items-center justify-center">
+				<LoadingScreen message="Loading Competitions" />
+			</div>
 		{:else if errorMessage}
-			<div class="rounded-lg bg-red-50 p-6 text-center shadow-sm">
+			<div class="rounded-xl border border-red-100 bg-red-50/50 p-8 text-center shadow-sm">
 				<div class="mx-auto h-12 w-12 text-red-400">
 					<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -194,11 +196,11 @@ const goToPage = (page: number) => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-4 text-lg font-medium text-red-900">Error Loading Competitions</h3>
-				<p class="mt-2 text-red-700">{errorMessage}</p>
+				<h3 class="mt-4 text-lg font-bold text-red-900">Error Loading Competitions</h3>
+				<p class="mt-2 text-sm font-medium text-red-700">{errorMessage}</p>
 				<button
 					onclick={() => window.location.reload()}
-					class="mt-4 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+					class="mt-4 inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 focus:outline-none"
 				>
 					Try Again
 				</button>
@@ -212,7 +214,7 @@ const goToPage = (page: number) => {
 			</div>
 
 			{#if totalPages > 1}
-				<div class="mt-4 rounded-md bg-white p-4 shadow">
+				<div class="mt-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
 					<PaginationControls
 						{currentPage}
 						{totalPages}
@@ -228,7 +230,7 @@ const goToPage = (page: number) => {
 			{/if}
 		{:else}
 			<!-- Empty State -->
-			<div class="rounded-lg bg-white p-12 text-center shadow-sm">
+			<div class="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
 				<div class="mx-auto h-12 w-12 text-gray-400">
 					<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -239,8 +241,8 @@ const goToPage = (page: number) => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-4 text-lg font-medium text-gray-900">No Competitions Found</h3>
-				<p class="mt-2 text-gray-600">There are no competitions matching the selected filters.</p>
+				<h3 class="mt-4 text-lg font-bold text-gray-900">No Competitions Found</h3>
+				<p class="mt-2 text-sm font-medium text-gray-500">There are no competitions matching the selected filters.</p>
 			</div>
 		{/if}
 	</div>

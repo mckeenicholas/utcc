@@ -11,11 +11,7 @@ const options = [
 ];
 
 const toggleOption = (value: string) => {
-	if (status.includes(value)) {
-		status = status.filter((v) => v !== value);
-	} else {
-		status = [...status, value];
-	}
+	status = status.includes(value) ? status.filter((v) => v !== value) : [...status, value];
 };
 
 const selectedLabel = $derived.by(() => {

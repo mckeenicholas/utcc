@@ -55,39 +55,44 @@ $effect(() => {
 </svelte:head>
 
 <Backbutton />
-<div class="flex bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 py-8">
 	{#if error}
-		<div class="mx-auto max-w-6xl px-4">
-			<div class="rounded-lg bg-white p-8 text-center shadow-sm">
-				<h3 class="text-lg font-medium text-gray-900">{error}</h3>
+		<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+				<h3 class="text-lg font-bold text-gray-900">{error}</h3>
 			</div>
 		</div>
 	{:else if loading}
-		<div class="flex min-h-120 w-full items-center justify-center">
+		<div class="flex min-h-[300px] items-center justify-center">
 			<LoadingScreen message="Loading Profile" inline minHeight="30rem" />
 		</div>
 	{:else}
-		<div class="mx-auto max-w-6xl px-4">
+		<div class="mx-auto w-full max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
 			<!-- Header -->
-			<div class="flex items-start justify-between">
-				<div class="mb-8">
-					<h1 class="text-3xl font-bold text-gray-900">{profileResults!.name}</h1>
-					<p class="mt-2 text-gray-600">Competition Profile</p>
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<h1 class="text-3xl font-extrabold tracking-tight text-gray-900">{profileResults!.name}</h1>
+					<p class="mt-2 text-base text-gray-600">Competition Profile</p>
 				</div>
 				{#if allSessions.length}
-					<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="mt-2 shadow-sm" />
+					<div
+						class="flex items-center gap-2 self-start rounded-xl border border-gray-200 bg-white p-2.5 shadow-sm sm:self-auto"
+					>
+						<span class="text-sm font-bold whitespace-nowrap text-gray-700">Session:</span>
+						<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="shadow-sm" />
+					</div>
 				{/if}
 			</div>
 
 			<!-- Personal Records -->
 			{#if profileResults?.records.length}
-				<div class="w-full min-w-[600px]">
+				<div class="w-full">
 					<PersonalRecordsTable records={profileResults.records} />
 				</div>
 			{/if}
 
 			<!-- Competition Results -->
-			<div class="w-full min-w-[900px]">
+			<div class="w-full">
 				<CompetitionResultsTable results={profileResults!.results} {selectedEvent} />
 			</div>
 		</div>

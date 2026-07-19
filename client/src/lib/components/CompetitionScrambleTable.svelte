@@ -52,10 +52,10 @@ $effect(() => {
 	{/if}
 
 	{#each scrambles as eventScramble, idx (idx)}
-		<div class="overflow-hidden rounded-lg bg-white shadow-sm">
+		<div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 			<Collapsible.Root bind:open={isOpen[idx]}>
-				<Collapsible.Trigger class="w-full bg-white transition-colors duration-100 ease-in-out hover:bg-gray-100">
-					<div class="flex items-center justify-between px-4 py-2">
+				<Collapsible.Trigger class="w-full bg-white transition-colors duration-100 ease-in-out hover:bg-gray-50">
+					<div class="flex items-center justify-between px-5 py-4">
 						<div class="flex items-center space-x-3">
 							<CubeIcon event={eventScramble.event} />
 							<h3 class="text-lg font-semibold text-gray-800">

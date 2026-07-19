@@ -97,11 +97,11 @@ $effect(() => {
 </svelte:head>
 
 <Backbutton />
-<div class="min-h-screen py-8">
-	<div class="mx-auto max-w-6xl px-4">
+<div class="min-h-screen bg-gray-50 py-8">
+	<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 		<!-- Header -->
 		<div class="mb-8">
-			<h1 class="text-3xl font-bold text-gray-900">Rankings for {eventName}</h1>
+			<h1 class="text-3xl font-extrabold tracking-tight text-gray-900">Rankings for {eventName}</h1>
 		</div>
 		<RankingSelector
 			bind:isAverage
@@ -110,64 +110,68 @@ $effect(() => {
 			bind:session={selectedSession}
 			bind:studentStatus={uoftStudentStatus}
 		/>
-		<div class="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+		<div class="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 			{#if loading}
-				<LoadingScreen message="Loading Rankings for {eventName}" inline />
+				<div class="flex min-h-[300px] items-center justify-center">
+					<LoadingScreen message="Loading Rankings for {eventName}" inline />
+				</div>
 			{:else if results?.results.length}
-				<table class="min-w-full divide-y divide-gray-200">
-					<thead>
-						<tr>
-							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">#</th>
-							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">Name</th>
-							<th
-								class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-								class:lg:ps-24={!isAverage}>Result</th
-							>
-							<th class="px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
-								>Competition</th
-							>
-							{#if isAverage}
-								{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
-									<th
-										class="hidden px-6 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase md:table-cell"
-										>Solve {idx + 1}</th
-									>
-								{/each}
-							{/if}
-						</tr>
-					</thead>
-					<tbody>
-						{#each results?.results as result, idx (idx)}
-							<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
-								<td class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900">{result.rank}</td>
-								<td class="px-6 py-4 text-center text-sm font-medium whitespace-nowrap text-gray-900">
-									<a href="/persons/{result.person}" class="hover:text-gray-400">
-										{result.person_name}
-									</a></td
+				<div class="overflow-x-auto">
+					<table class="min-w-full divide-y divide-gray-200">
+						<thead class="bg-gray-50/50">
+							<tr>
+								<th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase">#</th>
+								<th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase">Name</th>
+								<th
+									class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase"
+									class:lg:ps-24={!isAverage}>Result</th
 								>
-								<td
-									class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap text-gray-900"
-									class:lg:ps-24={!isAverage}>{renderTime(result.result)}</td
+								<th class="px-6 py-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase"
+									>Competition</th
 								>
-								<td class="px-6 py-4 text-center text-sm whitespace-nowrap text-gray-700">
-									<a class="hover:text-gray-400" href="/competitions/{result.competition_id}"
-										>{result.competition_name}</a
-									>
-								</td>
 								{#if isAverage}
-									{#each result.times_list as time, timeIdx (timeIdx)}
-										<td
-											class="hidden px-6 py-4 text-center font-mono text-sm whitespace-nowrap text-gray-700 md:table-cell"
-											>{renderTime(time)}</td
+									{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
+										<th
+											class="hidden px-6 py-3 text-center text-xs font-semibold tracking-wider text-gray-500 uppercase md:table-cell"
+											>Solve {idx + 1}</th
 										>
 									{/each}
 								{/if}
 							</tr>
-						{/each}
-					</tbody>
-				</table>
+						</thead>
+						<tbody class="divide-y divide-gray-100 bg-white">
+							{#each results?.results as result, idx (idx)}
+								<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-50">
+									<td class="px-6 py-4 text-center text-sm font-semibold text-gray-900">{result.rank}</td>
+									<td class="px-6 py-4 text-center text-sm font-semibold text-gray-900">
+										<a href="/persons/{result.person}" class="transition-colors hover:text-blue-600">
+											{result.person_name}
+										</a></td
+									>
+									<td
+										class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap text-gray-900"
+										class:lg:ps-24={!isAverage}>{renderTime(result.result)}</td
+									>
+									<td class="px-6 py-4 text-center text-sm font-medium text-gray-600">
+										<a class="transition-colors hover:text-blue-600" href="/competitions/{result.competition_id}"
+											>{result.competition_name}</a
+										>
+									</td>
+									{#if isAverage}
+										{#each result.times_list as time, timeIdx (timeIdx)}
+											<td
+												class="hidden px-6 py-4 text-center font-mono text-sm whitespace-nowrap text-gray-500 md:table-cell"
+												>{renderTime(time)}</td
+											>
+										{/each}
+									{/if}
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
 				{#if totalPages > 1}
-					<div class="px-4 pt-2 pb-4">
+					<div class="border-t border-gray-100 bg-gray-50/30 px-6 py-4">
 						<PaginationControls
 							{currentPage}
 							{totalPages}
@@ -182,9 +186,9 @@ $effect(() => {
 					</div>
 				{/if}
 			{:else}
-				<div class="p-8 text-center text-gray-500">
-					<h2 class="text-xl font-semibold">No results found for {eventName}</h2>
-					<p class="mt-4">Try selecting a different event or adjusting your filters.</p>
+				<div class="p-12 text-center text-gray-500">
+					<h2 class="text-lg font-bold text-gray-900">No results found for {eventName}</h2>
+					<p class="mt-2 text-sm text-gray-500">Try selecting a different event or adjusting your filters.</p>
 				</div>
 			{/if}
 		</div>

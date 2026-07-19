@@ -90,34 +90,36 @@ $effect(() => {
 </svelte:head>
 
 <Backbutton />
-<div class=" bg-gray-50 px-4 py-4">
-	<div class="mx-auto max-w-4xl px-4">
+<div class="min-h-screen bg-gray-50 py-8">
+	<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 		<!-- Header -->
 		<div class="mb-6">
-			<h1 class="text-3xl font-bold text-gray-900">Competitors</h1>
-			<p class="mt-2 text-gray-600">Browse all competitors and view their profiles</p>
+			<h1 class="text-3xl font-extrabold tracking-tight text-gray-900">Competitors</h1>
+			<p class="mt-2 text-base text-gray-600">Browse all competitors and view their profiles</p>
 		</div>
 
-		<div class="mt-4 rounded-lg bg-white px-6 py-4 shadow-sm">
-			<h2 class="mb-4 text-xl font-semibold text-gray-800">Search Competitors</h2>
+		<div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+			<h2 class="mb-4 text-xl font-bold text-gray-800">Search Competitors</h2>
 			<div>
-				<label for="search-users" class="block text-sm font-medium text-gray-700"> Search by name </label>
+				<label for="search-users" class="block text-sm font-bold text-gray-700"> Search by name </label>
 				<input
 					id="search-users"
 					placeholder="Type to search competitors..."
 					bind:value={searchTerm}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+					class="mt-2 block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
 				/>
 			</div>
 
 			{#if loading}
-				<LoadingScreen message={isSearching ? "Searching..." : "Loading competitors..."} inline={true} />
+				<div class="flex items-center justify-center py-10">
+					<LoadingScreen message={isSearching ? "Searching..." : "Loading competitors..."} inline={true} />
+				</div>
 			{:else if users.length > 0}
-				<div class="mt-4 space-y-2">
-					<h3 class="text-sm font-medium text-gray-700">
+				<div class="mt-6 space-y-3">
+					<h3 class="text-sm font-bold tracking-wider text-gray-500 uppercase">
 						{isSearching ? `Search Results (${totalCount})` : `All Competitors (${totalCount} total)`}
 					</h3>
-					<div class="mb-4 grid gap-4">
+					<div class="mb-4 grid gap-4 sm:grid-cols-2">
 						{#each users as user (user.id)}
 							<PublicUserCard {user} />
 						{/each}
@@ -126,7 +128,7 @@ $effect(() => {
 
 				{#if !isSearching}
 					{#if totalPages > 1}
-						<div>
+						<div class="mt-6 border-t border-gray-100 pt-4">
 							<PaginationControls
 								{currentPage}
 								{totalPages}
@@ -142,13 +144,13 @@ $effect(() => {
 					{/if}
 				{/if}
 			{:else if searchTerm.trim()}
-				<div class="py-8 text-center text-gray-500">
-					<p class="text-lg">No competitors found matching "{searchTerm}"</p>
-					<p class="mt-2 text-sm">Try searching with a different name</p>
+				<div class="py-12 text-center text-gray-500">
+					<p class="text-lg font-bold text-gray-800">No competitors found matching "{searchTerm}"</p>
+					<p class="mt-2 text-sm font-medium text-gray-400">Try searching with a different name</p>
 				</div>
 			{:else}
-				<div class="py-8 text-center text-gray-500">
-					<p class="text-lg">No competitors found</p>
+				<div class="py-12 text-center text-gray-500">
+					<p class="text-lg font-bold text-gray-800">No competitors found</p>
 				</div>
 			{/if}
 		</div>

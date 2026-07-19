@@ -42,24 +42,23 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 		? {
 				...results,
 				results: results.results
-					.map((event) =>
-						Object.assign({}, event, {
-							rounds: event.rounds
-								.map((round) => ({
-									...round,
-									results: round.results.filter((result) => {
-										if (studentStatus === "uoft") {
-											return ["UTSG", "UTM", "UTSC"].includes(result.student_designator);
-										}
-										if (studentStatus === "non-uoft") {
-											return result.student_designator === "Non-UofT";
-										}
-										return result.student_designator === studentStatus;
-									}),
-								}))
-								.filter((round) => round.results.length > 0),
-						}),
-					)
+					.map((event) => ({
+						event: event.event,
+						rounds: event.rounds
+							.map((round) => ({
+								...round,
+								results: round.results.filter((result) => {
+									if (studentStatus === "uoft") {
+										return ["UTSG", "UTM", "UTSC"].includes(result.student_designator);
+									}
+									if (studentStatus === "non-uoft") {
+										return result.student_designator === "Non-UofT";
+									}
+									return result.student_designator === studentStatus;
+								}),
+							}))
+							.filter((round) => round.results.length > 0),
+					}))
 					.filter((event) => event.rounds.length > 0),
 			}
 		: null;

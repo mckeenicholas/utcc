@@ -74,6 +74,7 @@ export default defineConfig({
 			"strict-boolean-expressions": "off",
 			"filename-case": "off",
 			"sort-keys": "off",
+			"prefer-const": "off",
 			"max-params": "off",
 		},
 	},
