@@ -11,7 +11,7 @@ import {
 	isWCAEvent,
 } from "./types";
 
-export const BASE_URL = dev ? "http://localhost:8000" : "https://utcc.nmckee.org";
+export const BASE_URL = false ? "http://localhost:8000" : "https://utcc.nmckee.org";
 
 // Updated URLs to match backend structure
 export const latestCompetitionsURL = `${BASE_URL}/api/competitions/`;

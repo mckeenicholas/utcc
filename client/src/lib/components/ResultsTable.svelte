@@ -25,16 +25,15 @@ const resultsObj = $derived.by(() => {
 	return {
 		...competitionResults,
 		results: competitionResults.results
-			.map((event) =>
-				Object.assign(event, {
-					rounds: event.rounds
-						.map((round) => ({
-							...round,
-							results: [...round.results].toSorted(compareResults),
-						}))
-						.toSorted((a, b) => a.round - b.round),
-				}),
-			)
+			.map((event) => ({
+				...event,
+				rounds: event.rounds
+					.map((round) => ({
+						...round,
+						results: [...round.results].toSorted(compareResults),
+					}))
+					.toSorted((a, b) => a.round - b.round),
+			}))
 			.toSorted((a, b) => sortEvents(a.event, b.event)),
 	};
 });
