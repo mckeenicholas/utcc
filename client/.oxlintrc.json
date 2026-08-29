@@ -1,0 +1,48 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "unicorn", "oxc"],
+	"categories": {
+		"correctness": "error",
+		"pedantic": "warn",
+		"perf": "error",
+		"style": "warn",
+		"suspicious": "error"
+	},
+	"env": {
+		"builtin": true,
+		"browser": true,
+		"svelte": true
+	},
+	"globals": {
+		"$derived": "readonly",
+		"$effect": "readonly",
+		"$props": "readonly",
+		"$state": "readonly"
+	},
+	"rules": {
+		"curly": "error",
+		"eslint/no-await-in-loop": "off",
+		"id-length": "off",
+		"max-statements": "off",
+		"no-console": [
+			"error",
+			{
+				"allow": ["error"]
+			}
+		],
+		"no-inline-comments": "off",
+		"no-magic-numbers": "off",
+		"no-null": "off",
+		"no-ternary": "off",
+		"no-unsafe-assignment": "off",
+		"prefer-named-capture-group": "off",
+		"prefer-readonly-parameter-types": "off",
+		"sort-imports": "off",
+		"strict-boolean-expressions": "off",
+		"filename-case": "off",
+		"sort-keys": "off",
+		"max-params": "off",
+		"one-var": "off",
+		"prefer-object-spread": "off"
+	}
+}

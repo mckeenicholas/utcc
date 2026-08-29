@@ -1,0 +1,31 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"ignorePatterns": [],
+	"printWidth": 120,
+	"useTabs": true,
+	"sortPackageJson": true,
+	"sortTailwindcss": {
+		"stylesheet": "./src/app.css"
+	},
+	"sortImports": {
+		"customGroups": [
+			{
+				"groupName": "svelte",
+				"elementNamePattern": ["svelte", "svelte/*"]
+			},
+			{
+				"groupName": "app",
+				"elementNamePattern": ["$app", "$app/*"]
+			},
+			{
+				"groupName": "lib",
+				"elementNamePattern": ["$lib", "$lib/*"]
+			}
+		],
+		"groups": ["svelte", "app", ["value-builtin", "value-external"], "lib", "unknown"],
+		"newlinesBetween": false
+	},
+	"svelte": {
+		"indentScriptAndStyle": false
+	}
+}

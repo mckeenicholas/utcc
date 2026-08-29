@@ -11,7 +11,7 @@ import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
 
 const compId = $page.params.compid;
 
-let studentStatus: StudentStatus = $state("all");
+let studentStatus: StudentStatus = $state([]);
 let loading = $state(true);
 let hasError = $state(false);
 let results: CompetitionResults | null = $state(null);
@@ -34,7 +34,7 @@ const fetchTimes = async () => {
 onMount(fetchTimes);
 
 const filteredResults: CompetitionResults | null = $derived.by(() => {
-	if (studentStatus === "all") {
+	if (studentStatus.length === 0) {
 		return results;
 	}
 
@@ -47,15 +47,7 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 							rounds: event.rounds
 								.map((round) => ({
 									...round,
-									results: round.results.filter((result) => {
-										if (studentStatus === "uoft") {
-											return ["UTSG", "UTM", "UTSC"].includes(result.student_designator);
-										}
-										if (studentStatus === "non-uoft") {
-											return result.student_designator === "Non-UofT";
-										}
-										return result.student_designator === studentStatus;
-									}),
+									results: round.results.filter((result) => studentStatus.includes(result.student_designator)),
 								}))
 								.filter((round) => round.results.length > 0),
 						}),

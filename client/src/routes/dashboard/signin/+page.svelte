@@ -30,7 +30,7 @@ const handleKeydown = (event: KeyboardEvent, nextElementId?: string) => {
 	if (event.key === "Enter") {
 		event.preventDefault();
 		if (nextElementId) {
-			const nextElement = document.querySelector(`#${nextElementId}`);
+			const nextElement = document.querySelector<HTMLElement>(`#${nextElementId}`);
 			nextElement?.focus();
 		} else {
 			// If no next element (login button), submit the form

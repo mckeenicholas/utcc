@@ -23,8 +23,6 @@ let studentStatus: StudentStatus = $state([]);
 let sessions: Session[] = $state([]);
 let loading = $state(true);
 
-let innerWidth = $state(0);
-
 const sessionRecordsURL = (sessionId: number, uoftStatus: StudentStatus) => {
 	const url = new URL(recordsURL);
 	if (sessionId !== -1) {
@@ -70,8 +68,6 @@ const recordsDisplay = $derived.by(() => {
 });
 </script>
 
-<svelte:window bind:innerWidth />
-
 <svelte:head>
 	<title>UofT Rubik's Cube Club Records</title>
 	<meta name="description" content="Current records from University of Toronto Rubik's Cube Club." />
@@ -90,7 +86,7 @@ const recordsDisplay = $derived.by(() => {
 				class="ms-4 flex flex-col items-center gap-4 rounded-lg border border-gray-200 bg-white p-2 shadow-sm sm:flex-row lg:ms-12"
 			>
 				<SessionSelector bind:value={selectedSession} sessionData={sessions} class="shadow-sm" />
-				<UofTSelector bind:status={studentStatus} vertical={innerWidth < 430} />
+				<UofTSelector bind:status={studentStatus} />
 			</div>
 		</div>
 		{#if loading}

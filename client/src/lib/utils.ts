@@ -1,4 +1,5 @@
 import { dev } from "$app/environment";
+import { formatCentiseconds } from "@wca/helpers";
 import {
 	type PersonResult,
 	type PersonalRecords,
@@ -65,24 +66,7 @@ export const renderTime = (time: number | null): string => {
 		return "";
 	}
 
-	if (time === -2) {
-		return "DNS";
-	}
-
-	if (time === -1) {
-		return "DNF";
-	}
-
-	const seconds = time / 100;
-
-	if (seconds >= 60) {
-		const minutes = Math.floor(seconds / 60);
-		const remainingSeconds = (seconds % 60).toFixed(2);
-		// Pad seconds with leading zero if needed
-		return `${minutes}:${remainingSeconds.padStart(5, "0")}`;
-	}
-
-	return seconds.toFixed(2);
+	return formatCentiseconds(time);
 };
 
 // Formats data in correct order for person records table.
