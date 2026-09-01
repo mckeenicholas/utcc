@@ -54,11 +54,13 @@ const fetchLatest = async () => {
 	try {
 		const [resultsData, competitionsData] = await Promise.all([
 			fetchJson<CompetitionResults>(latestResultsURL),
-			fetchJson<Paginated<Competition>>(latestCompetitionsURL),
+			fetchJson<Paginated<Competition>>(`${latestCompetitionsURL}?has_results=true`),
 		]);
 
 		results = resultsData;
-		competitionList = competitionsData.results.slice(0, 10);
+		competitionList = (competitionsData.results ?? [])
+			.filter((comp) => (comp.events && comp.events.length > 0) || comp.has_results)
+			.slice(0, 10);
 		if (resultsData?.competition) {
 			selectedCompetitionId = resultsData.competition.id;
 		}

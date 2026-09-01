@@ -44,18 +44,19 @@ const directorySections = [
 		icon: "event-minx",
 		action: "Find Solvers",
 	},
-];
+] as const;
 
 onMount(async () => {
 	try {
 		loadingData = true;
 		const [latestData, upcomingData] = await Promise.allSettled([
-			fetchJson<Paginated<Competition>>(latestCompetitionsURL),
+			fetchJson<Paginated<Competition>>(`${latestCompetitionsURL}?has_results=true`),
 			fetchJson<Paginated<Competition>>(`${latestCompetitionsURL}?upcoming=true`),
 		]);
 
 		if (latestData.status === "fulfilled" && latestData.value.results?.length > 0) {
-			[latestCompetition] = latestData.value.results;
+			latestCompetition =
+				latestData.value.results.find((comp) => (comp.events && comp.events.length > 0) || comp.has_results) ?? null;
 		}
 
 		if (upcomingData.status === "fulfilled" && upcomingData.value.results?.length > 0) {

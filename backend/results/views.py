@@ -64,12 +64,18 @@ class CompetitionViewSet(viewsets.ModelViewSet):
         student_designators = self.request.query_params.getlist("student_designator")
         ordering = self.request.query_params.get("ordering")
         upcoming = self.request.query_params.get("upcoming")
+        has_results = self.request.query_params.get("has_results")
 
         if session_id is not None:
             queryset = queryset.filter(session__id=session_id)
 
         if student_designators:
             queryset = queryset.filter(student_designator__in=student_designators)
+
+        if is_truthy_param(has_results):
+            queryset = queryset.filter(results__isnull=False).distinct()
+        elif is_falsy_param(has_results):
+            queryset = queryset.filter(results__isnull=True)
 
         if is_truthy_param(upcoming):
             queryset = queryset.filter(date__gte=timezone.localdate())
@@ -139,10 +145,18 @@ class CompetitionResultsAPIView(APIView):
         if competition_id:
             competition = get_object_or_404(Competition, pk=competition_id)
         else:
-            competition_query = Competition.objects.order_by("-date")
+            competition_query = (
+                Competition.objects.filter(results__isnull=False).distinct().order_by("-date")
+            )
             if session_id:
                 competition_query = competition_query.filter(session_id=session_id)
             competition = competition_query.first()
+
+            if not competition:
+                fallback_query = Competition.objects.order_by("-date")
+                if session_id:
+                    fallback_query = fallback_query.filter(session_id=session_id)
+                competition = fallback_query.first()
 
             if not competition:
                 return Response(

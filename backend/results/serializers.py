@@ -16,11 +16,21 @@ class CompetitionSessionSerializer(serializers.ModelSerializer):
 class CompetitionSerializer(serializers.ModelSerializer):
     events = serializers.SerializerMethodField()
     session_name = serializers.SerializerMethodField()
+    has_results = serializers.SerializerMethodField()
 
     class Meta:
         model = Competition
-        fields = ["id", "name", "date", "events", "session", "session_name", "student_designator"]
-        read_only_fields = ["id", "events", "session_name"]
+        fields = [
+            "id",
+            "name",
+            "date",
+            "events",
+            "session",
+            "session_name",
+            "student_designator",
+            "has_results",
+        ]
+        read_only_fields = ["id", "events", "session_name", "has_results"]
 
     def get_events(self, obj):
         return sorted({result.event for result in obj.results.all()})
@@ -29,6 +39,9 @@ class CompetitionSerializer(serializers.ModelSerializer):
         if obj.session:
             return obj.session.name
         return None
+
+    def get_has_results(self, obj):
+        return len(obj.results.all()) > 0
 
 
 class ResultCreateUpdateSerializer(serializers.ModelSerializer):

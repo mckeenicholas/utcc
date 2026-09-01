@@ -15,6 +15,7 @@ export interface Competition {
 	session: number | null;
 	session_name: string | null;
 	student_designator: string;
+	has_results?: boolean;
 }
 
 export const studentDesignatorOptions = [
