@@ -28,10 +28,12 @@ const resultsObj = $derived.by(() => {
 		results: competitionResults.results
 			.map((eventResult) => ({
 				...eventResult,
-				rounds: eventResult.rounds.map((round) => ({
-					...round,
-					results: round.results.toSorted(compareResults),
-				})),
+				rounds: eventResult.rounds
+					.map((round) => ({
+						...round,
+						results: [...round.results].toSorted(compareResults),
+					}))
+					.toSorted((a, b) => a.round - b.round),
 			}))
 			.toSorted((a, b) => sortEvents(a.event, b.event)),
 	};

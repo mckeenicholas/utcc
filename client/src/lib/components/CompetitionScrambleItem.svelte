@@ -76,7 +76,7 @@ let open = $state(false);
 													<span
 														class="me-8 w-4 min-w-fit text-center align-middle text-xs font-medium tracking-wider text-gray-700 uppercase"
 													>
-														{scrambleOrder[scramble.num as ScrambleKey]?.name ?? scramble.num}
+														{scrambleOrder[scramble.num.toString() as ScrambleKey]?.name ?? scramble.num}
 													</span>
 													<code class="font-mono text-xs break-all whitespace-pre-wrap text-gray-800">
 														{scramble.scramble}
