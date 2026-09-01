@@ -156,7 +156,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 	{id}
 	{disabled}
 	bind:this={ref}
-	class="time-input block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+	class="time-input block w-full rounded-sm border border-gray-300 px-3 py-1.5 font-mono text-sm tabular-nums focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700"
 	type="text"
 	inputmode="numeric"
 	bind:value={displayValue}

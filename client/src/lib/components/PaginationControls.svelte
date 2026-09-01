@@ -35,36 +35,40 @@ const startItem = $derived((currentPage - 1) * itemsPerPage + 1);
 const endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
 
-<div class="flex items-center justify-between">
-	<div class="text-sm text-gray-600">
-		Showing {startItem} to {endItem} of {totalCount} items
+<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+	<div class="text-xs text-gray-700">
+		Showing <span class="font-medium text-gray-900">{startItem}</span> to{" "}
+		<span class="font-medium text-gray-900">{endItem}</span> of{" "}
+		<span class="font-medium text-gray-900">{totalCount}</span>
 	</div>
-	<div class="flex items-center space-x-2">
+	<div class="flex items-center space-x-1.5">
 		<!-- Previous Button -->
 		<button
+			type="button"
 			onclick={onPrevious}
 			disabled={!hasPrevious}
-			class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-100 ease-in-out hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+			class="inline-flex cursor-pointer items-center rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
 		>
-			<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="mr-1 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 			</svg>
-			Previous
+			Prev
 		</button>
 
 		<!-- Page Numbers -->
 		<div class="flex items-center space-x-1">
 			{#each visiblePages as page (page)}
 				<button
+					type="button"
 					onclick={() => onPageChange(page)}
-					class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-100 ease-in-out focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-					class:bg-blue-600={page === currentPage}
+					class="inline-flex cursor-pointer items-center rounded-sm px-2.5 py-1 text-xs font-medium transition-colors focus:outline-none"
+					class:bg-uoft-blue={page === currentPage}
 					class:text-white={page === currentPage}
 					class:bg-white={page !== currentPage}
 					class:text-gray-700={page !== currentPage}
 					class:border={page !== currentPage}
-					class:border-gray-300={page !== currentPage}
-					class:hover:bg-gray-100={page !== currentPage}
+					class:border-gray-200={page !== currentPage}
+					class:hover:bg-gray-50={page !== currentPage}
 				>
 					{page}
 				</button>
@@ -73,12 +77,13 @@ const endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 
 		<!-- Next Button -->
 		<button
+			type="button"
 			onclick={onNext}
 			disabled={!hasNext}
-			class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors duration-100 ease-in-out hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+			class="inline-flex cursor-pointer items-center rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none disabled:cursor-not-allowed disabled:opacity-40"
 		>
 			Next
-			<svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="ml-1 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 			</svg>
 		</button>

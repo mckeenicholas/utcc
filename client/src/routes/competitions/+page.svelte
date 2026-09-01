@@ -1,12 +1,11 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import Backbutton from "$lib/components/Backbutton.svelte";
 import CompetitionCard from "$lib/components/CompetitionCard.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
+import SelectMenu from "$lib/components/SelectMenu.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
 import UofTSelector from "$lib/components/UofTSelector.svelte";
-import { Select } from "bits-ui";
 import { fetchSessions } from "$lib/competitionSessionService";
 import type { Competition, Paginated, Session, StudentStatus } from "$lib/types";
 import { BASE_URL, PAGINATION_SIZE, fetchJson, toInt } from "$lib/utils";
@@ -106,113 +105,70 @@ const goToPage = (page: number) => {
 </script>
 
 <svelte:head>
-	<title>UofT Rubik's Cube Club Competition Search</title>
-	<meta name="description" content="University of Toronto Rubik's Cube Club competition search." />
+	<title>Competitions | University of Toronto Cube Club</title>
+	<meta name="description" content="University of Toronto Rubik's Cube Club competitions archive." />
 </svelte:head>
 
-<Backbutton />
-<div class="min-h-screen bg-gray-50 py-8">
-	<div class="mx-auto max-w-6xl px-4">
+<div class="py-8 pb-16">
+	<div class="mx-auto max-w-6xl px-4 sm:px-6">
 		<div class="mb-6">
-			<h1 class="text-3xl font-bold text-gray-900">All Competitions</h1>
-			<p class="mt-2 text-gray-600">Browse club-sanctioned competitions</p>
+			<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Competitions</h1>
+			<p class="mt-1 text-sm text-gray-700">Browse official club tournaments and sessions.</p>
 		</div>
 
 		<!-- Filter Bar -->
-		<div
-			class="mb-8 flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between"
-		>
-			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-				<span class="text-sm font-medium text-gray-700">Academic Session:</span>
-				<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="shadow-sm" />
+		<div class="mb-6 flex flex-wrap items-center gap-4 border border-gray-200 bg-white p-4 sm:p-5">
+			<div class="flex items-center gap-2">
+				<span class="text-xs font-medium text-gray-700">Session:</span>
+				<SessionSelector bind:value={selectedSession} sessionData={allSessions} />
 			</div>
-			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-				<span class="text-sm font-medium text-gray-700">Designation:</span>
+			<div class="flex items-center gap-2">
+				<span class="text-xs font-medium text-gray-700">Status:</span>
 				<UofTSelector bind:status={selectedDesignator} />
 			</div>
-			<div class="flex flex-col gap-1.5 sm:flex-row sm:items-center">
-				<span class="text-sm font-medium text-gray-700">Sort by:</span>
-				<div class="w-full sm:w-48">
-					<Select.Root items={sortOptions} bind:value={selectedOrdering} type="single">
-						<Select.Trigger
-							class="flex h-[38px] w-full cursor-pointer items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-left text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-							aria-label="Select sorting order"
-						>
-							<span>{selectedOrderingLabel}</span>
-							<svg class="ml-2 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-							</svg>
-						</Select.Trigger>
-						<Select.Portal>
-							<Select.Content
-								class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg"
-								sideOffset={4}
-							>
-								<Select.Viewport class="p-1">
-									{#each sortOptions as option (option.value)}
-										<Select.Item
-											class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
-											value={option.value}
-											label={option.label}
-										>
-											{#snippet children({ selected })}
-												{#if selected}
-													<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-														<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path
-																stroke-linecap="round"
-																stroke-linejoin="round"
-																stroke-width="2"
-																d="M5 13l4 4L19 7"
-															/>
-														</svg>
-													</span>
-												{/if}
-												{option.label}
-											{/snippet}
-										</Select.Item>
-									{/each}
-								</Select.Viewport>
-							</Select.Content>
-						</Select.Portal>
-					</Select.Root>
+			<div class="flex items-center gap-2">
+				<span class="text-xs font-medium text-gray-700">Order:</span>
+				<div class="w-44">
+					<SelectMenu bind:value={selectedOrdering} options={sortOptions} />
 				</div>
 			</div>
 		</div>
 
 		{#if loading}
-			<LoadingScreen message="Loading Competitions" />
+			<div class="border border-gray-200 bg-white p-12 text-center">
+				<LoadingScreen message="Loading Competitions..." inline />
+			</div>
 		{:else if errorMessage}
-			<div class="rounded-lg bg-red-50 p-6 text-center shadow-sm">
-				<div class="mx-auto h-12 w-12 text-red-400">
-					<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<div class="border border-red-200 bg-white p-8 text-center sm:p-12">
+				<div class="mx-auto flex h-10 w-10 items-center justify-center rounded bg-red-50 text-uoft-warm-red">
+					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-4 text-lg font-medium text-red-900">Error Loading Competitions</h3>
-				<p class="mt-2 text-red-700">{errorMessage}</p>
+				<h3 class="mt-3 text-base font-bold text-gray-900">Error Loading Competitions</h3>
+				<p class="mt-1 text-sm text-gray-600">{errorMessage}</p>
 				<button
 					onclick={() => window.location.reload()}
-					class="mt-4 inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+					class="mt-4 inline-flex items-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
 				>
 					Try Again
 				</button>
 			</div>
 		{:else if competitions.length > 0}
 			<!-- Competitions List -->
-			<div class="space-y-4">
+			<div class="space-y-3">
 				{#each competitions as competition (competition.id)}
 					<CompetitionCard {competition} />
 				{/each}
 			</div>
 
 			{#if totalPages > 1}
-				<div class="mt-4 rounded-md bg-white p-4 shadow">
+				<div class="mt-4 border border-gray-200 bg-white p-4">
 					<PaginationControls
 						{currentPage}
 						{totalPages}
@@ -228,9 +184,9 @@ const goToPage = (page: number) => {
 			{/if}
 		{:else}
 			<!-- Empty State -->
-			<div class="rounded-lg bg-white p-12 text-center shadow-sm">
-				<div class="mx-auto h-12 w-12 text-gray-400">
-					<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<div class="border border-gray-200 bg-white p-12 text-center">
+				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-gray-100 text-gray-700">
+					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -239,8 +195,8 @@ const goToPage = (page: number) => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-4 text-lg font-medium text-gray-900">No Competitions Found</h3>
-				<p class="mt-2 text-gray-600">There are no competitions matching the selected filters.</p>
+				<h3 class="mt-3 text-base font-bold text-gray-900">No Competitions Found</h3>
+				<p class="mt-1 text-xs text-gray-700">There are no competitions matching the selected filters.</p>
 			</div>
 		{/if}
 	</div>

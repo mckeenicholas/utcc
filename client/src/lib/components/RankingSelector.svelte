@@ -30,20 +30,26 @@ onMount(async () => {
 });
 </script>
 
-<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-	<div class="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
+<div class="border border-gray-200 bg-white p-4 sm:p-5">
+	<div class="flex flex-wrap items-center gap-4">
 		<!-- Event selector -->
 		<EventPicker bind:selectedEvent />
 
+		<div class="hidden h-6 w-px bg-gray-200 sm:block"></div>
+
 		<!-- Toggle buttons -->
-		<div class="flex flex-wrap gap-2">
+		<div class="flex flex-wrap items-center gap-2">
 			<ToggleButton bind:value={isAverage} leftLabel="Single" rightLabel="Average" />
 			<ToggleButton bind:value={showAll} leftLabel="Persons" rightLabel="Results" />
 		</div>
 	</div>
-	<div class="flex gap-4">
-		<SessionSelector bind:value={session} sessionData={sessions} class="mt-2" />
-		<div class="mt-2">
+	<div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+		<div class="flex items-center gap-2">
+			<span class="text-xs font-medium text-gray-700">Session:</span>
+			<SessionSelector bind:value={session} sessionData={sessions} />
+		</div>
+		<div class="flex items-center gap-2">
+			<span class="text-xs font-medium text-gray-700">Status:</span>
 			<UofTSelector bind:status={studentStatus} />
 		</div>
 	</div>

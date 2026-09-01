@@ -8,8 +8,8 @@ import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PageHeader from "$lib/components/PageHeader.svelte";
 import ResultForm from "$lib/components/ResultForm.svelte";
 import ResultsTable from "$lib/components/ResultsTable.svelte";
+import SelectMenu from "$lib/components/SelectMenu.svelte";
 import UserSearch from "$lib/components/UserSearch.svelte";
-import { Select } from "bits-ui";
 import authFetch from "$lib/authFetch";
 import { eventNames, type CompetitionResults, type Result, type User, type WCAEvent } from "$lib/types";
 import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
@@ -219,72 +219,29 @@ const resetFormTimes = () => {
 
 		<div class="grid grid-cols-1 gap-8 lg:grid-cols-4">
 			<div class="lg:col-span-1">
-				<div class="rounded-lg bg-white p-6 shadow-sm">
-					<h2 class="mb-4 text-lg font-semibold text-gray-800">
+				<div class="border border-gray-200 bg-white p-5">
+					<h2 class="mb-4 text-base font-bold text-gray-900">
 						{editingResult ? "Edit Results" : "Enter Results"}
 					</h2>
 
 					<div class="space-y-4">
 						<div>
-							<label for="event" class="mb-2 block text-sm font-medium text-gray-700">Event</label>
-							<Select.Root items={eventOptions} bind:value={formData.event} type="single">
-								<Select.Trigger
-									class="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-left shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-									aria-label="Select an event"
-								>
-									<span>{selectedEventLabel}</span>
-									<svg
-										class="ml-2 h-4 w-4 shrink-0 text-gray-400"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-									</svg>
-								</Select.Trigger>
-								<Select.Portal>
-									<Select.Content
-										class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden rounded-md border border-gray-200 bg-white py-1 shadow-lg"
-										sideOffset={4}
-									>
-										<Select.Viewport class="p-1">
-											{#each eventOptions as option (option.value)}
-												<Select.Item
-													class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
-													value={option.value}
-													label={option.label}
-												>
-													{#snippet children({ selected })}
-														{#if selected}
-															<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-																<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-																	<path
-																		stroke-linecap="round"
-																		stroke-linejoin="round"
-																		stroke-width="2"
-																		d="M5 13l4 4L19 7"
-																	/>
-																</svg>
-															</span>
-														{/if}
-														{option.label}
-													{/snippet}
-												</Select.Item>
-											{/each}
-										</Select.Viewport>
-									</Select.Content>
-								</Select.Portal>
-							</Select.Root>
+							<label for="event" class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+								>Event</label
+							>
+							<SelectMenu bind:value={formData.event} options={eventOptions} />
 						</div>
 
 						<div>
-							<label for="round" class="mb-2 block text-sm font-medium text-gray-700">Round</label>
+							<label for="round" class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+								>Round</label
+							>
 							<input
 								id="round"
 								type="number"
 								min="1"
 								bind:value={formData.round}
-								class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+								class="block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-xs focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 							/>
 						</div>
 

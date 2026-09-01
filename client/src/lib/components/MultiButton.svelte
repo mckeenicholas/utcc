@@ -8,18 +8,19 @@ interface Props {
 let { selectedIndex = $bindable(), labels, vertical = false }: Props = $props();
 </script>
 
-<div class="flex rounded-md border border-gray-200 bg-white {vertical && 'w-full flex-col'}">
+<div class="inline-flex rounded-sm border border-gray-200 bg-white {vertical ? 'w-full flex-col' : 'items-center'}">
 	{#each labels as label, index (index)}
 		<button
+			type="button"
 			onclick={() => (selectedIndex = index)}
-			class="min-h-[40px] border-gray-200 px-4 py-2 text-sm font-medium transition-colors
-				{selectedIndex == index
-				? 'bg-blue-600 text-white'
-				: 'bg-white transition-colors duration-100 ease-in-out hover:bg-gray-100'}
-				{!vertical && index == 0 && 'rounded-l-md border-r'}
-				{!vertical && index == labels.length - 1 && 'rounded-r-md border-l'}
-				{vertical && index == 0 && 'rounded-t-md border-b'}
-				{vertical && index == labels.length - 1 && 'rounded-b-md border-t'}"
+			class="{vertical ? 'w-full px-3 py-2 text-left' : 'h-[36px] px-3.5'} text-xs font-semibold transition-colors
+				{selectedIndex === index ? 'bg-uoft-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}
+				{!vertical && index > 0 && 'border-l border-gray-200'}
+				{!vertical && index === 0 && 'rounded-l-sm'}
+				{!vertical && index === labels.length - 1 && 'rounded-r-sm'}
+				{vertical && index > 0 && 'border-t border-gray-200'}
+				{vertical && index === 0 && 'rounded-t-sm'}
+				{vertical && index === labels.length - 1 && 'rounded-b-sm'}"
 		>
 			{label}
 		</button>

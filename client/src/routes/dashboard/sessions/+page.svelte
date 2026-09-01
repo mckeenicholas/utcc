@@ -86,27 +86,31 @@ const handleDeleteSession = async (sessionId: number) => {
 
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-4xl px-4">
-		<DashboardHeader title="Session Management" showBack />
+		<div class="mb-6">
+			<DashboardHeader title="Session Management" showBack />
+		</div>
 
 		<AddSessionForm onAddSession={handleAddSession} />
 
-		<div class="rounded-lg bg-white px-6 pt-2 pb-6 shadow-sm">
-			{#if loading}
-				<LoadingScreen message={isSearching ? "Searching..." : "Loading sessions..."} />
-			{:else if sessions.length > 0}
-				<div class="mt-4 space-y-2">
-					<h3 class="text-sm font-medium text-gray-700">
+		{#if loading}
+			<div class="border border-gray-200 bg-white p-12 text-center">
+				<LoadingScreen message={isSearching ? "Searching..." : "Loading sessions..."} inline minHeight="10rem" />
+			</div>
+		{:else if sessions.length > 0}
+			<div class="mt-6 space-y-3">
+				<div class="flex items-center justify-between border-b border-gray-200 pb-2">
+					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">
 						{isSearching ? `Search Results (${sessions.length})` : `All Sessions (${sessions.length} total)`}
-					</h3>
-					<div class="grid gap-4">
-						{#each sessions as session (session.id)}
-							<SessionCard {session} onDelete={handleDeleteSession} onSave={handleSaveSession} />
-						{/each}
-					</div>
+					</span>
 				</div>
-			{:else}
-				<div class="py-4 text-center text-gray-500">No sessions found</div>
-			{/if}
-		</div>
+				<div class="space-y-3">
+					{#each sessions as session (session.id)}
+						<SessionCard {session} onDelete={handleDeleteSession} onSave={handleSaveSession} />
+					{/each}
+				</div>
+			</div>
+		{:else}
+			<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">No sessions found</div>
+		{/if}
 	</div>
 </div>

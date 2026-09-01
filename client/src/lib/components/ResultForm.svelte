@@ -106,7 +106,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 		onclick={onSubmit}
 		onkeydown={handleKeydown}
 		disabled={submitting || !areRequiredFieldsFilled}
-		class="time-input submit-button inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
+		class="time-input submit-button inline-flex w-full items-center justify-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white hover:bg-uoft-blue-80 focus:ring-2 focus:ring-uoft-blue focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
 	>
 		{#if submitting}
 			<svg class="mr-2 h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,7 +126,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 		<button
 			onclick={onCancel}
 			disabled={submitting}
-			class="mt-3 inline-flex w-full items-center justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+			class="mt-3 inline-flex w-full items-center justify-center rounded-sm bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
 		>
 			Cancel
 		</button>

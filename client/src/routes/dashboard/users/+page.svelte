@@ -147,61 +147,65 @@ const handleDeleteUser = async (userId: number) => {
 
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-4xl px-4">
-		<!-- Header -->
-		<DashboardHeader title="User Management" showBack />
+		<div class="mb-6">
+			<DashboardHeader title="User Management" showBack />
+		</div>
 
 		<AddUserForm onAddUser={handleAddUser} />
 
-		<div class="mt-6 rounded-lg bg-white px-6 pt-6 pb-2 shadow-sm">
-			<h2 class="mb-4 text-xl font-semibold text-gray-800">Users</h2>
-			<div>
-				<label for="search-users" class="block text-sm font-medium text-gray-700">Search by name</label>
-				<input
-					id="search-users"
-					placeholder="Type to search users"
-					bind:value={searchTerm}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
-				/>
-			</div>
-
-			{#if loading}
-				<LoadingScreen message={isSearching ? "Searching..." : "Loading users..."} />
-			{:else if users.length > 0}
-				<div class="mt-4 space-y-2">
-					<h3 class="text-sm font-medium text-gray-700">
-						{isSearching ? `Search Results (${totalCount})` : `All Users (${totalCount} total)`}
-					</h3>
-					<div class="grid gap-4">
-						{#each users as user (user.id)}
-							<UserCard {user} ondelete={handleDeleteUser} onsave={handleSaveUser} />
-						{/each}
-					</div>
-				</div>
-
-				{#if !isSearching}
-					{#if totalPages > 1}
-						<div class="mt-4">
-							<PaginationControls
-								{currentPage}
-								{totalPages}
-								{totalCount}
-								itemsPerPage={PAGINATION_SIZE}
-								{hasNext}
-								{hasPrevious}
-								onPageChange={loadUsers}
-								onNext={() => loadUsers(currentPage + 1)}
-								onPrevious={() => loadUsers(currentPage - 1)}
-							/>
-						</div>
-					{/if}
-				{/if}
-			{:else if searchTerm.trim()}
-				<div class="py-4 text-center text-gray-500">
-					No users found matching "{searchTerm}"
-				</div>
-			{:else}
-				<div class="py-4 text-center text-gray-500">No users found</div>
-			{/if}
+		<!-- Search Bar Toolbar -->
+		<div class="my-6 border border-gray-200 bg-white p-4 sm:p-5">
+			<label for="search-users" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">
+				Search by Name
+			</label>
+			<input
+				id="search-users"
+				placeholder="Type to search users..."
+				bind:value={searchTerm}
+				class="mt-2 block w-full max-w-md rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+			/>
 		</div>
+
+		{#if loading}
+			<div class="border border-gray-200 bg-white p-12 text-center">
+				<LoadingScreen message={isSearching ? "Searching..." : "Loading users..."} inline minHeight="10rem" />
+			</div>
+		{:else if users.length > 0}
+			<div class="space-y-3">
+				<div class="flex items-center justify-between border-b border-gray-200 pb-2">
+					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">
+						{isSearching ? `Search Results (${totalCount})` : `All Users (${totalCount} total)`}
+					</span>
+				</div>
+
+				<div class="space-y-3">
+					{#each users as user (user.id)}
+						<UserCard {user} ondelete={handleDeleteUser} onsave={handleSaveUser} />
+					{/each}
+				</div>
+
+				{#if !isSearching && totalPages > 1}
+					<div class="mt-6 border border-gray-200 bg-white p-4">
+						<PaginationControls
+							{currentPage}
+							{totalPages}
+							{totalCount}
+							itemsPerPage={PAGINATION_SIZE}
+							{hasNext}
+							{hasPrevious}
+							onPageChange={loadUsers}
+							onNext={() => loadUsers(currentPage + 1)}
+							onPrevious={() => loadUsers(currentPage - 1)}
+						/>
+					</div>
+				{/if}
+			</div>
+		{:else if searchTerm.trim()}
+			<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">
+				No users found matching "{searchTerm}"
+			</div>
+		{:else}
+			<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">No users found</div>
+		{/if}
 	</div>
 </div>

@@ -1,6 +1,8 @@
 <script lang="ts">
+import { Portal } from "bits-ui";
 import type { Competition, Session } from "$lib/types";
 import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
+import DateForm from "./DateForm.svelte";
 import LoadingScreen from "./LoadingScreen.svelte";
 
 interface Props {
@@ -21,6 +23,11 @@ let competitionsLoading = $state(false);
 $effect(() => {
 	if (showModal) {
 		fetchSessionCompetitions();
+		const originalOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+		return () => {
+			document.body.style.overflow = originalOverflow;
+		};
 	}
 });
 
@@ -48,58 +55,70 @@ const handleSave = () => {
 };
 </script>
 
-<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
-	<div class="flex items-center justify-between">
-		<div class="flex items-center space-x-3">
+<div class="border border-gray-200 bg-white p-4 transition-colors hover:border-uoft-blue">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<div class="flex items-center gap-3">
 			<div
-				class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg font-medium text-blue-600"
+				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-xs font-bold text-uoft-blue"
 			>
 				{session.name.charAt(0).toUpperCase()}
 			</div>
 			<div>
 				{#if isEditing}
-					<input
-						bind:value={editSessionName}
-						onkeydown={(e) => e.key === "Enter" && handleSave()}
-						class="rounded-md border border-gray-300 px-2 py-1 text-sm font-medium text-gray-900 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
-					/>
-					<input type="date" bind:value={editSessionDate} class="ms-2" />
+					<div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+						<input
+							bind:value={editSessionName}
+							onkeydown={(e) => e.key === "Enter" && handleSave()}
+							class="h-[36px] rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+						/>
+						<div class="w-40">
+							<DateForm bind:selectedDate={editSessionDate} label="" />
+						</div>
+					</div>
 				{:else}
-					<span class="text-sm font-medium text-gray-900">{session.name}</span>
+					<span class="text-sm font-bold text-gray-900">{session.name}</span>
 				{/if}
-				<p class="text-xs text-gray-500">ID: {session.id} - Start Date: {session.start_date}</p>
+				<p class="text-[11px] text-gray-700">ID: {session.id} • Start Date: {session.start_date}</p>
 			</div>
 		</div>
-		<div class="flex space-x-2">
+		<div class="flex flex-wrap items-center gap-2">
 			{#if isEditing}
 				<button
+					type="button"
 					onclick={handleSave}
 					disabled={!editSessionName.trim()}
-					class="rounded-md bg-green-100 px-3 py-1 text-sm text-green-800 hover:bg-green-200 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-800 disabled:hover:bg-gray-200"
+					class="rounded-sm bg-uoft-blue px-2.5 py-1 text-xs font-medium text-white hover:bg-uoft-blue-80 disabled:opacity-50"
 				>
 					Save
 				</button>
-				<button onclick={cancelEdit} class="rounded-md bg-gray-100 px-3 py-1 text-sm text-gray-800 hover:bg-gray-200">
+				<button
+					type="button"
+					onclick={cancelEdit}
+					class="rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+				>
 					Cancel
 				</button>
 			{:else}
 				<button
+					type="button"
 					onclick={() => {
 						showModal = true;
 					}}
-					class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200"
+					class="rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
 				>
-					View Competitions
+					Competitions
 				</button>
 				<button
+					type="button"
 					onclick={startEdit}
-					class="rounded-md bg-yellow-100 px-3 py-1 text-sm text-yellow-800 hover:bg-yellow-200"
+					class="rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
 				>
 					Edit
 				</button>
 				<button
+					type="button"
 					onclick={() => onDelete(session.id)}
-					class="rounded-md bg-red-100 px-3 py-1 text-sm text-red-800 hover:bg-red-200"
+					class="rounded-sm border border-red-200 bg-white px-2.5 py-1 text-xs font-medium text-uoft-warm-red hover:bg-red-50"
 				>
 					Delete
 				</button>
@@ -109,45 +128,62 @@ const handleSave = () => {
 </div>
 
 {#if showModal}
-	<div
-		class="bg-opacity-50 backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
-		onclick={() => (showModal = false)}
-		onkeydown={(e) => e.key === "Escape" && (showModal = false)}
-		aria-label="Close modal"
-		role="button"
-		tabindex="0"
-	>
+	<Portal>
 		<div
-			class="w-full max-w-lg rounded-lg bg-white shadow-xl"
-			role="dialog"
-			aria-modal="true"
-			tabindex="0"
-			onclick={(e) => e.stopPropagation()}
+			class="fixed inset-0 z-50 flex h-full min-h-[100dvh] w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+			onclick={() => (showModal = false)}
 			onkeydown={(e) => e.key === "Escape" && (showModal = false)}
+			aria-label="Close modal"
+			role="button"
+			tabindex="0"
 		>
-			<div class="border-b border-gray-200 px-6 py-4">
-				<h3 class="text-lg font-semibold text-gray-900">{session.name}</h3>
-			</div>
-			<div class="px-6 py-2 text-gray-900">
-				<ul>
+			<div
+				class="w-full max-w-lg border border-gray-300 bg-white"
+				role="dialog"
+				aria-modal="true"
+				tabindex="0"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={(e) => e.key === "Escape" && (showModal = false)}
+			>
+				<div class="flex items-center justify-between border-b border-gray-200 bg-uoft-blue px-5 py-3 text-white">
+					<h3 class="text-base font-bold text-white">{session.name}</h3>
+					<button
+						type="button"
+						class="p-1 text-white/80 transition-colors hover:text-white"
+						onclick={() => (showModal = false)}
+						aria-label="Close"
+					>
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+				<div class="p-5 text-sm text-gray-900">
 					{#if competitionsLoading}
-						<LoadingScreen inline message="Loading Competitions" minHeight="0" />
+						<LoadingScreen inline message="Loading Competitions..." minHeight="5rem" />
+					{:else if sessionCompetitions.length > 0}
+						<ul class="divide-y divide-gray-100">
+							{#each sessionCompetitions as competition (competition.id)}
+								<li class="py-2 text-xs">
+									<span class="text-gray-700">{formatCompetitionDate(competition.date)}</span> —{" "}
+									<span class="font-medium text-gray-900">{competition.name}</span>
+								</li>
+							{/each}
+						</ul>
+					{:else}
+						<p class="text-xs text-gray-700">No competitions found for this session.</p>
 					{/if}
-					{#each sessionCompetitions as competition (competition.id)}
-						<li>
-							{formatCompetitionDate(competition.date)} - {competition.name}
-						</li>
-					{/each}
-				</ul>
-			</div>
-			<div class="flex justify-end border-t border-gray-200 px-6 py-4">
-				<button
-					class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
-					onclick={() => (showModal = false)}
-				>
-					Close
-				</button>
+				</div>
+				<div class="flex justify-end border-t border-gray-100 px-5 py-3">
+					<button
+						type="button"
+						class="rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+						onclick={() => (showModal = false)}
+					>
+						Close
+					</button>
+				</div>
 			</div>
 		</div>
-	</div>
+	</Portal>
 {/if}

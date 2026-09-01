@@ -43,6 +43,6 @@
 		"sort-keys": "off",
 		"max-params": "off",
 		"one-var": "off",
-		"prefer-object-spread": "off"
+		"no-map-spread": "off"
 	}
 }

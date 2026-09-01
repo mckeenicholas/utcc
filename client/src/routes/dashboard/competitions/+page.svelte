@@ -6,10 +6,11 @@ import DashboardHeader from "$lib/components/DashboardHeader.svelte";
 import DateForm from "$lib/components/DateForm.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
 import PaginationControls from "$lib/components/PaginationControls.svelte";
+import SelectMenu from "$lib/components/SelectMenu.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
 import authFetch from "$lib/authFetch";
 import { fetchSessions } from "$lib/competitionSessionService";
-import type { Competition, Paginated, Session } from "$lib/types";
+import { type Competition, type Paginated, type Session, studentDesignatorOptions } from "$lib/types";
 import { BASE_URL, PAGINATION_SIZE, checkLoginStatus, toInt } from "$lib/utils";
 
 let competitions: Competition[] = $state([]);
@@ -138,24 +139,28 @@ const createCompetition = async () => {
 
 <div class="min-h-screen py-8">
 	<div class="mx-auto max-w-4xl px-4">
-		<DashboardHeader title="Competitions" showBack />
+		<div class="mb-6">
+			<DashboardHeader title="Competitions" showBack />
+		</div>
 
-		<div class="mb-8 rounded-lg bg-white p-6 shadow-sm">
-			<h2 class="mb-4 text-xl font-semibold text-gray-800">Add New Competition</h2>
+		<div class="mb-6 border border-gray-200 bg-white p-6">
+			<h2 class="mb-4 text-base font-bold text-gray-900">Add New Competition</h2>
 			<div class="space-y-4">
 				<div>
-					<label for="new-comp-name" class="block text-sm font-medium text-gray-700">Competition Name</label>
+					<label for="new-comp-name" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+						>Competition Name</label
+					>
 					<input
 						id="new-comp-name"
 						placeholder="Enter competition name"
 						bind:value={newCompName}
-						class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+						class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 					/>
 				</div>
 				<div>
 					<DateForm bind:selectedDate />
 				</div>
-				<div class="mb-1 block text-sm font-medium text-gray-700">Academic Session</div>
+				<div class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase">Academic Session</div>
 				<SessionSelector
 					bind:value={createCompSession}
 					sessionData={allSessions}
@@ -163,22 +168,17 @@ const createCompetition = async () => {
 					class="mt-0"
 				/>
 				<div>
-					<label for="new-comp-designator" class="block text-sm font-medium text-gray-700">Student Designation</label>
-					<select
-						id="new-comp-designator"
-						bind:value={createCompDesignator}
-						class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+					<label for="new-comp-designator" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+						>Student Designation</label
 					>
-						<option value="UTSG">UTSG</option>
-						<option value="UTM">UTM</option>
-						<option value="UTSC">UTSC</option>
-						<option value="Non-UofT">Non-UofT</option>
-					</select>
+					<div class="mt-1">
+						<SelectMenu bind:value={createCompDesignator} options={studentDesignatorOptions} />
+					</div>
 				</div>
 				<button
 					onclick={createCompetition}
 					disabled={!newCompName || !selectedDate}
-					class="w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
+					class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
 				>
 					Create Competition
 				</button>
@@ -186,26 +186,28 @@ const createCompetition = async () => {
 		</div>
 
 		{#if loading}
-			<LoadingScreen message="Loading Competitions" inline />
+			<div class="border border-gray-200 bg-white p-12 text-center">
+				<LoadingScreen message="Loading Competitions..." inline minHeight="10rem" />
+			</div>
 		{:else}
-			<div class="mt-4 mb-8">
-				<div class="mb-4 flex items-center justify-between">
-					<h2 class="ms-2 text-2xl font-semibold text-gray-800">All Competitions</h2>
-					<SessionSelector bind:value={selectedSession} sessionData={allSessions} class="shadow-sm" />
+			<div class="mt-6 mb-8">
+				<div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
+					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">All Competitions</span>
+					<SessionSelector bind:value={selectedSession} sessionData={allSessions} />
 				</div>
 
 				{#if competitions.length === 0}
-					<div class="rounded-lg bg-white p-6 shadow-sm">
-						<p class="text-center text-gray-500">No competitions found for the selected filter.</p>
+					<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">
+						No competitions found for the selected filter.
 					</div>
 				{:else}
-					<div class="grid gap-4">
+					<div class="grid gap-3">
 						{#each competitions as competition (competition.id)}
 							<DashboardCompetitionCard {competition} onDeleteCompetition={deleteCompetition} />
 						{/each}
 					</div>
 					{#if totalPages > 1}
-						<div class="mt-4 rounded-md bg-white p-4 shadow-sm">
+						<div class="mt-4 border border-gray-200 bg-white p-4">
 							<PaginationControls
 								{currentPage}
 								{totalPages}

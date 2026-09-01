@@ -8,20 +8,22 @@ interface Props {
 let { value = $bindable(), leftLabel, rightLabel }: Props = $props();
 </script>
 
-<div class="inline-flex rounded-md border border-gray-200 bg-white">
+<div class="inline-flex rounded-sm border border-gray-200 bg-white">
 	<button
+		type="button"
 		onclick={() => (value = false)}
-		class="min-h-[40px] rounded-l-md border-r border-gray-200 px-4 py-2 text-sm font-medium transition-colors {!value
-			? 'bg-blue-600 text-white'
-			: 'bg-white transition-colors duration-100 ease-in-out hover:bg-gray-100'}"
+		class="h-[36px] rounded-l-sm border-r border-gray-200 px-3.5 text-xs font-semibold transition-colors {!value
+			? 'bg-uoft-blue text-white'
+			: 'bg-white text-gray-700 hover:bg-gray-50'}"
 	>
 		{leftLabel}
 	</button>
 	<button
+		type="button"
 		onclick={() => (value = true)}
-		class="min-h-[40px] rounded-r-md px-4 py-2 text-sm font-medium transition-colors {value
-			? 'bg-blue-600 text-white'
-			: 'bg-white transition-colors duration-100 ease-in-out hover:bg-gray-100'}"
+		class="h-[36px] rounded-r-sm px-3.5 text-xs font-semibold transition-colors {value
+			? 'bg-uoft-blue text-white'
+			: 'bg-white text-gray-700 hover:bg-gray-50'}"
 	>
 		{rightLabel}
 	</button>

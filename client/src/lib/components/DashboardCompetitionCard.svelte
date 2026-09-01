@@ -10,27 +10,39 @@ interface Props {
 const { competition, onDeleteCompetition = () => null }: Props = $props();
 </script>
 
-<div class="rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
-	<div class="flex items-center justify-between">
+<div class="border border-gray-200 bg-white p-4 transition-colors hover:border-uoft-blue">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div>
-			<h3 class="font-medium text-gray-900">{competition.name}</h3>
-			<p class="text-sm text-gray-500">
-				{competition.session && `${competition.session_name} - `}{formatCompetitionDate(competition.date)}
+			<a href="/dashboard/competitions/{competition.id}" class="transition-colors hover:text-uoft-blue">
+				<h3 class="text-sm font-bold text-gray-900">{competition.name}</h3>
+			</a>
+			<p class="text-xs text-gray-700">
+				{competition.session ? `${competition.session_name} • ` : ""}{formatCompetitionDate(competition.date)}
 			</p>
 		</div>
-		<div class="flex space-x-2">
-			<a href="/dashboard/competitions/{competition.id}/scrambles">
-				<div class="rounded-md bg-green-100 px-3 py-1 text-sm text-green-800 hover:bg-green-200">Manage Scrambles</div>
+		<div class="flex flex-wrap items-center gap-2">
+			<a
+				href="/dashboard/competitions/{competition.id}"
+				class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80"
+			>
+				Add Results
 			</a>
-			<a href="/dashboard/competitions/{competition.id}">
-				<div class="rounded-md bg-blue-100 px-3 py-1 text-sm text-blue-800 hover:bg-blue-200">Add Results</div>
+			<a
+				href="/dashboard/competitions/{competition.id}/scrambles"
+				class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+			>
+				Scrambles
 			</a>
-			<a href="/dashboard/competitions/{competition.id}/edit">
-				<div class="rounded-md bg-yellow-100 px-3 py-1 text-sm text-yellow-800 hover:bg-yellow-200">Edit Info</div>
+			<a
+				href="/dashboard/competitions/{competition.id}/edit"
+				class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+			>
+				Edit
 			</a>
 			<button
+				type="button"
 				onclick={() => onDeleteCompetition(competition.id)}
-				class="rounded-md bg-red-100 px-3 py-1 text-sm text-red-800 hover:bg-red-200"
+				class="cursor-pointer rounded-sm border border-red-200 bg-white px-2.5 py-1.5 text-xs font-medium text-uoft-warm-red transition-colors hover:bg-red-50"
 			>
 				Delete
 			</button>

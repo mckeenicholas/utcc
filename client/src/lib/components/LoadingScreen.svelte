@@ -5,24 +5,22 @@ interface Props {
 	minHeight?: string;
 }
 
-const { message, inline = false, minHeight = "20rem" }: Props = $props();
+const { message, inline = false, minHeight = "16rem" }: Props = $props();
 </script>
 
 {#if inline}
 	<div class="flex items-center justify-center py-8" style="min-height: {minHeight};">
-		<div class="space-y-4 text-center">
-			<p class="text-lg font-medium text-gray-700">{message}</p>
-			<div class="flex justify-center">
-				<div class="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
-			</div>
+		<div class="flex flex-col items-center justify-center gap-3 text-center">
+			<div class="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-uoft-blue"></div>
+			<p class="text-xs font-medium text-gray-700">{message}</p>
 		</div>
 	</div>
 {:else}
-	<div class="flex min-h-screen items-center justify-center">
-		<div class="w-full max-w-md space-y-4 rounded-lg bg-gray-100 p-6 text-center shadow-md">
-			<p class="text-lg font-medium">{message}</p>
-			<div class="flex justify-center">
-				<div class="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+	<div class="flex min-h-screen items-center justify-center px-4">
+		<div class="w-full max-w-sm border border-gray-200 bg-white p-8 text-center">
+			<div class="flex flex-col items-center justify-center gap-3">
+				<div class="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-uoft-blue"></div>
+				<p class="text-sm font-semibold text-gray-900">{message}</p>
 			</div>
 		</div>
 	</div>

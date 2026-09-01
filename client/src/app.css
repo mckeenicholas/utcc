@@ -1,9 +1,40 @@
 @import "tailwindcss";
+@import "./lib/icons.css";
+
+@theme {
+	--color-uoft-blue: #1e3765;
+	--color-uoft-blue-80: #4b5f84;
+	--color-secondary-cyan: #007fa3;
+	--color-secondary-cyan-80: #3399b5;
+	--color-secondary-cyan-50: #80bfd1;
+	--color-secondary-cyan-25: #bfdfe8;
+	--color-uoft-purple: #6d247a;
+	--color-uoft-warm-red: #dc4633;
+	--color-uoft-cool-gray: #d0d1c9;
+	--color-uoft-light-blue: #6fc7ea;
+	--color-uoft-teal: #00a189;
+	--color-uoft-magenta: #ab1368;
+	--color-uoft-forest: #0d534d;
+	--color-uoft-gold: #f1c500;
+	--color-uoft-lime: #8dbf2e;
+}
 
 html {
-	background-color: rgb(249 250 251);
+	background-color: #f9fafb;
+	color: #111827;
+	font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+::selection {
+	background-color: #1e3765;
+	color: #ffffff;
 }
 
 button {
 	cursor: pointer;
+}
+
+/* Ensure speedcubing figures always align vertically */
+.tabular-nums {
+	font-variant-numeric: tabular-nums;
 }

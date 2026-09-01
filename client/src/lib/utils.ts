@@ -211,3 +211,45 @@ export const formatScramble = (scrambleStr: string, event: WCAEvent) => {
 
 	return { lines, numLines: lines.length };
 };
+
+export const getDroppedIndices = (times: number[]): Set<number> => {
+	if (times.length !== 5) {
+		return new Set();
+	}
+	const nonZero = times.filter((t) => t !== 0);
+	if (nonZero.length < 5) {
+		return new Set();
+	}
+
+	const mapped = times.map((t, idx) => ({
+		idx,
+		val: t > 0 ? t : Infinity,
+	}));
+
+	let worstIdx = 0;
+	let maxVal = mapped[0].val;
+	for (let i = 1; i < mapped.length; i++) {
+		if (mapped[i].val > maxVal) {
+			maxVal = mapped[i].val;
+			worstIdx = i;
+		}
+	}
+
+	let bestIdx = -1;
+	let minVal = Infinity;
+	for (let i = 0; i < mapped.length; i++) {
+		if (i !== worstIdx && mapped[i].val < minVal) {
+			minVal = mapped[i].val;
+			bestIdx = i;
+		}
+	}
+
+	const result = new Set<number>();
+	if (worstIdx !== -1) {
+		result.add(worstIdx);
+	}
+	if (bestIdx !== -1) {
+		result.add(bestIdx);
+	}
+	return result;
+};

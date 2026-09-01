@@ -18,22 +18,28 @@ const recordType = $derived.by(() => {
 </script>
 
 {#if record}
-	<tr class="transition-colors duration-100 ease-in-out hover:bg-gray-100">
-		<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
+	<tr class="transition-colors hover:bg-gray-50/80">
+		<td class="px-4 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap text-gray-700 uppercase">
 			{recordType}
 		</td>
 
-		<td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">
-			<a href="/persons/{record.person}" class="hover:text-gray-400">{record.person_name}</a>
+		<td class="px-4 py-2.5 text-left text-sm font-medium whitespace-nowrap text-gray-900">
+			<a href="/persons/{record.person}" class="transition-colors hover:text-uoft-blue hover:underline">
+				{record.person_name}
+			</a>
 		</td>
-		<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
-			<a class="hover:text-gray-400" href="/competitions/{record.competition_id}"> {record.competition_name}</a>
+		<td class="px-4 py-2.5 text-left text-sm whitespace-nowrap text-gray-600">
+			<a class="transition-colors hover:text-uoft-blue hover:underline" href="/competitions/{record.competition_id}">
+				{record.competition_name}
+			</a>
 		</td>
-		<td class="px-6 py-4 text-center font-mono text-sm font-bold whitespace-nowrap text-gray-900">
+		<td class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap text-uoft-blue tabular-nums">
 			{renderTime(record.result)}
 		</td>
 		{#each record.times_list as time, timeIdx (timeIdx)}
-			<td class="hidden px-6 py-4 text-center font-mono text-sm whitespace-nowrap text-gray-700 md:table-cell">
+			<td
+				class="hidden px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap text-gray-600 tabular-nums md:table-cell"
+			>
 				{renderTime(time)}
 			</td>
 		{/each}

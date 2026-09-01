@@ -49,39 +49,46 @@ onMount(async () => {
 });
 </script>
 
-<div class="flex min-h-screen items-center justify-center">
-	<div class="w-full max-w-md space-y-4 rounded-lg bg-gray-100 p-6 shadow-md">
-		<p class="text-lg font-medium">UofT Rubik's Cube Club Login</p>
+<div class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
+	<div class="w-full max-w-sm space-y-5 border border-gray-200 bg-white p-8">
+		<div>
+			<h1 class="text-xl font-bold tracking-tight text-gray-900">Admin Sign In</h1>
+			<p class="mt-1 text-xs text-gray-700">Sign in to manage competitions, scrambles, and club results.</p>
+		</div>
 		{#if errrorMsg !== ""}
-			<p class="text-red-500">{errrorMsg}</p>
+			<div class="rounded-sm border border-red-200 bg-red-50 p-2.5 text-xs font-medium text-uoft-warm-red">
+				{errrorMsg}
+			</div>
 		{/if}
 		<div class="space-y-4">
 			<div>
-				<label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+				<label for="username" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">Username</label
+				>
 				<input
 					id="username"
 					bind:value={username}
 					onkeydown={(e) => handleKeydown(e, "password")}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+					class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 				/>
 			</div>
 			<div>
-				<label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+				<label for="password" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">Password</label
+				>
 				<input
 					type="password"
 					id="password"
 					bind:value={password}
 					onkeydown={(e) => handleKeydown(e, "login-button")}
-					class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+					class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 				/>
 			</div>
 			<button
 				id="login-button"
 				onclick={logIn}
 				onkeydown={(e) => handleKeydown(e)}
-				class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
+				class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
 			>
-				Log in
+				Sign In
 			</button>
 		</div>
 	</div>

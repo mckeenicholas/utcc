@@ -1,33 +1,34 @@
 <script lang="ts">
 import type { ClassValue } from "svelte/elements";
 import { Select } from "bits-ui";
-import type { Session } from "$lib/types";
+
+interface Option {
+	label: string;
+	value: string;
+}
 
 let {
 	value = $bindable(),
-	defaultMessage = "All sessions",
-	class: classProps,
-	sessionData,
+	options,
+	placeholder = "Select...",
+	class: classProps = "",
+	triggerClass = "",
 }: {
 	value: string;
-	defaultMessage?: string;
+	options: Option[];
+	placeholder?: string;
 	class?: ClassValue;
-	sessionData: Session[];
+	triggerClass?: string;
 } = $props();
 
-const sessions = $derived([
-	{ label: defaultMessage, value: "-1" },
-	...(sessionData?.map((s) => ({ label: s.name, value: s.id.toString() })) ?? []),
-]);
-
-const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.label : defaultMessage);
+const selectedLabel = $derived(options.find((o) => o.value === value)?.label ?? placeholder);
 </script>
 
-<div class="w-full sm:w-44">
-	<Select.Root items={sessions} bind:value type="single">
+<div class="relative w-full {classProps}">
+	<Select.Root items={options} bind:value type="single">
 		<Select.Trigger
-			class="flex h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-left text-xs font-medium text-gray-700 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none {classProps}"
-			aria-label="Select an event"
+			class="flex h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-left text-xs font-medium text-gray-700 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none {triggerClass}"
+			aria-label={placeholder}
 		>
 			<span class="truncate">{selectedLabel}</span>
 			<svg class="ml-2 h-3.5 w-3.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +41,7 @@ const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.
 				sideOffset={4}
 			>
 				<Select.Viewport class="p-1">
-					{#each sessions as option (option.value)}
+					{#each options as option (option.value)}
 						<Select.Item
 							class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-xs outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
 							value={option.value}

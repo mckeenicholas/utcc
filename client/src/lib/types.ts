@@ -17,6 +17,13 @@ export interface Competition {
 	student_designator: string;
 }
 
+export const studentDesignatorOptions = [
+	{ label: "UTSG", value: "UTSG" },
+	{ label: "UTM", value: "UTM" },
+	{ label: "UTSC", value: "UTSC" },
+	{ label: "Non-UofT", value: "Non-UofT" },
+];
+
 export type WCAEvent = keyof typeof eventNames;
 
 export const eventNames = {
@@ -145,9 +152,7 @@ export interface EventRecords {
 	average?: RecordInstance;
 }
 
-export interface RecordsApiResponse {
-	WCAEvent?: EventRecords;
-}
+export type RecordsApiResponse = Partial<Record<WCAEvent, EventRecords>>;
 
 export interface User {
 	id: number;

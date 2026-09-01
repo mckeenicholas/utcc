@@ -10,7 +10,17 @@
 }
 
 .cubing-icon {
+	display: inline-block;
+	font-family: "cubing-icons";
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
 	vertical-align: middle;
+	text-decoration: inherit;
+	text-transform: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .cubing-icon:before {
@@ -28,18 +38,23 @@
 	font-size: 1.3333333333333333em;
 	line-height: 0.75em;
 }
+
 .cubing-icon-2x {
 	font-size: 2em;
 }
+
 .cubing-icon-3x {
 	font-size: 3em;
 }
+
 .cubing-icon-4x {
 	font-size: 4em;
 }
+
 .cubing-icon-5x {
 	font-size: 5em;
 }
+
 .cubing-icon-fw {
 	width: 1.2857142857142858em;
 	text-align: center;
@@ -48,54 +63,71 @@
 .cubing-icon.event-222:before {
 	content: "\EA01";
 }
+
 .cubing-icon.event-333:before {
 	content: "\EA02";
 }
+
 .cubing-icon.event-333bf:before {
 	content: "\EA03";
 }
+
 .cubing-icon.event-333fm:before {
 	content: "\EA04";
 }
+
 .cubing-icon.event-333ft:before {
 	content: "\EA05";
 }
+
 .cubing-icon.event-333mbf:before {
 	content: "\EA06";
 }
+
 .cubing-icon.event-333oh:before {
 	content: "\EA08";
 }
+
 .cubing-icon.event-444:before {
 	content: "\EA09";
 }
+
 .cubing-icon.event-444bf:before {
 	content: "\EA0A";
 }
+
 .cubing-icon.event-555:before {
 	content: "\EA0B";
 }
+
 .cubing-icon.event-555bf:before {
 	content: "\EA0C";
 }
+
 .cubing-icon.event-666:before {
 	content: "\EA0D";
 }
+
 .cubing-icon.event-777:before {
 	content: "\EA0E";
 }
+
 .cubing-icon.event-clock:before {
 	content: "\EA0F";
 }
+
 .cubing-icon.event-minx:before {
 	content: "\EA11";
 }
+
 .cubing-icon.event-pyram:before {
 	content: "\EA13";
 }
+
 .cubing-icon.event-skewb:before {
 	content: "\EA14";
 }
+
 .cubing-icon.event-sq1:before {
 	content: "\EA15";
 }

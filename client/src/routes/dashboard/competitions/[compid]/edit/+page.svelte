@@ -4,10 +4,11 @@ import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import DateForm from "$lib/components/DateForm.svelte";
 import LoadingScreen from "$lib/components/LoadingScreen.svelte";
+import SelectMenu from "$lib/components/SelectMenu.svelte";
 import SessionSelector from "$lib/components/SessionSelector.svelte";
 import authFetch from "$lib/authFetch";
 import { fetchSessions } from "$lib/competitionSessionService";
-import type { Competition, Session } from "$lib/types";
+import { type Competition, type Session, studentDesignatorOptions } from "$lib/types";
 import { BASE_URL, checkLoginStatus, fetchJson, toInt } from "$lib/utils";
 
 const id = $page.params.compid;
@@ -87,58 +88,37 @@ const updateCompetitionData = async () => {
 {:else}
 	<div class="min-h-screen py-8">
 		<div class="mx-auto max-w-2xl px-4">
-			<div class="mb-8 flex items-center justify-between">
-				<div class="flex items-center space-x-4">
-					<a href="/dashboard/competitions">
-						<div
-							class="inline-flex items-center rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
-						>
-							<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-							</svg>
-							Back to Competitions
-						</div>
-					</a>
-					<h1 class="text-3xl font-bold text-gray-900">Edit Competition</h1>
-				</div>
+			<div class="mb-6 flex flex-col gap-2">
+				<a
+					href="/dashboard/competitions"
+					class="text-xs font-semibold text-uoft-blue transition-colors hover:text-uoft-blue-80"
+				>
+					&larr; Back to Competitions
+				</a>
+				<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Edit Competition</h1>
 			</div>
 
 			{#if currentErrorMessage}
-				<div class="mb-6 rounded-md border border-red-200 bg-red-50 p-4">
-					<div class="flex">
-						<div class="shrink-0">
-							<svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
-						</div>
-						<div class="ml-3">
-							<h3 class="text-sm font-medium text-red-800">Error</h3>
-							<div class="mt-2 text-sm text-red-700">
-								{currentErrorMessage}
-							</div>
-						</div>
-					</div>
+				<div class="mb-6 rounded-sm border border-red-200 bg-red-50 p-3 text-xs font-medium text-uoft-warm-red">
+					{currentErrorMessage}
 				</div>
 			{/if}
 
 			{#if competitionData}
-				<div class="rounded-lg bg-white p-6 shadow-sm">
-					<h2 class="mb-6 text-xl font-semibold text-gray-800">Competition Details</h2>
+				<div class="border border-gray-200 bg-white p-6">
+					<h2 class="mb-6 text-base font-bold text-gray-900">Competition Details</h2>
 
 					<div class="space-y-6">
 						<div>
-							<label for="compname" class="mb-2 block text-sm font-medium text-gray-700"> Competition Name </label>
+							<label for="compname" class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase">
+								Competition Name
+							</label>
 							<input
 								id="compname"
 								bind:value={competitionData.name}
 								type="text"
 								placeholder="Enter competition name"
-								class="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+								class="block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 							/>
 						</div>
 
@@ -147,44 +127,37 @@ const updateCompetitionData = async () => {
 						</div>
 
 						<div>
-							<div class="mb-2 block text-sm font-medium text-gray-700">Academic Session</div>
+							<div class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase">
+								Academic Session
+							</div>
 							<SessionSelector bind:value={selectedEditSession} sessionData={sessions} defaultMessage="No Session" />
 						</div>
 
 						<div>
-							<label for="comp-designator" class="mb-2 block text-sm font-medium text-gray-700"
+							<label
+								for="comp-designator"
+								class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase"
 								>Student Designation</label
 							>
-							<select
-								id="comp-designator"
-								bind:value={competitionData.student_designator}
-								class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
-							>
-								<option value="UTSG">UTSG</option>
-								<option value="UTM">UTM</option>
-								<option value="UTSC">UTSC</option>
-								<option value="Non-UofT">Non-UofT</option>
-							</select>
+							<div class="mt-1">
+								<SelectMenu bind:value={competitionData.student_designator} options={studentDesignatorOptions} />
+							</div>
 						</div>
 
 						<!-- Action Buttons -->
-						<div class="flex space-x-3 pt-4">
+						<div class="flex space-x-3 border-t border-gray-100 pt-4">
 							<button
 								onclick={updateCompetitionData}
-								class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none"
+								class="inline-flex items-center rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
 							>
-								<svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-								</svg>
 								Save Changes
 							</button>
 
-							<a href="/dashboard/competitions">
-								<div
-									class="inline-flex items-center rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
-								>
-									Cancel
-								</div>
+							<a
+								href="/dashboard/competitions"
+								class="inline-flex items-center rounded-sm border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none"
+							>
+								Cancel
 							</a>
 						</div>
 					</div>

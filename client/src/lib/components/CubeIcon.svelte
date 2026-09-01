@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { ClassValue } from "svelte/elements";
 import { Tooltip } from "bits-ui";
-import "../icons.css";
 import { type WCAEvent, eventNames } from "$lib/types";
 
 const { event, class: className }: { event: WCAEvent; class?: ClassValue } = $props();
@@ -9,11 +8,13 @@ const { event, class: className }: { event: WCAEvent; class?: ClassValue } = $pr
 
 <Tooltip.Provider>
 	<Tooltip.Root delayDuration={200}>
-		<Tooltip.Trigger class={className}>
-			<div class="icon cubing-icon event-{event}"></div>
+		<Tooltip.Trigger>
+			{#snippet child({ props })}
+				<span {...props} class="cubing-icon event-{event} {className}" aria-label={eventNames[event]}></span>
+			{/snippet}
 		</Tooltip.Trigger>
 		<Tooltip.Content>
-			<div class="rounded-md border border-gray-300 bg-white px-2 ease-in-out">
+			<div class="rounded-sm border border-gray-200 bg-white px-2 py-0.5 text-xs text-gray-700">
 				{eventNames[event]}
 			</div>
 		</Tooltip.Content>

@@ -104,17 +104,15 @@ const handleBlur = () => {
 			onfocus={handleFocus}
 			onblur={handleBlur}
 			onkeydown={handleKeyDown}
-			class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none"
+			class="w-full rounded-sm border border-gray-300 px-3 py-1.5 text-xs text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 			autocomplete="off"
 		/>
 	{/if}
 
 	{#if showDropdown && searchTerm.trim()}
-		<div
-			class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg"
-		>
+		<div class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-sm border border-gray-200 bg-white py-1">
 			{#if loading}
-				<div class="px-3 py-2 text-sm text-gray-500">Searching...</div>
+				<div class="px-3 py-2 text-sm text-gray-700">Searching...</div>
 			{:else if searchResults.length > 0}
 				{#each searchResults as user, index (user.id)}
 					<button
@@ -123,13 +121,15 @@ const handleBlur = () => {
 							onSelect(user);
 							showDropdown = false;
 						}}
-						class="w-full px-3 py-2 text-left hover:bg-gray-100 {selectedIndex === index ? 'bg-blue-100' : ''}"
+						class="w-full px-3 py-2 text-left hover:bg-gray-100 {selectedIndex === index
+							? 'bg-secondary-cyan-25 font-medium text-uoft-blue'
+							: ''}"
 					>
 						{user.name}
 					</button>
 				{/each}
 			{:else if searchTerm.trim()}
-				<div class="px-3 py-2 text-sm text-gray-500">No users found</div>
+				<div class="px-3 py-2 text-sm text-gray-700">No users found</div>
 			{/if}
 
 			{#if searchTerm.trim()}
@@ -152,16 +152,22 @@ const handleBlur = () => {
 
 	{#if value}
 		<div
-			class="mt-2 flex items-center justify-between rounded-md px-3 py-2 {isEditMode ? 'bg-blue-50' : 'bg-green-50'}"
+			class="mt-2 flex items-center justify-between rounded-sm border px-3 py-1.5 text-xs {isEditMode
+				? 'border-blue-200 bg-blue-50 text-uoft-blue'
+				: 'border-gray-200 bg-gray-50 text-gray-900'}"
 		>
-			<span class={isEditMode ? "text-blue-800" : "text-green-80"}>{isEditMode ? "Editing:" : ""} {value}</span>
+			<span class="truncate">
+				<span class="text-gray-700">{isEditMode ? "Editing: " : "Selected: "}</span>
+				<span class="font-semibold {isEditMode ? 'text-uoft-blue' : 'text-gray-900'}">{value}</span>
+			</span>
 			<button
 				type="button"
 				onclick={() => {
 					searchTerm = "";
 					onClear();
 				}}
-				class={isEditMode ? "text-blue-600 hover:text-blue-800" : "text-green-600 hover:text-green-800"}
+				class="ml-2 inline-flex h-4 w-4 shrink-0 items-center justify-center text-sm font-bold text-gray-400 transition-colors hover:text-gray-700"
+				aria-label="Clear selected competitor"
 			>
 				&times;
 			</button>

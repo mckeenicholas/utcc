@@ -42,29 +42,29 @@ const signOut = async () => {
 onMount(signOut);
 </script>
 
-<div class="flex min-h-screen items-center justify-center">
-	<div class="w-full max-w-md space-y-4 rounded-lg bg-gray-100 p-6 text-center shadow-md">
-		<p class="text-lg font-medium">UofT Rubik's Cube Club</p>
+<div class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
+	<div class="w-full max-w-sm space-y-4 border border-gray-200 bg-white p-8 text-center">
+		<h1 class="text-xl font-bold tracking-tight text-gray-900">U of T Cube Club</h1>
 
 		{#if isLoading}
-			<div class="space-y-2">
-				<p class="text-gray-600">Signing you out...</p>
+			<div class="space-y-3">
 				<div class="flex justify-center">
-					<div class="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+					<div class="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-uoft-blue"></div>
 				</div>
+				<p class="text-xs text-gray-700">Signing you out...</p>
 			</div>
 		{/if}
 
 		{#if errorMsg !== ""}
-			<p class="text-red-500">{errorMsg}</p>
+			<p class="text-xs text-uoft-warm-red">{errorMsg}</p>
 		{/if}
 
 		{#if showFallback}
-			<div class="space-y-3">
-				<p class="text-gray-600">You have been signed out.</p>
+			<div class="space-y-4">
+				<p class="text-xs text-gray-700">You have been signed out.</p>
 				<a href="/dashboard/signin">
 					<div
-						class="w-full rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
+						class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-center text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80"
 					>
 						Return to Login
 					</div>

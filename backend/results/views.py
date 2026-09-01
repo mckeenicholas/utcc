@@ -8,6 +8,7 @@ from django.db import IntegrityError
 from django.db.models import F, OuterRef, Subquery, Window
 from django.db.models.functions import Rank, RowNumber
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,6 +24,7 @@ from .serializers import (
     RecordDetailSerializer,
     ResultCreateUpdateSerializer,
 )
+from .utils import is_falsy_param, is_truthy_param
 
 
 class CompetitionSessionViewSet(viewsets.ModelViewSet):
@@ -61,12 +63,22 @@ class CompetitionViewSet(viewsets.ModelViewSet):
         session_id = self.request.query_params.get("session_id")
         student_designators = self.request.query_params.getlist("student_designator")
         ordering = self.request.query_params.get("ordering")
+        upcoming = self.request.query_params.get("upcoming")
 
         if session_id is not None:
             queryset = queryset.filter(session__id=session_id)
 
         if student_designators:
             queryset = queryset.filter(student_designator__in=student_designators)
+
+        if is_truthy_param(upcoming):
+            queryset = queryset.filter(date__gte=timezone.localdate())
+            if not ordering:
+                queryset = queryset.order_by("date")
+        elif is_falsy_param(upcoming):
+            queryset = queryset.filter(date__lt=timezone.localdate())
+            if not ordering:
+                queryset = queryset.order_by("-date")
 
         if ordering and ordering in [
             "date",
@@ -265,7 +277,7 @@ class RankingsAPIView(APIView):
 
         event = request.query_params.get("event")
         result_format = request.query_params.get("type")  # 'single' or 'average'
-        all_results = request.query_params.get("all", "false").lower() == "true"
+        all_results = is_truthy_param(request.query_params.get("all"))
         page = int(request.query_params.get("page", 1))
 
         if not event:
