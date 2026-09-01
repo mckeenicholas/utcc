@@ -140,9 +140,6 @@ $effect(() => {
 													</span>
 												{/if}
 											</div>
-											{#if trimResults}
-												<span class="text-xs text-gray-700">Tap for solve splits</span>
-											{/if}
 										</td>
 
 										<!-- Solves 1 to 5 (hidden on mobile) -->
@@ -271,9 +268,6 @@ $effect(() => {
 											{renderTime(time)}
 										{/if}
 									</div>
-									{#if isDropped}
-										<div class="text-[9px] font-medium text-gray-700">dropped</div>
-									{/if}
 								</div>
 							{/each}
 						</div>

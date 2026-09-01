@@ -4,7 +4,7 @@ const currentYear = new Date().getFullYear();
 
 <footer class="mt-auto border-t border-gray-200 bg-white">
 	<div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-10">
-		<div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+		<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4">
 			<!-- Col 1: Brand & Identity -->
 			<div class="flex flex-col gap-4">
 				<a href="/" class="flex items-center gap-2.5">
@@ -17,43 +17,45 @@ const currentYear = new Date().getFullYear();
 				</a>
 			</div>
 
-			<div>
-				<ul class="mt-4 flex flex-col gap-2.5">
-					<li>
-						<a href="/results" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue">
-							Official Results
-						</a>
-					</li>
-					<li>
-						<a href="/records" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue"> Club Records </a>
-					</li>
-				</ul>
-			</div>
+			<div class="flex flex-col gap-2.5 sm:contents">
+				<div>
+					<ul class="flex flex-col gap-2.5 sm:mt-4">
+						<li>
+							<a href="/results" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue">
+								Official Results
+							</a>
+						</li>
+						<li>
+							<a href="/records" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue"> Club Records </a>
+						</li>
+					</ul>
+				</div>
 
-			<div>
-				<ul class="mt-4 flex flex-col gap-2.5">
-					<li>
-						<a href="/rankings" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue"> Rankings </a>
-					</li>
-					<li>
-						<a href="/competitions" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue">
-							Competitions
-						</a>
-					</li>
-				</ul>
-			</div>
+				<div>
+					<ul class="flex flex-col gap-2.5 sm:mt-4">
+						<li>
+							<a href="/rankings" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue"> Rankings </a>
+						</li>
+						<li>
+							<a href="/competitions" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue">
+								Competitions
+							</a>
+						</li>
+					</ul>
+				</div>
 
-			<div>
-				<ul class="mt-4 flex flex-col gap-2.5">
-					<li>
-						<a href="/persons" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue"> Competitors </a>
-					</li>
-					<li>
-						<a href="/dashboard/signin" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue">
-							Sign In
-						</a>
-					</li>
-				</ul>
+				<div>
+					<ul class="flex flex-col gap-2.5 sm:mt-4">
+						<li>
+							<a href="/persons" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue"> Competitors </a>
+						</li>
+						<li>
+							<a href="/dashboard/signin" class="text-xs text-gray-600 transition-colors hover:text-uoft-blue">
+								Sign In
+							</a>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 
