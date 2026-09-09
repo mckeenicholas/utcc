@@ -30,7 +30,7 @@ const selectedLabel = $derived.by(() => {
 	<button
 		type="button"
 		onclick={() => (isOpen = !isOpen)}
-		class="flex h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-left text-xs font-medium text-gray-700 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+		class="flex h-9 w-full cursor-pointer items-center justify-between rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-left text-xs font-medium text-gray-700 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 	>
 		<span class="truncate">{selectedLabel}</span>
 		<svg

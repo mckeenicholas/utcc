@@ -52,7 +52,7 @@ const handleSubmit = async () => {
 			<button
 				onclick={handleSubmit}
 				disabled={isSubmitting || !newUserName.trim()}
-				class="h-[36px] rounded-sm bg-uoft-blue px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
+				class="h-9 rounded-sm bg-uoft-blue px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
 			>
 				{isSubmitting ? "Adding..." : "Add User"}
 			</button>

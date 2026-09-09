@@ -26,7 +26,7 @@ const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.
 <div class="w-full sm:w-44">
 	<Select.Root items={sessions} bind:value type="single">
 		<Select.Trigger
-			class="flex h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-left text-xs font-medium text-gray-700 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none {classProps}"
+			class="flex h-9 w-full cursor-pointer items-center justify-between rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-left text-xs font-medium text-gray-700 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none {classProps}"
 			aria-label="Select an event"
 		>
 			<span class="truncate">{selectedLabel}</span>
@@ -36,13 +36,13 @@ const selectedLabel = $derived(value ? sessions.find((s) => s.value === value)?.
 		</Select.Trigger>
 		<Select.Portal>
 			<Select.Content
-				class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-[var(--bits-select-anchor-width)] min-w-[var(--bits-select-anchor-width)] overflow-hidden border border-gray-200 bg-white py-1"
+				class="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-50 max-h-96 w-(--bits-select-anchor-width) min-w-(--bits-select-anchor-width) overflow-hidden border border-gray-200 bg-white py-1"
 				sideOffset={4}
 			>
 				<Select.Viewport class="p-1">
 					{#each sessions as option (option.value)}
 						<Select.Item
-							class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-xs outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-gray-100"
+							class="relative flex w-full cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-xs outline-none select-none hover:bg-gray-100 focus:bg-gray-100 data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-gray-100"
 							value={option.value}
 							label={option.label}
 						>

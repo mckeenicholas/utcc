@@ -47,7 +47,7 @@ const handleSave = () => {
 							<input
 								bind:value={editUserName}
 								onkeydown={(e) => e.key === "Enter" && handleSave()}
-								class="h-[36px] rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+								class="h-9 rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 							/>
 							<div class="w-32">
 								<SelectMenu bind:value={editUserStudentStatus} options={studentDesignatorOptions} />

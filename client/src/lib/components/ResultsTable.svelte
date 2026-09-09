@@ -157,7 +157,7 @@ const convertToResult = (
 												{renderTime(personResult.single)}
 											</td>
 											<td
-												class="bg-uoft-blue/[0.04] px-4 py-2 text-right font-mono text-sm font-bold text-uoft-blue tabular-nums"
+												class="bg-uoft-blue/4 px-4 py-2 text-right font-mono text-sm font-bold text-uoft-blue tabular-nums"
 											>
 												{renderTime(personResult.average)}
 											</td>

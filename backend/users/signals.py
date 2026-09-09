@@ -30,7 +30,7 @@ def log_user_login_failed(sender, credentials, request, **kwargs):
 def log_person_save(sender, instance, created, **kwargs):
     action = "created" if created else "updated"
     logger.info(
-        f"Person {action}: id={instance.id}, name='{instance.name}', student_designator='{instance.student_designator}'"
+        f"Person {action}: id={instance.id}, name='{instance.name}', student_designator='{instance.student_designator}'",
     )
 
 

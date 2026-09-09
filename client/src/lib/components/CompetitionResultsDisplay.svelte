@@ -210,7 +210,7 @@ $effect(() => {
 	{@const droppedIndices = getDroppedIndices(selectedPerson.times)}
 	<Portal>
 		<div
-			class="fixed inset-0 z-50 flex h-full min-h-[100dvh] w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+			class="fixed inset-0 z-50 flex h-full min-h-dvh w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
 			onclick={() => (showModal = false)}
 			onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 			aria-label="Close modal"
@@ -249,7 +249,7 @@ $effect(() => {
 				<div class="space-y-4 p-5">
 					<!-- Solves breakdown -->
 					<div>
-						<h4 class="mb-2 text-xs font-semibold tracking-wider text-gray-700 uppercase">Individual Solves</h4>
+						<h4 class="mb-2 text-xs font-semibold tracking-wider text-gray-700 uppercase">Solves</h4>
 						<div class="grid grid-cols-5 gap-1.5">
 							{#each selectedPerson.times as time, idx (idx)}
 								{@const isDropped = droppedIndices.has(idx)}

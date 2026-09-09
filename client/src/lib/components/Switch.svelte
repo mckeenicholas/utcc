@@ -14,10 +14,10 @@ let {
 	<Switch.Root
 		bind:checked
 		{id}
-		class="peer inline-flex h-[22px] min-h-[22px] w-[44px] shrink-0 cursor-pointer items-center rounded-full px-[2px] transition-colors focus-visible:ring-2 focus-visible:ring-uoft-blue focus-visible:ring-offset-1 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-uoft-blue data-[state=unchecked]:bg-gray-200"
+		class="peer inline-flex h-5.5 min-h-5.5 w-11 shrink-0 cursor-pointer items-center rounded-full px-0.5 transition-colors focus-visible:ring-2 focus-visible:ring-uoft-blue focus-visible:ring-offset-1 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-uoft-blue data-[state=unchecked]:bg-gray-200"
 	>
 		<Switch.Thumb
-			class="pointer-events-none block size-[18px] shrink-0 rounded-full bg-white transition-transform data-[state=checked]:translate-x-[22px] data-[state=unchecked]:translate-x-0"
+			class="pointer-events-none block size-4.5 shrink-0 rounded-full bg-white transition-transform data-[state=checked]:translate-x-5.5 data-[state=unchecked]:translate-x-0"
 		/>
 	</Switch.Root>
 	<Label.Root for={id} class="cursor-pointer text-xs font-medium text-gray-700 select-none">{label}</Label.Root>

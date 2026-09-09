@@ -17,7 +17,7 @@ COPY . .
 
 RUN bun run build
 
-FROM nginx:1.27.4-alpine AS runner
+FROM nginx:1.31.5-alpine AS runner
 
 COPY --from=build /app/build /etc/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf

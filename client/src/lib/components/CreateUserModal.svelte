@@ -53,7 +53,7 @@ $effect(() => {
 {#if show}
 	<Portal>
 		<div
-			class="fixed inset-0 z-50 flex h-full min-h-[100dvh] w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+			class="fixed inset-0 z-50 flex h-full min-h-dvh w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
 			onclick={onClose}
 			onkeydown={(e) => e.key === "Escape" && onClose()}
 			aria-label="Close modal"

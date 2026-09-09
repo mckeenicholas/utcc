@@ -12,7 +12,7 @@ let { value = $bindable(), leftLabel, rightLabel }: Props = $props();
 	<button
 		type="button"
 		onclick={() => (value = false)}
-		class="h-[36px] rounded-l-sm border-r border-gray-200 px-3.5 text-xs font-semibold transition-colors {!value
+		class="h-9 rounded-l-sm border-r border-gray-200 px-3.5 text-xs font-semibold transition-colors {!value
 			? 'bg-uoft-blue text-white'
 			: 'bg-white text-gray-700 hover:bg-gray-50'}"
 	>
@@ -21,7 +21,7 @@ let { value = $bindable(), leftLabel, rightLabel }: Props = $props();
 	<button
 		type="button"
 		onclick={() => (value = true)}
-		class="h-[36px] rounded-r-sm px-3.5 text-xs font-semibold transition-colors {value
+		class="h-9 rounded-r-sm px-3.5 text-xs font-semibold transition-colors {value
 			? 'bg-uoft-blue text-white'
 			: 'bg-white text-gray-700 hover:bg-gray-50'}"
 	>

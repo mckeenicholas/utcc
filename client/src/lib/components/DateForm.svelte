@@ -22,7 +22,7 @@ let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: 
 			</DatePicker.Label>
 		{/if}
 		<DatePicker.Input
-			class="flex h-[36px] w-full items-center rounded-sm border border-gray-300 py-1 ps-3 pe-1 text-xs focus-within:border-uoft-blue focus-within:ring-1 focus-within:ring-uoft-blue hover:border-gray-400"
+			class="flex h-9 w-full items-center rounded-sm border border-gray-300 py-1 ps-3 pe-1 text-xs focus-within:border-uoft-blue focus-within:ring-1 focus-within:ring-uoft-blue hover:border-gray-400"
 		>
 			{#snippet children({ segments })}
 				{#each segments as { part, value }, i (part + i)}

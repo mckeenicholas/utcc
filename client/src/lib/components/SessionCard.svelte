@@ -69,7 +69,7 @@ const handleSave = () => {
 						<input
 							bind:value={editSessionName}
 							onkeydown={(e) => e.key === "Enter" && handleSave()}
-							class="h-[36px] rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+							class="h-9 rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
 						/>
 						<div class="w-40">
 							<DateForm bind:selectedDate={editSessionDate} label="" />
@@ -130,7 +130,7 @@ const handleSave = () => {
 {#if showModal}
 	<Portal>
 		<div
-			class="fixed inset-0 z-50 flex h-full min-h-[100dvh] w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
+			class="fixed inset-0 z-50 flex h-full min-h-dvh w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
 			onclick={() => (showModal = false)}
 			onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 			aria-label="Close modal"

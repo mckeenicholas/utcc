@@ -23,7 +23,7 @@ def log_session_delete(sender, instance, **kwargs):
 def log_competition_save(sender, instance, created, **kwargs):
     action = "created" if created else "updated"
     logger.info(
-        f"Competition {action}: id={instance.id}, name='{instance.name}', date={instance.date}, student_designator='{instance.student_designator}'"
+        f"Competition {action}: id={instance.id}, name='{instance.name}', date={instance.date}, student_designator='{instance.student_designator}'",
     )
 
 
@@ -38,7 +38,7 @@ def log_result_save(sender, instance, created, **kwargs):
     logger.info(
         f"Result {action}: id={instance.id}, person_id={instance.person_id}, "
         f"competition_id={instance.competition_id}, event='{instance.event}', "
-        f"round='{instance.round}', single={instance.single}, average={instance.average}"
+        f"round='{instance.round}', single={instance.single}, average={instance.average}",
     )
 
 
@@ -46,5 +46,5 @@ def log_result_save(sender, instance, created, **kwargs):
 def log_result_delete(sender, instance, **kwargs):
     logger.info(
         f"Result deleted: id={instance.id}, person_id={instance.person_id}, "
-        f"competition_id={instance.competition_id}, event='{instance.event}', round='{instance.round}'"
+        f"competition_id={instance.competition_id}, event='{instance.event}', round='{instance.round}'",
     )

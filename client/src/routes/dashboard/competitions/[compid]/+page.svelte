@@ -209,7 +209,7 @@ const resetFormTimes = () => {
 </script>
 
 <div class="min-h-screen py-8">
-	<div class="mx-auto max-w-[1500px] px-4">
+	<div class="mx-auto max-w-375 px-4">
 		<PageHeader
 			competition={competitionResults?.competition ?? null}
 			backText="Back to competitions"
