@@ -10,26 +10,26 @@ const { user }: Props = $props();
 
 <a href="/persons/{user.id}" class="group block">
 	<div
-		class="flex w-full cursor-pointer items-center justify-between border border-gray-200 bg-white p-3 transition-colors hover:border-uoft-blue"
+		class="flex w-full cursor-pointer items-center justify-between border border-border bg-surface p-3 transition-colors hover:border-brand"
 	>
 		<div class="flex min-w-0 items-center gap-3">
 			<div
-				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-xs font-bold text-uoft-blue transition-colors group-hover:bg-uoft-blue group-hover:text-white"
+				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-surface-muted text-xs font-bold text-brand transition-colors group-hover:bg-uoft-blue group-hover:text-white"
 			>
 				{user.name.charAt(0).toUpperCase()}
 			</div>
 			<div class="truncate">
-				<p class="truncate text-sm font-medium text-gray-900 transition-colors group-hover:text-uoft-blue">
+				<p class="truncate text-sm font-medium text-main transition-colors group-hover:text-brand">
 					{user.name}
 				</p>
 				{#if user.student_designator}
-					<span class="rounded-sm bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 uppercase">
+					<span class="rounded-sm bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-secondary uppercase">
 						{user.student_designator}
 					</span>
 				{/if}
 			</div>
 		</div>
 
-		<span class="text-xs text-gray-400 transition-colors group-hover:text-uoft-blue">&rarr;</span>
+		<span class="text-xs text-muted transition-colors group-hover:text-brand">&rarr;</span>
 	</div>
 </a>

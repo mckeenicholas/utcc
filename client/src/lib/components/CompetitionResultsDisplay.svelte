@@ -44,10 +44,10 @@ $effect(() => {
 	{#each sortedResults as { event, rounds } (event)}
 		<section id="event-{event}" class="scroll-mt-24 space-y-4">
 			{#each rounds as { round, results }, roundIndex (round)}
-				<div class="overflow-hidden border border-gray-200 bg-white">
+				<div class="overflow-hidden border border-border bg-surface">
 					<!-- Flat Institutional Header Banner -->
 					<div
-						class="flex items-center justify-between border-b border-gray-200 bg-uoft-blue px-4 py-2.5 text-white sm:px-5"
+						class="flex items-center justify-between border-b border-border bg-uoft-blue px-4 py-2.5 text-white sm:px-5"
 					>
 						<div class="flex items-center gap-2.5">
 							<div class="flex h-7 w-7 items-center justify-center rounded-sm bg-white/15 text-white">
@@ -64,36 +64,38 @@ $effect(() => {
 
 					<!-- Results Table -->
 					<div class="overflow-x-auto">
-						<table class="min-w-full divide-y divide-gray-200">
-							<thead class="bg-gray-50">
+						<table class="min-w-full divide-y divide-border">
+							<thead class="bg-surface-subtle">
 								<tr>
-									<th class="w-12 px-3 py-2.5 text-center text-xs font-semibold tracking-wider text-gray-700 uppercase">
+									<th
+										class="w-12 px-3 py-2.5 text-center text-xs font-semibold tracking-wider text-secondary uppercase"
+									>
 										#
 									</th>
-									<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase">
+									<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase">
 										Name
 									</th>
 									{#each Array.from({ length: eventSolves[event]! }).keys() as idx (idx)}
 										<th
-											class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase"
+											class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
 											class:hidden={trimResults}
 										>
 											Solve {idx + 1}
 										</th>
 									{/each}
-									<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase">
+									<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase">
 										Best
 									</th>
-									<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-uoft-blue uppercase">
+									<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-brand uppercase">
 										{getMeanType(event)}
 									</th>
 								</tr>
 							</thead>
-							<tbody class="divide-y divide-gray-100 bg-white">
+							<tbody class="divide-y divide-border bg-surface">
 								{#each results as roundPerson, index (roundPerson.id ?? index)}
 									{@const droppedIndices = getDroppedIndices(roundPerson.times)}
 									<tr
-										class="transition-colors hover:bg-gray-50/80"
+										class="transition-colors hover:bg-surface-muted"
 										class:cursor-pointer={trimResults}
 										onclick={(e) => {
 											if (!trimResults) {
@@ -113,13 +115,13 @@ $effect(() => {
 											class="w-12 px-3 py-2.5 text-center font-mono text-xs font-semibold whitespace-nowrap tabular-nums"
 										>
 											{#if index === 0}
-												<span class="font-bold text-amber-600">1</span>
+												<span class="font-bold text-amber-600 dark:text-amber-400">1</span>
 											{:else if index === 1}
-												<span class="font-bold text-gray-700">2</span>
+												<span class="font-bold text-secondary">2</span>
 											{:else if index === 2}
-												<span class="font-bold text-amber-800">3</span>
+												<span class="font-bold text-amber-800 dark:text-amber-500">3</span>
 											{:else}
-												<span class="font-medium text-gray-700">{index + 1}</span>
+												<span class="font-medium text-secondary">{index + 1}</span>
 											{/if}
 										</td>
 
@@ -128,13 +130,13 @@ $effect(() => {
 											<div class="flex items-center gap-2">
 												<a
 													href="/persons/{roundPerson.person}"
-													class="font-medium text-gray-900 transition-colors hover:text-uoft-blue hover:underline"
+													class="font-medium text-main transition-colors hover:text-brand hover:underline"
 												>
 													{roundPerson.person_name}
 												</a>
 												{#if "student_designator" in roundPerson && roundPerson.student_designator}
 													<span
-														class="rounded-sm bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 uppercase"
+														class="rounded-sm bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-secondary uppercase"
 													>
 														{roundPerson.student_designator}
 													</span>
@@ -151,15 +153,15 @@ $effect(() => {
 												class:hidden={trimResults}
 											>
 												{#if isDropped}
-													<span class="font-normal text-gray-700">
+													<span class="font-normal text-muted">
 														({renderTime(time)})
 													</span>
 												{:else if isDNF}
-													<span class="font-semibold text-uoft-warm-red">
+													<span class="font-semibold text-uoft-warm-red dark:text-red-400">
 														{renderTime(time)}
 													</span>
 												{:else}
-													<span class="text-gray-700">
+													<span class="text-secondary">
 														{renderTime(time)}
 													</span>
 												{/if}
@@ -168,14 +170,14 @@ $effect(() => {
 
 										<!-- Best Single -->
 										<td
-											class="px-4 py-2.5 text-right font-mono text-sm font-semibold whitespace-nowrap text-gray-900 tabular-nums"
+											class="px-4 py-2.5 text-right font-mono text-sm font-semibold whitespace-nowrap text-main tabular-nums"
 										>
 											{renderTime(roundPerson.single)}
 										</td>
 
 										<!-- Average / Mean -->
 										<td
-											class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap text-uoft-blue tabular-nums"
+											class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap text-brand tabular-nums"
 										>
 											{renderTime(roundPerson.average)}
 										</td>
@@ -188,8 +190,8 @@ $effect(() => {
 			{/each}
 		</section>
 	{:else}
-		<div class="border border-gray-200 bg-white p-12 text-center">
-			<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-gray-100 text-uoft-blue">
+		<div class="border border-border bg-surface p-12 text-center">
+			<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-surface-muted text-brand">
 				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						stroke-linecap="round"
@@ -199,8 +201,8 @@ $effect(() => {
 					/>
 				</svg>
 			</div>
-			<h3 class="mt-3 text-base font-bold text-gray-900">No Results Found</h3>
-			<p class="mt-1 text-xs text-gray-700">Results for the selected filter or round have not been recorded yet.</p>
+			<h3 class="mt-3 text-base font-bold text-main">No Results Found</h3>
+			<p class="mt-1 text-xs text-secondary">Results for the selected filter or round have not been recorded yet.</p>
 		</div>
 	{/each}
 </div>
@@ -218,7 +220,7 @@ $effect(() => {
 			tabindex="0"
 		>
 			<div
-				class="w-full max-w-md overflow-hidden border border-gray-300 bg-white"
+				class="w-full max-w-md overflow-hidden border border-border-strong bg-surface"
 				role="dialog"
 				aria-modal="true"
 				tabindex="0"
@@ -226,7 +228,7 @@ $effect(() => {
 				onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 			>
 				<!-- Modal Header in U of T Blue -->
-				<div class="flex items-center justify-between border-b border-gray-200 bg-uoft-blue px-5 py-3 text-white">
+				<div class="flex items-center justify-between border-b border-border bg-uoft-blue px-5 py-3 text-white">
 					<div>
 						<h3 class="text-base font-bold text-white">{selectedPerson.person_name}</h3>
 						<p class="text-xs text-blue-200">
@@ -249,18 +251,19 @@ $effect(() => {
 				<div class="space-y-4 p-5">
 					<!-- Solves breakdown -->
 					<div>
-						<h4 class="mb-2 text-xs font-semibold tracking-wider text-gray-700 uppercase">Solves</h4>
+						<h4 class="mb-2 text-xs font-semibold tracking-wider text-secondary uppercase">Solves</h4>
 						<div class="grid grid-cols-5 gap-1.5">
 							{#each selectedPerson.times as time, idx (idx)}
 								{@const isDropped = droppedIndices.has(idx)}
 								{@const isDNF = time < 0}
-								<div class="border border-gray-200 bg-gray-50 p-2 text-center">
-									<div class="text-[10px] font-semibold text-gray-700">S{idx + 1}</div>
+								<div class="border border-border bg-surface-subtle p-2 text-center">
+									<div class="text-[10px] font-semibold text-secondary">S{idx + 1}</div>
 									<div
 										class="mt-0.5 font-mono text-xs font-bold tabular-nums"
-										class:text-gray-700={isDropped}
+										class:text-muted={isDropped}
 										class:text-uoft-warm-red={isDNF}
-										class:text-gray-900={!isDropped && !isDNF}
+										class:dark:text-red-400={isDNF}
+										class:text-main={!isDropped && !isDNF}
 									>
 										{#if isDropped}
 											({renderTime(time)})
@@ -274,28 +277,28 @@ $effect(() => {
 					</div>
 
 					<!-- Summary metrics -->
-					<div class="grid grid-cols-2 gap-3 border border-gray-200 bg-gray-50 p-3">
+					<div class="grid grid-cols-2 gap-3 border border-border bg-surface-subtle p-3">
 						<div>
-							<div class="text-xs text-gray-600">Best Single</div>
-							<div class="mt-0.5 font-mono text-lg font-bold text-gray-900 tabular-nums">
+							<div class="text-xs text-secondary">Best Single</div>
+							<div class="mt-0.5 font-mono text-lg font-bold text-main tabular-nums">
 								{renderTime(selectedPerson.single)}
 							</div>
 						</div>
 						<div>
-							<div class="text-xs text-uoft-blue">{getMeanType(selectedEvent)}</div>
-							<div class="mt-0.5 font-mono text-lg font-bold text-uoft-blue tabular-nums">
+							<div class="text-xs text-brand">{getMeanType(selectedEvent)}</div>
+							<div class="mt-0.5 font-mono text-lg font-bold text-brand tabular-nums">
 								{renderTime(selectedPerson.average)}
 							</div>
 						</div>
 					</div>
 
 					<div class="flex items-center justify-between pt-2">
-						<a href="/persons/{selectedPerson.person}" class="text-xs font-medium text-uoft-blue hover:underline">
+						<a href="/persons/{selectedPerson.person}" class="text-xs font-medium text-brand hover:underline">
 							View Competitor Profile →
 						</a>
 						<button
 							type="button"
-							class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
+							class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none dark:border dark:border-blue-500/30"
 							onclick={() => (showModal = false)}
 						>
 							Close

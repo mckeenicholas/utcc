@@ -50,43 +50,47 @@ onMount(async () => {
 </script>
 
 <div class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
-	<div class="w-full max-w-sm space-y-5 border border-gray-200 bg-white p-8">
+	<div class="w-full max-w-sm space-y-5 border border-border bg-surface p-8">
 		<div>
-			<h1 class="text-xl font-bold tracking-tight text-gray-900">Admin Sign In</h1>
-			<p class="mt-1 text-xs text-gray-700">Sign in to manage competitions, scrambles, and club results.</p>
+			<h1 class="text-xl font-bold tracking-tight text-main">Admin Sign In</h1>
+			<p class="mt-1 text-xs text-secondary">Sign in to manage competitions, scrambles, and club results.</p>
 		</div>
 		{#if errrorMsg !== ""}
-			<div class="rounded-sm border border-red-200 bg-red-50 p-2.5 text-xs font-medium text-uoft-warm-red">
+			<div
+				class="rounded-sm border border-red-200 bg-red-50 p-2.5 text-xs font-medium text-uoft-warm-red dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-400"
+			>
 				{errrorMsg}
 			</div>
 		{/if}
 		<div class="space-y-4">
 			<div>
-				<label for="username" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">Username</label
+				<label for="username" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
+					>Username</label
 				>
 				<input
 					id="username"
 					bind:value={username}
 					onkeydown={(e) => handleKeydown(e, "password")}
-					class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+					class="mt-1 block w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none dark:focus:border-blue-400 dark:focus:ring-blue-400"
 				/>
 			</div>
 			<div>
-				<label for="password" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">Password</label
+				<label for="password" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
+					>Password</label
 				>
 				<input
 					type="password"
 					id="password"
 					bind:value={password}
 					onkeydown={(e) => handleKeydown(e, "login-button")}
-					class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+					class="mt-1 block w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none dark:focus:border-blue-400 dark:focus:ring-blue-400"
 				/>
 			</div>
 			<button
 				id="login-button"
 				onclick={logIn}
 				onkeydown={(e) => handleKeydown(e)}
-				class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
+				class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 			>
 				Sign In
 			</button>

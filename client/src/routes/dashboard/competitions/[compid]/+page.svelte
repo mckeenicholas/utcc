@@ -219,21 +219,21 @@ const resetFormTimes = () => {
 
 		<div class="grid grid-cols-1 gap-8 lg:grid-cols-4">
 			<div class="lg:col-span-1">
-				<div class="border border-gray-200 bg-white p-5">
-					<h2 class="mb-4 text-base font-bold text-gray-900">
+				<div class="border border-border bg-surface p-5">
+					<h2 class="mb-4 text-base font-bold text-main">
 						{editingResult ? "Edit Results" : "Enter Results"}
 					</h2>
 
 					<div class="space-y-4">
 						<div>
-							<label for="event" class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+							<label for="event" class="mb-1 block text-xs font-semibold tracking-wider text-secondary uppercase"
 								>Event</label
 							>
 							<SelectMenu bind:value={formData.event} options={eventOptions} />
 						</div>
 
 						<div>
-							<label for="round" class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+							<label for="round" class="mb-1 block text-xs font-semibold tracking-wider text-secondary uppercase"
 								>Round</label
 							>
 							<input
@@ -241,12 +241,12 @@ const resetFormTimes = () => {
 								type="number"
 								min="1"
 								bind:value={formData.round}
-								class="block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-xs focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+								class="block w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-xs text-main focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none dark:focus:border-blue-400 dark:focus:ring-blue-400"
 							/>
 						</div>
 
 						<div>
-							<h3 class="mb-2 text-sm font-medium text-gray-700">Select User</h3>
+							<h3 class="mb-2 text-sm font-medium text-secondary">Select User</h3>
 							<UserSearch
 								value={selectedPersonName}
 								onSelect={handleUserSelect}

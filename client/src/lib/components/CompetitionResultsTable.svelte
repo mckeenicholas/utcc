@@ -27,71 +27,71 @@ $effect(() => {
 const selectedEventData = $derived(results.find((event) => event.event === selectedEvent)?.results ?? []);
 </script>
 
-<div class="overflow-hidden border border-gray-200 bg-white">
+<div class="overflow-hidden border border-border bg-surface">
 	{#if results.length > 0}
-		<div class="border-b border-gray-200 bg-gray-50/50 p-3 sm:p-4">
+		<div class="border-b border-border bg-surface-subtle p-3 sm:p-4">
 			<EventPicker bind:selectedEvent events={validEvents} />
 		</div>
 
-		<div class="border-b border-gray-200 bg-white px-4 py-2.5 sm:px-5">
-			<h2 class="text-sm font-bold tracking-tight text-gray-900">
+		<div class="border-b border-border bg-surface px-4 py-2.5 sm:px-5">
+			<h2 class="text-sm font-bold tracking-tight text-main">
 				Competition Solves: {eventNames[selectedEvent]}
 			</h2>
 		</div>
 
 		<div class="overflow-x-auto">
-			<table class="min-w-full divide-y divide-gray-200">
-				<thead class="bg-gray-50">
+			<table class="min-w-full divide-y divide-border">
+				<thead class="bg-surface-subtle">
 					<tr>
-						<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase">
+						<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase">
 							Competition
 						</th>
-						<th class="px-4 py-2.5 text-center text-xs font-semibold tracking-wider text-gray-700 uppercase">
+						<th class="px-4 py-2.5 text-center text-xs font-semibold tracking-wider text-secondary uppercase">
 							Round
 						</th>
-						<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase">
+						<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase">
 							Single
 						</th>
-						<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-uoft-blue uppercase">
+						<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-brand uppercase">
 							{getMeanType(selectedEvent)}
 						</th>
 						{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
-							<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase">
+							<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase">
 								Solve {idx + 1}
 							</th>
 						{/each}
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-gray-100 bg-white">
+				<tbody class="divide-y divide-border bg-surface">
 					{#each selectedEventData as competition (competition.id)}
 						{#each competition.rounds as round, roundIndex (round.round)}
-							<tr class="transition-colors hover:bg-gray-50/80">
-								<td class="px-4 py-2.5 text-sm whitespace-nowrap text-gray-900">
+							<tr class="transition-colors hover:bg-surface-muted">
+								<td class="px-4 py-2.5 text-sm whitespace-nowrap text-main">
 									{#if roundIndex === 0}
-										<a href="/competitions/{competition.id}" class="font-medium transition-colors hover:text-uoft-blue">
+										<a href="/competitions/{competition.id}" class="font-medium transition-colors hover:text-brand">
 											{competition.name}
 										</a>
 									{/if}
 								</td>
-								<td class="px-4 py-2.5 text-center font-mono text-xs whitespace-nowrap text-gray-600">
+								<td class="px-4 py-2.5 text-center font-mono text-xs whitespace-nowrap text-secondary">
 									{round.round}
 								</td>
 								<td
 									class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap tabular-nums {round.singleRecord
-										? 'text-secondary-cyan'
-										: 'text-gray-900'}"
+										? 'text-secondary-cyan dark:text-secondary-cyan-80'
+										: 'text-main'}"
 								>
 									{renderTime(round.single)}
 								</td>
 								<td
 									class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap tabular-nums {round.averageRecord
-										? 'text-secondary-cyan'
-										: 'text-uoft-blue'}"
+										? 'text-secondary-cyan dark:text-secondary-cyan-80'
+										: 'text-brand'}"
 								>
 									{renderTime(round.average)}
 								</td>
 								{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
-									<td class="px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap text-gray-600 tabular-nums">
+									<td class="px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap text-secondary tabular-nums">
 										{renderTime(round.times[idx])}
 									</td>
 								{/each}
@@ -102,8 +102,8 @@ const selectedEventData = $derived(results.find((event) => event.event === selec
 			</table>
 		</div>
 	{:else}
-		<div class="border border-gray-200 bg-white p-8 text-center">
-			<h3 class="text-sm font-medium text-gray-900">No results found for this event.</h3>
+		<div class="border border-border bg-surface p-8 text-center">
+			<h3 class="text-sm font-medium text-main">No results found for this event.</h3>
 		</div>
 	{/if}
 </div>

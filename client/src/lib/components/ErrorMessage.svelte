@@ -7,9 +7,9 @@ const { message }: Props = $props();
 </script>
 
 {#if message}
-	<div class="mb-6 rounded-sm border border-red-200 bg-red-50 p-3.5">
+	<div class="mb-6 rounded-sm border border-red-200 bg-red-50 p-3.5 dark:border-red-900/60 dark:bg-red-950/30">
 		<div class="flex items-center gap-3">
-			<div class="shrink-0 text-uoft-warm-red">
+			<div class="shrink-0 text-uoft-warm-red dark:text-red-400">
 				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						stroke-linecap="round"
@@ -19,7 +19,7 @@ const { message }: Props = $props();
 					/>
 				</svg>
 			</div>
-			<div class="min-w-0 flex-1 text-xs font-medium text-uoft-warm-red">
+			<div class="min-w-0 flex-1 text-xs font-medium text-uoft-warm-red dark:text-red-400">
 				{message}
 			</div>
 		</div>

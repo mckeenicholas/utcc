@@ -1,9 +1,48 @@
 @import "tailwindcss";
 @import "./lib/icons.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	--color-canvas: #f9fafb;
+	--color-surface: #ffffff;
+	--color-surface-subtle: #f9fafb;
+	--color-surface-muted: #f3f4f6;
+	--color-border: #e5e7eb;
+	--color-border-strong: #d1d5db;
+	--color-main: #111827;
+	--color-secondary: #374151;
+	--color-muted: #6b7280;
+	--color-brand: #1e3765;
+}
+
+.dark {
+	--color-canvas: #0b1322;
+	--color-surface: #131f37;
+	--color-surface-subtle: #182744;
+	--color-surface-muted: #1e293b;
+	--color-border: #1e293b;
+	--color-border-strong: #334155;
+	--color-main: #f1f5f9;
+	--color-secondary: #cbd5e1;
+	--color-muted: #94a3b8;
+	--color-brand: #7ca3d6;
+}
+
 @theme {
+	--color-canvas: var(--color-canvas);
+	--color-surface: var(--color-surface);
+	--color-surface-subtle: var(--color-surface-subtle);
+	--color-surface-muted: var(--color-surface-muted);
+	--color-border: var(--color-border);
+	--color-border-strong: var(--color-border-strong);
+	--color-main: var(--color-main);
+	--color-secondary: var(--color-secondary);
+	--color-muted: var(--color-muted);
+	--color-brand: var(--color-brand);
 	--color-uoft-blue: #1e3765;
 	--color-uoft-blue-80: #4b5f84;
+	--color-uoft-blue-dark-text: #7ca3d6;
 	--color-secondary-cyan: #007fa3;
 	--color-secondary-cyan-80: #3399b5;
 	--color-secondary-cyan-50: #80bfd1;
@@ -17,6 +56,10 @@
 	--color-uoft-forest: #0d534d;
 	--color-uoft-gold: #f1c500;
 	--color-uoft-lime: #8dbf2e;
+	--color-canvas-dark: #0b1322;
+	--color-surface-dark: #131f37;
+	--color-surface-subtle-dark: #182744;
+	--color-border-dark: #23385d;
 }
 
 html {
@@ -25,8 +68,18 @@ html {
 	font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
+html.dark {
+	background-color: #0b1322;
+	color: #f1f5f9;
+}
+
 ::selection {
 	background-color: #1e3765;
+	color: #ffffff;
+}
+
+.dark ::selection {
+	background-color: #007fa3;
 	color: #ffffff;
 }
 

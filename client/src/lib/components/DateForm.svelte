@@ -17,24 +17,24 @@ let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: 
 >
 	<div class="flex w-full flex-col {label ? 'gap-1.5' : ''}">
 		{#if label}
-			<DatePicker.Label class="block text-sm font-medium text-gray-700">
+			<DatePicker.Label class="block text-sm font-medium text-secondary">
 				{label}
 			</DatePicker.Label>
 		{/if}
 		<DatePicker.Input
-			class="flex h-9 w-full items-center rounded-sm border border-gray-300 py-1 ps-3 pe-1 text-xs focus-within:border-uoft-blue focus-within:ring-1 focus-within:ring-uoft-blue hover:border-gray-400"
+			class="flex h-9 w-full items-center rounded-sm border border-border-strong bg-surface py-1 ps-3 pe-1 text-xs text-main focus-within:border-brand focus-within:ring-1 focus-within:ring-brand hover:border-border-strong"
 		>
 			{#snippet children({ segments })}
 				{#each segments as { part, value }, i (part + i)}
 					<div class="-m-0.5 inline-block select-none">
 						{#if part === "literal"}
-							<DatePicker.Segment {part} class="px-1 text-gray-700">
+							<DatePicker.Segment {part} class="px-1 text-secondary">
 								{value}
 							</DatePicker.Segment>
 						{:else}
 							<DatePicker.Segment
 								{part}
-								class="rounded-sm px-1 py-0.5 hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 focus-visible:ring-0 focus-visible:ring-offset-0 aria-[valuetext=Empty]:text-gray-400"
+								class="rounded-sm px-1 py-0.5 text-main hover:bg-surface-muted focus:bg-surface-muted focus:text-main focus-visible:ring-0 focus-visible:ring-offset-0 aria-[valuetext=Empty]:text-muted"
 							>
 								{value}
 							</DatePicker.Segment>
@@ -42,7 +42,7 @@ let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: 
 					</div>
 				{/each}
 				<DatePicker.Trigger
-					class="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-800"
+					class="ml-auto inline-flex h-7 w-7 items-center justify-center rounded-sm text-secondary transition-colors hover:bg-surface-muted hover:text-main"
 				>
 					<svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -56,19 +56,19 @@ let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: 
 			{/snippet}
 		</DatePicker.Input>
 		<DatePicker.Content sideOffset={6} class="z-50">
-			<DatePicker.Calendar class="border border-gray-200 bg-white p-4">
+			<DatePicker.Calendar class="border border-border bg-surface p-4">
 				{#snippet children({ months, weekdays })}
 					<DatePicker.Header class="mb-4 flex items-center justify-between">
 						<DatePicker.PrevButton
-							class="inline-flex h-9 w-9 items-center justify-center rounded-sm transition-colors hover:bg-gray-100"
+							class="inline-flex h-9 w-9 items-center justify-center rounded-sm text-secondary transition-colors hover:bg-surface-muted"
 						>
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 							</svg>
 						</DatePicker.PrevButton>
-						<DatePicker.Heading class="text-sm font-medium" />
+						<DatePicker.Heading class="text-sm font-medium text-main" />
 						<DatePicker.NextButton
-							class="inline-flex h-9 w-9 items-center justify-center rounded-sm transition-colors hover:bg-gray-100"
+							class="inline-flex h-9 w-9 items-center justify-center rounded-sm text-secondary transition-colors hover:bg-surface-muted"
 						>
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -81,7 +81,7 @@ let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: 
 								<DatePicker.GridHead>
 									<DatePicker.GridRow class="mb-1 flex w-full justify-between">
 										{#each weekdays as day (day)}
-											<DatePicker.HeadCell class="w-9 rounded-sm text-xs font-normal text-gray-700">
+											<DatePicker.HeadCell class="w-9 rounded-sm text-xs font-normal text-secondary">
 												<div>{day.slice(0, 2)}</div>
 											</DatePicker.HeadCell>
 										{/each}
@@ -93,7 +93,7 @@ let { selectedDate = $bindable(), label = "Competition Date" }: { selectedDate: 
 											{#each weekDates as date (date)}
 												<DatePicker.Cell {date} month={month.value} class="relative h-9 w-9 p-0 text-center text-sm">
 													<DatePicker.Day
-														class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-sm text-sm font-normal whitespace-nowrap text-gray-900 transition-colors hover:bg-gray-100 data-disabled:pointer-events-none data-disabled:text-gray-300 data-outside-month:pointer-events-none data-outside-month:text-gray-400 data-selected:bg-uoft-blue data-selected:text-white data-unavailable:text-gray-300 data-unavailable:line-through"
+														class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-sm text-sm font-normal whitespace-nowrap text-main transition-colors hover:bg-surface-muted data-disabled:pointer-events-none data-disabled:text-muted/50 data-outside-month:pointer-events-none data-outside-month:text-muted data-selected:bg-uoft-blue data-selected:text-white data-unavailable:text-muted/50 data-unavailable:line-through dark:data-selected:bg-blue-600 dark:data-selected:text-white"
 													>
 														{date.day}
 													</DatePicker.Day>

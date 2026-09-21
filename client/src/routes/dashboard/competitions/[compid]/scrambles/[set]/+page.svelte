@@ -49,18 +49,18 @@ onMount(fetchScrambles);
 <div class="py-8 pb-16">
 	<div class="mx-auto max-w-4xl px-4 sm:px-6">
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message="Loading Scrambles..." inline minHeight="15rem" />
 			</div>
 		{:else if compData}
 			<div class="mb-6 flex flex-col gap-2">
 				<a
 					href="/dashboard/competitions/{compid}/scrambles"
-					class="text-xs font-semibold text-uoft-blue transition-colors hover:text-uoft-blue-80"
+					class="text-xs font-semibold text-brand transition-colors hover:text-uoft-blue-80"
 				>
 					&larr; Back to Scramble Sets
 				</a>
-				<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+				<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">
 					{compData.competition}: {eventNames[compData.event]} Round {compData.round}
 				</h1>
 			</div>

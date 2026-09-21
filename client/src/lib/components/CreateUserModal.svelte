@@ -61,17 +61,17 @@ $effect(() => {
 			tabindex="0"
 		>
 			<div
-				class="w-full max-w-md border border-gray-300 bg-white p-6"
+				class="w-full max-w-md border border-border-strong bg-surface p-6"
 				role="dialog"
 				aria-modal="true"
 				tabindex="0"
 				onclick={(e) => e.stopPropagation()}
 				onkeydown={(e) => e.key === "Escape" && onClose()}
 			>
-				<h3 class="mb-4 text-base font-bold text-gray-900">Add New Competitor</h3>
+				<h3 class="mb-4 text-base font-bold text-main">Add New Competitor</h3>
 				<div class="space-y-4">
 					<div>
-						<label for="user-name" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+						<label for="user-name" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
 							>Person Name</label
 						>
 						<input
@@ -79,11 +79,11 @@ $effect(() => {
 							id="user-name"
 							bind:value={initialName}
 							placeholder="Enter competitor name"
-							class="mt-1 w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+							class="mt-1 w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main placeholder:text-muted focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
 						/>
 					</div>
 					<div>
-						<label for="student-status" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">
+						<label for="student-status" class="block text-xs font-semibold tracking-wider text-secondary uppercase">
 							Designation
 						</label>
 						<div class="mt-1">
@@ -92,11 +92,11 @@ $effect(() => {
 					</div>
 				</div>
 
-				<div class="mt-6 flex justify-end space-x-2 border-t border-gray-100 pt-4">
+				<div class="mt-6 flex justify-end space-x-2 border-t border-border pt-4">
 					<button
 						type="button"
 						onclick={onClose}
-						class="rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+						class="rounded-sm border border-border bg-surface px-3 py-1.5 text-xs font-medium text-secondary transition-colors hover:bg-surface-muted"
 					>
 						Cancel
 					</button>
@@ -104,7 +104,7 @@ $effect(() => {
 						type="button"
 						onclick={handleCreateUser}
 						disabled={creatingUser || !initialName.trim()}
-						class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
+						class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 					>
 						{creatingUser ? "Creating..." : "Create Competitor"}
 					</button>

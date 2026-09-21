@@ -18,27 +18,27 @@ const recordType = $derived.by(() => {
 </script>
 
 {#if record}
-	<tr class="transition-colors hover:bg-gray-50/80">
-		<td class="px-4 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap text-gray-700 uppercase">
+	<tr class="transition-colors hover:bg-surface-muted">
+		<td class="px-4 py-2.5 text-xs font-semibold tracking-wider whitespace-nowrap text-secondary uppercase">
 			{recordType}
 		</td>
 
-		<td class="px-4 py-2.5 text-left text-sm font-medium whitespace-nowrap text-gray-900">
-			<a href="/persons/{record.person}" class="transition-colors hover:text-uoft-blue hover:underline">
+		<td class="px-4 py-2.5 text-left text-sm font-medium whitespace-nowrap text-main">
+			<a href="/persons/{record.person}" class="transition-colors hover:text-brand hover:underline">
 				{record.person_name}
 			</a>
 		</td>
-		<td class="px-4 py-2.5 text-left text-sm whitespace-nowrap text-gray-600">
-			<a class="transition-colors hover:text-uoft-blue hover:underline" href="/competitions/{record.competition_id}">
+		<td class="px-4 py-2.5 text-left text-sm whitespace-nowrap text-secondary">
+			<a class="transition-colors hover:text-brand hover:underline" href="/competitions/{record.competition_id}">
 				{record.competition_name}
 			</a>
 		</td>
-		<td class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap text-uoft-blue tabular-nums">
+		<td class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap text-brand tabular-nums">
 			{renderTime(record.result)}
 		</td>
 		{#each record.times_list as time, timeIdx (timeIdx)}
 			<td
-				class="hidden px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap text-gray-600 tabular-nums md:table-cell"
+				class="hidden px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap text-secondary tabular-nums md:table-cell"
 			>
 				{renderTime(time)}
 			</td>

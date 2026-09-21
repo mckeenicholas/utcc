@@ -25,11 +25,11 @@ const handleSubmit = async () => {
 };
 </script>
 
-<div class="border border-gray-200 bg-white p-6">
-	<h2 class="mb-4 text-base font-bold text-gray-900">Add New User</h2>
+<div class="border border-border bg-surface p-6">
+	<h2 class="mb-4 text-base font-bold text-main">Add New User</h2>
 	<div class="flex items-end gap-3">
 		<div class="flex-1">
-			<label for="new-user-name" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+			<label for="new-user-name" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
 				>Person Name</label
 			>
 			<input
@@ -37,11 +37,11 @@ const handleSubmit = async () => {
 				placeholder="Enter name"
 				bind:value={newUserName}
 				onkeydown={(e) => e.key === "Enter" && handleSubmit()}
-				class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+				class="mt-1 block w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main placeholder:text-muted focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
 			/>
 		</div>
 		<div class="flex w-36 flex-col">
-			<label for="is-student" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+			<label for="is-student" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
 				>Designation</label
 			>
 			<div class="mt-1">
@@ -52,7 +52,7 @@ const handleSubmit = async () => {
 			<button
 				onclick={handleSubmit}
 				disabled={isSubmitting || !newUserName.trim()}
-				class="h-9 rounded-sm bg-uoft-blue px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
+				class="h-9 rounded-sm bg-uoft-blue px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 			>
 				{isSubmitting ? "Adding..." : "Add User"}
 			</button>

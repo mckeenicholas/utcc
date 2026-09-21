@@ -34,21 +34,23 @@ onMount(async () => {
 				<!-- Competition Management Card -->
 				<a
 					href="/dashboard/competitions"
-					class="group flex flex-col justify-between border border-gray-200 bg-white p-5 transition-colors hover:border-uoft-blue"
+					class="group flex flex-col justify-between border border-border bg-surface p-5 transition-colors hover:border-uoft-blue dark:hover:border-blue-400"
 				>
 					<div>
 						<div
-							class="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-100 text-uoft-blue transition-colors group-hover:bg-uoft-blue group-hover:text-white"
+							class="flex h-8 w-8 items-center justify-center rounded-sm bg-surface-muted text-brand transition-colors group-hover:bg-uoft-blue group-hover:text-white dark:group-hover:bg-blue-600"
 						>
 							<span class="cubing-icon event-333 text-base"></span>
 						</div>
-						<h2 class="mt-3 text-base font-bold text-gray-900 transition-colors group-hover:text-uoft-blue">
+						<h2
+							class="mt-3 text-base font-bold text-main transition-colors group-hover:text-uoft-blue dark:group-hover:text-blue-300"
+						>
 							Competitions
 						</h2>
-						<p class="mt-1 text-xs text-gray-700">Create, manage, and enter competition solve results.</p>
+						<p class="mt-1 text-xs text-secondary">Create, manage, and enter competition solve results.</p>
 					</div>
 					<div
-						class="mt-4 flex items-center text-xs font-semibold text-uoft-blue transition-colors group-hover:text-secondary-cyan"
+						class="mt-4 flex items-center text-xs font-semibold text-brand transition-colors group-hover:text-secondary-cyan dark:group-hover:text-cyan-300"
 					>
 						Manage Competitions &rarr;
 					</div>
@@ -57,11 +59,11 @@ onMount(async () => {
 				<!-- User Management Card -->
 				<a
 					href="/dashboard/users"
-					class="group flex flex-col justify-between border border-gray-200 bg-white p-5 transition-colors hover:border-uoft-blue"
+					class="group flex flex-col justify-between border border-border bg-surface p-5 transition-colors hover:border-uoft-blue dark:hover:border-blue-400"
 				>
 					<div>
 						<div
-							class="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-100 text-uoft-blue transition-colors group-hover:bg-uoft-blue group-hover:text-white"
+							class="flex h-8 w-8 items-center justify-center rounded-sm bg-surface-muted text-brand transition-colors group-hover:bg-uoft-blue group-hover:text-white dark:group-hover:bg-blue-600"
 						>
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -72,13 +74,15 @@ onMount(async () => {
 								/>
 							</svg>
 						</div>
-						<h2 class="mt-3 text-base font-bold text-gray-900 transition-colors group-hover:text-uoft-blue">
+						<h2
+							class="mt-3 text-base font-bold text-main transition-colors group-hover:text-uoft-blue dark:group-hover:text-blue-300"
+						>
 							Members & Users
 						</h2>
-						<p class="mt-1 text-xs text-gray-700">Register new competitors and edit student status.</p>
+						<p class="mt-1 text-xs text-secondary">Register new competitors and edit student status.</p>
 					</div>
 					<div
-						class="mt-4 flex items-center text-xs font-semibold text-uoft-blue transition-colors group-hover:text-secondary-cyan"
+						class="mt-4 flex items-center text-xs font-semibold text-brand transition-colors group-hover:text-secondary-cyan dark:group-hover:text-cyan-300"
 					>
 						Manage Users &rarr;
 					</div>
@@ -87,11 +91,11 @@ onMount(async () => {
 				<!-- Session Management Card -->
 				<a
 					href="/dashboard/sessions"
-					class="group flex flex-col justify-between border border-gray-200 bg-white p-5 transition-colors hover:border-uoft-blue"
+					class="group flex flex-col justify-between border border-border bg-surface p-5 transition-colors hover:border-uoft-blue dark:hover:border-blue-400"
 				>
 					<div>
 						<div
-							class="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-100 text-uoft-blue transition-colors group-hover:bg-uoft-blue group-hover:text-white"
+							class="flex h-8 w-8 items-center justify-center rounded-sm bg-surface-muted text-brand transition-colors group-hover:bg-uoft-blue group-hover:text-white dark:group-hover:bg-blue-600"
 						>
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
@@ -102,13 +106,15 @@ onMount(async () => {
 								/>
 							</svg>
 						</div>
-						<h2 class="mt-3 text-base font-bold text-gray-900 transition-colors group-hover:text-uoft-blue">
+						<h2
+							class="mt-3 text-base font-bold text-main transition-colors group-hover:text-uoft-blue dark:group-hover:text-blue-300"
+						>
 							Academic Sessions
 						</h2>
-						<p class="mt-1 text-xs text-gray-700">Configure Fall, Winter, and Summer term periods.</p>
+						<p class="mt-1 text-xs text-secondary">Configure Fall, Winter, and Summer term periods.</p>
 					</div>
 					<div
-						class="mt-4 flex items-center text-xs font-semibold text-uoft-blue transition-colors group-hover:text-secondary-cyan"
+						class="mt-4 flex items-center text-xs font-semibold text-brand transition-colors group-hover:text-secondary-cyan dark:group-hover:text-cyan-300"
 					>
 						Manage Sessions &rarr;
 					</div>

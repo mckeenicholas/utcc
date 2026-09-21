@@ -49,10 +49,10 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 <!-- Time Inputs -->
 <div class="mt-4">
-	<h3 class="mb-4 text-lg font-medium text-gray-800">Times</h3>
+	<h3 class="mb-4 text-lg font-medium text-main">Times</h3>
 	<div class="space-y-3">
 		<div>
-			<label for="time1" class="mb-1 block text-sm font-medium text-gray-700">Time 1</label>
+			<label for="time1" class="mb-1 block text-sm font-medium text-secondary">Time 1</label>
 			<ResultEntryField
 				id="time1"
 				bind:value={formData.time1}
@@ -61,7 +61,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 			/>
 		</div>
 		<div>
-			<label for="time2" class="mb-1 block text-sm font-medium text-gray-700">Time 2</label>
+			<label for="time2" class="mb-1 block text-sm font-medium text-secondary">Time 2</label>
 			<ResultEntryField
 				id="time2"
 				bind:value={formData.time2}
@@ -70,7 +70,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 			/>
 		</div>
 		<div>
-			<label for="time3" class="mb-1 block text-sm font-medium text-gray-700">Time 3</label>
+			<label for="time3" class="mb-1 block text-sm font-medium text-secondary">Time 3</label>
 			<ResultEntryField
 				id="time3"
 				bind:value={formData.time3}
@@ -80,7 +80,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 		</div>
 		{#if getAttemptCount(formData.event) === 5}
 			<div>
-				<label for="time4" class="mb-1 block text-sm font-medium text-gray-700">Time 4</label>
+				<label for="time4" class="mb-1 block text-sm font-medium text-secondary">Time 4</label>
 				<ResultEntryField
 					id="time4"
 					bind:value={formData.time4}
@@ -89,7 +89,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 				/>
 			</div>
 			<div>
-				<label for="time5" class="mb-1 block text-sm font-medium text-gray-700">Time 5</label>
+				<label for="time5" class="mb-1 block text-sm font-medium text-secondary">Time 5</label>
 				<ResultEntryField
 					id="time5"
 					bind:value={formData.time5}
@@ -106,7 +106,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 		onclick={onSubmit}
 		onkeydown={handleKeydown}
 		disabled={submitting || !areRequiredFieldsFilled}
-		class="time-input submit-button inline-flex w-full items-center justify-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white hover:bg-uoft-blue-80 focus:ring-2 focus:ring-uoft-blue focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400"
+		class="time-input submit-button inline-flex w-full items-center justify-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white hover:bg-uoft-blue-80 focus:ring-2 focus:ring-uoft-blue focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900 dark:disabled:border-border dark:disabled:bg-surface-muted dark:disabled:text-muted"
 	>
 		{#if submitting}
 			<svg class="mr-2 h-4 w-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,7 +126,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 		<button
 			onclick={onCancel}
 			disabled={submitting}
-			class="mt-3 inline-flex w-full items-center justify-center rounded-sm bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+			class="mt-3 inline-flex w-full items-center justify-center rounded-sm border border-border bg-surface-muted px-4 py-2 text-sm font-medium text-secondary hover:bg-surface focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
 		>
 			Cancel
 		</button>

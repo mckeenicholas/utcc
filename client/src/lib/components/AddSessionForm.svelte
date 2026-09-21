@@ -17,11 +17,11 @@ const handleSubmit = async () => {
 };
 </script>
 
-<div class="mb-6 border border-gray-200 bg-white p-6">
-	<h2 class="mb-4 text-base font-bold text-gray-900">Add New Session</h2>
+<div class="mb-6 border border-border bg-surface p-6">
+	<h2 class="mb-4 text-base font-bold text-main">Add New Session</h2>
 	<div class="space-y-4">
 		<div>
-			<label for="new-session-name" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+			<label for="new-session-name" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
 				>Session Name</label
 			>
 			<input
@@ -29,7 +29,7 @@ const handleSubmit = async () => {
 				placeholder="Enter session name (e.g., 2025 Fall)"
 				bind:value={newSessionName}
 				onkeydown={(e) => e.key === "Enter" && handleSubmit()}
-				class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+				class="mt-1 block w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main placeholder:text-muted focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
 			/>
 		</div>
 		<div>
@@ -38,7 +38,7 @@ const handleSubmit = async () => {
 		<button
 			onclick={handleSubmit}
 			disabled={!newSessionName.trim()}
-			class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
+			class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 		>
 			Add Session
 		</button>

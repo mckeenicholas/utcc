@@ -10,39 +10,39 @@ interface Props {
 const { competition, onDeleteCompetition = () => null }: Props = $props();
 </script>
 
-<div class="border border-gray-200 bg-white p-4 transition-colors hover:border-uoft-blue">
+<div class="border border-border bg-surface p-4 transition-colors hover:border-brand">
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div>
-			<a href="/dashboard/competitions/{competition.id}" class="transition-colors hover:text-uoft-blue">
-				<h3 class="text-sm font-bold text-gray-900">{competition.name}</h3>
+			<a href="/dashboard/competitions/{competition.id}" class="transition-colors hover:text-brand">
+				<h3 class="text-sm font-bold text-main">{competition.name}</h3>
 			</a>
-			<p class="text-xs text-gray-700">
+			<p class="text-xs text-secondary">
 				{competition.session ? `${competition.session_name} • ` : ""}{formatCompetitionDate(competition.date)}
 			</p>
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
 			<a
 				href="/dashboard/competitions/{competition.id}"
-				class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80"
+				class="rounded-sm bg-uoft-blue px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 			>
 				Add Results
 			</a>
 			<a
 				href="/dashboard/competitions/{competition.id}/scrambles"
-				class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+				class="rounded-sm border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-secondary transition-colors hover:bg-surface-muted"
 			>
 				Scrambles
 			</a>
 			<a
 				href="/dashboard/competitions/{competition.id}/edit"
-				class="rounded-sm border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50"
+				class="rounded-sm border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-secondary transition-colors hover:bg-surface-muted"
 			>
 				Edit
 			</a>
 			<button
 				type="button"
 				onclick={() => onDeleteCompetition(competition.id)}
-				class="cursor-pointer rounded-sm border border-red-200 bg-white px-2.5 py-1.5 text-xs font-medium text-uoft-warm-red transition-colors hover:bg-red-50"
+				class="cursor-pointer rounded-sm border border-red-200 bg-surface px-2.5 py-1.5 text-xs font-medium text-uoft-warm-red transition-colors hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/40"
 			>
 				Delete
 			</button>

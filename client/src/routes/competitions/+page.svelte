@@ -112,22 +112,22 @@ const goToPage = (page: number) => {
 <div class="py-8 pb-16">
 	<div class="mx-auto max-w-6xl px-4 sm:px-6">
 		<div class="mb-6">
-			<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Competitions</h1>
-			<p class="mt-1 text-sm text-gray-700">Browse official club tournaments and sessions.</p>
+			<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">Competitions</h1>
+			<p class="mt-1 text-sm text-secondary">Browse official club tournaments and sessions.</p>
 		</div>
 
 		<!-- Filter Bar -->
-		<div class="mb-6 flex flex-wrap items-center gap-4 border border-gray-200 bg-white p-4 sm:p-5">
+		<div class="mb-6 flex flex-wrap items-center gap-4 border border-border bg-surface p-4 sm:p-5">
 			<div class="flex items-center gap-2">
-				<span class="text-xs font-medium text-gray-700">Session:</span>
+				<span class="text-xs font-medium text-secondary">Session:</span>
 				<SessionSelector bind:value={selectedSession} sessionData={allSessions} />
 			</div>
 			<div class="flex items-center gap-2">
-				<span class="text-xs font-medium text-gray-700">Status:</span>
+				<span class="text-xs font-medium text-secondary">Status:</span>
 				<UofTSelector bind:status={selectedDesignator} />
 			</div>
 			<div class="flex items-center gap-2">
-				<span class="text-xs font-medium text-gray-700">Order:</span>
+				<span class="text-xs font-medium text-secondary">Order:</span>
 				<div class="w-44">
 					<SelectMenu bind:value={selectedOrdering} options={sortOptions} />
 				</div>
@@ -135,12 +135,14 @@ const goToPage = (page: number) => {
 		</div>
 
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message="Loading Competitions..." inline />
 			</div>
 		{:else if errorMessage}
-			<div class="border border-red-200 bg-white p-8 text-center sm:p-12">
-				<div class="mx-auto flex h-10 w-10 items-center justify-center rounded bg-red-50 text-uoft-warm-red">
+			<div class="border border-red-200 bg-surface p-8 text-center sm:p-12 dark:border-red-900/60">
+				<div
+					class="mx-auto flex h-10 w-10 items-center justify-center rounded bg-red-50 text-uoft-warm-red dark:bg-red-950/40 dark:text-red-400"
+				>
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
@@ -150,11 +152,11 @@ const goToPage = (page: number) => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-3 text-base font-bold text-gray-900">Error Loading Competitions</h3>
-				<p class="mt-1 text-sm text-gray-600">{errorMessage}</p>
+				<h3 class="mt-3 text-base font-bold text-main">Error Loading Competitions</h3>
+				<p class="mt-1 text-sm text-secondary">{errorMessage}</p>
 				<button
-					onclick={() => window.location.reload()}
-					class="mt-4 inline-flex items-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
+					onclick={() => globalThis.location.reload()}
+					class="mt-4 inline-flex items-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 				>
 					Try Again
 				</button>
@@ -168,7 +170,7 @@ const goToPage = (page: number) => {
 			</div>
 
 			{#if totalPages > 1}
-				<div class="mt-4 border border-gray-200 bg-white p-4">
+				<div class="mt-4 border border-border bg-surface p-4">
 					<PaginationControls
 						{currentPage}
 						{totalPages}
@@ -184,8 +186,8 @@ const goToPage = (page: number) => {
 			{/if}
 		{:else}
 			<!-- Empty State -->
-			<div class="border border-gray-200 bg-white p-12 text-center">
-				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-gray-100 text-gray-700">
+			<div class="border border-border bg-surface p-12 text-center">
+				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-surface-muted text-secondary">
 					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
@@ -195,8 +197,8 @@ const goToPage = (page: number) => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-3 text-base font-bold text-gray-900">No Competitions Found</h3>
-				<p class="mt-1 text-xs text-gray-700">There are no competitions matching the selected filters.</p>
+				<h3 class="mt-3 text-base font-bold text-main">No Competitions Found</h3>
+				<p class="mt-1 text-xs text-secondary">There are no competitions matching the selected filters.</p>
 			</div>
 		{/if}
 	</div>

@@ -13,7 +13,7 @@ afterNavigate(incrementNavigationCount);
 const isHomePage = $derived(page.url.pathname === "/");
 </script>
 
-<div class="flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased">
+<div class="flex min-h-screen flex-col bg-canvas text-main antialiased transition-colors duration-150">
 	{#if !isHomePage}
 		<Navbar />
 	{/if}

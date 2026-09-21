@@ -55,11 +55,11 @@ const handleSave = () => {
 };
 </script>
 
-<div class="border border-gray-200 bg-white p-4 transition-colors hover:border-uoft-blue">
+<div class="border border-border bg-surface p-4 transition-colors hover:border-brand">
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-3">
 			<div
-				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-xs font-bold text-uoft-blue"
+				class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-surface-muted text-xs font-bold text-brand"
 			>
 				{session.name.charAt(0).toUpperCase()}
 			</div>
@@ -69,16 +69,16 @@ const handleSave = () => {
 						<input
 							bind:value={editSessionName}
 							onkeydown={(e) => e.key === "Enter" && handleSave()}
-							class="h-9 rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+							class="h-9 rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-xs font-medium text-main focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
 						/>
 						<div class="w-40">
 							<DateForm bind:selectedDate={editSessionDate} label="" />
 						</div>
 					</div>
 				{:else}
-					<span class="text-sm font-bold text-gray-900">{session.name}</span>
+					<span class="text-sm font-bold text-main">{session.name}</span>
 				{/if}
-				<p class="text-[11px] text-gray-700">ID: {session.id} • Start Date: {session.start_date}</p>
+				<p class="text-[11px] text-secondary">ID: {session.id} • Start Date: {session.start_date}</p>
 			</div>
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
@@ -87,14 +87,14 @@ const handleSave = () => {
 					type="button"
 					onclick={handleSave}
 					disabled={!editSessionName.trim()}
-					class="rounded-sm bg-uoft-blue px-2.5 py-1 text-xs font-medium text-white hover:bg-uoft-blue-80 disabled:opacity-50"
+					class="rounded-sm bg-uoft-blue px-2.5 py-1 text-xs font-medium text-white hover:bg-uoft-blue-80 disabled:opacity-50 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 				>
 					Save
 				</button>
 				<button
 					type="button"
 					onclick={cancelEdit}
-					class="rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+					class="rounded-sm border border-border bg-surface px-2.5 py-1 text-xs font-medium text-secondary hover:bg-surface-muted"
 				>
 					Cancel
 				</button>
@@ -104,21 +104,21 @@ const handleSave = () => {
 					onclick={() => {
 						showModal = true;
 					}}
-					class="rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+					class="rounded-sm border border-border bg-surface px-2.5 py-1 text-xs font-medium text-secondary hover:bg-surface-muted"
 				>
 					Competitions
 				</button>
 				<button
 					type="button"
 					onclick={startEdit}
-					class="rounded-sm border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+					class="rounded-sm border border-border bg-surface px-2.5 py-1 text-xs font-medium text-secondary hover:bg-surface-muted"
 				>
 					Edit
 				</button>
 				<button
 					type="button"
 					onclick={() => onDelete(session.id)}
-					class="rounded-sm border border-red-200 bg-white px-2.5 py-1 text-xs font-medium text-uoft-warm-red hover:bg-red-50"
+					class="rounded-sm border border-red-200 bg-surface px-2.5 py-1 text-xs font-medium text-uoft-warm-red hover:bg-red-50 dark:border-red-900/50 dark:bg-transparent dark:text-red-400 dark:hover:bg-red-950/40"
 				>
 					Delete
 				</button>
@@ -138,14 +138,14 @@ const handleSave = () => {
 			tabindex="0"
 		>
 			<div
-				class="w-full max-w-lg border border-gray-300 bg-white"
+				class="w-full max-w-lg border border-border-strong bg-surface"
 				role="dialog"
 				aria-modal="true"
 				tabindex="0"
 				onclick={(e) => e.stopPropagation()}
 				onkeydown={(e) => e.key === "Escape" && (showModal = false)}
 			>
-				<div class="flex items-center justify-between border-b border-gray-200 bg-uoft-blue px-5 py-3 text-white">
+				<div class="flex items-center justify-between border-b border-border bg-uoft-blue px-5 py-3 text-white">
 					<h3 class="text-base font-bold text-white">{session.name}</h3>
 					<button
 						type="button"
@@ -158,26 +158,27 @@ const handleSave = () => {
 						</svg>
 					</button>
 				</div>
-				<div class="p-5 text-sm text-gray-900">
+				<div class="p-5 text-sm text-main">
 					{#if competitionsLoading}
 						<LoadingScreen inline message="Loading Competitions..." minHeight="5rem" />
 					{:else if sessionCompetitions.length > 0}
-						<ul class="divide-y divide-gray-100">
+						<ul class="divide-y divide-border">
 							{#each sessionCompetitions as competition (competition.id)}
 								<li class="py-2 text-xs">
-									<span class="text-gray-700">{formatCompetitionDate(competition.date)}</span> —{" "}
-									<span class="font-medium text-gray-900">{competition.name}</span>
+									<span class="text-secondary">{formatCompetitionDate(competition.date)}</span>
+									—{" "}
+									<span class="font-medium text-main">{competition.name}</span>
 								</li>
 							{/each}
 						</ul>
 					{:else}
-						<p class="text-xs text-gray-700">No competitions found for this session.</p>
+						<p class="text-xs text-secondary">No competitions found for this session.</p>
 					{/if}
 				</div>
-				<div class="flex justify-end border-t border-gray-100 px-5 py-3">
+				<div class="flex justify-end border-t border-border px-5 py-3">
 					<button
 						type="button"
-						class="rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+						class="rounded-sm border border-border bg-surface px-3 py-1.5 text-xs font-medium text-secondary hover:bg-surface-muted focus:outline-none"
 						onclick={() => (showModal = false)}
 					>
 						Close

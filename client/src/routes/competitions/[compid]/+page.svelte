@@ -65,33 +65,31 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 <div class="py-8 pb-16">
 	<div class="mx-auto max-w-6xl px-4 sm:px-6">
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message="Loading Results..." inline={true} minHeight="20rem" />
 			</div>
 		{:else if !hasError && filteredResults}
 			<div class="mb-6">
 				<div class="flex items-center gap-2">
-					<a href="/competitions" class="text-xs font-semibold text-uoft-blue hover:underline"
-						>&larr; All Competitions</a
-					>
-					<span class="text-xs text-gray-300">•</span>
+					<a href="/competitions" class="text-xs font-semibold text-brand hover:underline">&larr; All Competitions</a>
+					<span class="text-xs text-muted">•</span>
 					{#if filteredResults.competition.session_name}
-						<span class="rounded-sm bg-gray-100 px-2 py-0.5 text-xs font-semibold text-uoft-blue">
+						<span class="rounded-sm bg-surface-muted px-2 py-0.5 text-xs font-semibold text-brand">
 							{filteredResults.competition.session_name}
 						</span>
 					{/if}
-					<span class="text-xs text-gray-700">
+					<span class="text-xs text-secondary">
 						{formatCompetitionDate(filteredResults.competition.date)}
 					</span>
 				</div>
-				<h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+				<h1 class="mt-1 text-2xl font-bold tracking-tight text-main sm:text-3xl">
 					{filteredResults.competition.name}
 				</h1>
 			</div>
 
 			<!-- Filter Toolbar -->
-			<div class="mb-6 flex flex-wrap items-center gap-3 border border-gray-200 bg-white p-4 sm:p-5">
-				<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">Status:</span>
+			<div class="mb-6 flex flex-wrap items-center gap-3 border border-border bg-surface p-4 sm:p-5">
+				<span class="text-xs font-semibold tracking-wider text-secondary uppercase">Status:</span>
 				<UofTSelector bind:status={studentStatus} />
 			</div>
 
@@ -101,8 +99,8 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 				<CompetitionScrambleTable results={results!.results} />
 			</div>
 		{:else}
-			<div class="border border-gray-200 bg-white p-12 text-center">
-				<div class="mx-auto flex h-10 w-10 items-center justify-center rounded-sm bg-gray-100 text-gray-700">
+			<div class="border border-border bg-surface p-12 text-center">
+				<div class="mx-auto flex h-10 w-10 items-center justify-center rounded-sm bg-surface-muted text-secondary">
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
@@ -112,8 +110,8 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-3 text-base font-bold text-gray-900">Competition Not Found</h3>
-				<p class="mt-1 text-xs text-gray-700">The requested competition could not be found or failed to load.</p>
+				<h3 class="mt-3 text-base font-bold text-main">Competition Not Found</h3>
+				<p class="mt-1 text-xs text-secondary">The requested competition could not be found or failed to load.</p>
 			</div>
 		{/if}
 	</div>

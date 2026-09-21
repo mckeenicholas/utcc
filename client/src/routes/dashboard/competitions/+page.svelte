@@ -143,24 +143,24 @@ const createCompetition = async () => {
 			<DashboardHeader title="Competitions" showBack />
 		</div>
 
-		<div class="mb-6 border border-gray-200 bg-white p-6">
-			<h2 class="mb-4 text-base font-bold text-gray-900">Add New Competition</h2>
+		<div class="mb-6 border border-border bg-surface p-6">
+			<h2 class="mb-4 text-base font-bold text-main">Add New Competition</h2>
 			<div class="space-y-4">
 				<div>
-					<label for="new-comp-name" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+					<label for="new-comp-name" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
 						>Competition Name</label
 					>
 					<input
 						id="new-comp-name"
 						placeholder="Enter competition name"
 						bind:value={newCompName}
-						class="mt-1 block w-full rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+						class="mt-1 block w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main placeholder:text-muted focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none dark:focus:border-blue-400 dark:focus:ring-blue-400"
 					/>
 				</div>
 				<div>
 					<DateForm bind:selectedDate />
 				</div>
-				<div class="mb-1 block text-xs font-semibold tracking-wider text-gray-700 uppercase">Academic Session</div>
+				<div class="mb-1 block text-xs font-semibold tracking-wider text-secondary uppercase">Academic Session</div>
 				<SessionSelector
 					bind:value={createCompSession}
 					sessionData={allSessions}
@@ -168,7 +168,7 @@ const createCompetition = async () => {
 					class="mt-0"
 				/>
 				<div>
-					<label for="new-comp-designator" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase"
+					<label for="new-comp-designator" class="block text-xs font-semibold tracking-wider text-secondary uppercase"
 						>Student Designation</label
 					>
 					<div class="mt-1">
@@ -178,7 +178,7 @@ const createCompetition = async () => {
 				<button
 					onclick={createCompetition}
 					disabled={!newCompName || !selectedDate}
-					class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50"
+					class="w-full rounded-sm bg-uoft-blue px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-uoft-blue-80 disabled:opacity-50 dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 				>
 					Create Competition
 				</button>
@@ -186,18 +186,18 @@ const createCompetition = async () => {
 		</div>
 
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message="Loading Competitions..." inline minHeight="10rem" />
 			</div>
 		{:else}
 			<div class="mt-6 mb-8">
-				<div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
-					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">All Competitions</span>
+				<div class="mb-4 flex items-center justify-between border-b border-border pb-2">
+					<span class="text-xs font-semibold tracking-wider text-secondary uppercase">All Competitions</span>
 					<SessionSelector bind:value={selectedSession} sessionData={allSessions} />
 				</div>
 
 				{#if competitions.length === 0}
-					<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">
+					<div class="border border-border bg-surface p-12 text-center text-xs text-secondary">
 						No competitions found for the selected filter.
 					</div>
 				{:else}
@@ -207,7 +207,7 @@ const createCompetition = async () => {
 						{/each}
 					</div>
 					{#if totalPages > 1}
-						<div class="mt-4 border border-gray-200 bg-white p-4">
+						<div class="mt-4 border border-border bg-surface p-4">
 							<PaginationControls
 								{currentPage}
 								{totalPages}

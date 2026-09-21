@@ -93,13 +93,13 @@ const handleDeleteSession = async (sessionId: number) => {
 		<AddSessionForm onAddSession={handleAddSession} />
 
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message={isSearching ? "Searching..." : "Loading sessions..."} inline minHeight="10rem" />
 			</div>
 		{:else if sessions.length > 0}
 			<div class="mt-6 space-y-3">
-				<div class="flex items-center justify-between border-b border-gray-200 pb-2">
-					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">
+				<div class="flex items-center justify-between border-b border-border pb-2">
+					<span class="text-xs font-semibold tracking-wider text-secondary uppercase">
 						{isSearching ? `Search Results (${sessions.length})` : `All Sessions (${sessions.length} total)`}
 					</span>
 				</div>
@@ -110,7 +110,7 @@ const handleDeleteSession = async (sessionId: number) => {
 				</div>
 			</div>
 		{:else}
-			<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">No sessions found</div>
+			<div class="border border-border bg-surface p-12 text-center text-xs text-secondary">No sessions found</div>
 		{/if}
 	</div>
 </div>

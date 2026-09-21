@@ -20,7 +20,7 @@
 		"@types/js-cookie": "^3.0.6",
 		"@typescript/native": "npm:typescript@7",
 		"@wca/helpers": "^1.1.7",
-		"bits-ui": "^2.19.1",
+		"bits-ui": "^2.19.2",
 		"js-cookie": "^3.0.8",
 		"scramble-display": "^0.59.1"
 	},
@@ -32,14 +32,14 @@
 		"@sveltejs/vite-plugin-svelte": "7.3.0",
 		"eslint-config-prettier": "10.1.8",
 		"globals": "17.12.0",
-		"oxfmt": "0.67.0",
-		"oxlint": "^1.82.0",
-		"svelte": "^5.57.0",
+		"oxfmt": "0.68.0",
+		"oxlint": "^1.83.0",
+		"svelte": "^5.57.1",
 		"svelte-check": "^4.7.6",
 		"tailwindcss": "^4.3.3",
 		"typescript": "~6",
 		"typescript-eslint": "^8.70.0",
-		"vite": "^8.2.2"
+		"vite": "^8.3.0"
 	},
 	"packageManager": "bun@1.3.14"
 }

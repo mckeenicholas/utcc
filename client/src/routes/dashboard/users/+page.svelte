@@ -154,26 +154,26 @@ const handleDeleteUser = async (userId: number) => {
 		<AddUserForm onAddUser={handleAddUser} />
 
 		<!-- Search Bar Toolbar -->
-		<div class="my-6 border border-gray-200 bg-white p-4 sm:p-5">
-			<label for="search-users" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">
+		<div class="my-6 border border-border bg-surface p-4 sm:p-5">
+			<label for="search-users" class="block text-xs font-semibold tracking-wider text-secondary uppercase">
 				Search by Name
 			</label>
 			<input
 				id="search-users"
 				placeholder="Type to search users..."
 				bind:value={searchTerm}
-				class="mt-2 block w-full max-w-md rounded-sm border border-gray-300 px-3 py-1.5 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+				class="mt-2 block w-full max-w-md rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-sm text-main placeholder:text-muted focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none dark:focus:border-blue-400 dark:focus:ring-blue-400"
 			/>
 		</div>
 
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message={isSearching ? "Searching..." : "Loading users..."} inline minHeight="10rem" />
 			</div>
 		{:else if users.length > 0}
 			<div class="space-y-3">
-				<div class="flex items-center justify-between border-b border-gray-200 pb-2">
-					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">
+				<div class="flex items-center justify-between border-b border-border pb-2">
+					<span class="text-xs font-semibold tracking-wider text-secondary uppercase">
 						{isSearching ? `Search Results (${totalCount})` : `All Users (${totalCount} total)`}
 					</span>
 				</div>
@@ -185,7 +185,7 @@ const handleDeleteUser = async (userId: number) => {
 				</div>
 
 				{#if !isSearching && totalPages > 1}
-					<div class="mt-6 border border-gray-200 bg-white p-4">
+					<div class="mt-6 border border-border bg-surface p-4">
 						<PaginationControls
 							{currentPage}
 							{totalPages}
@@ -201,11 +201,11 @@ const handleDeleteUser = async (userId: number) => {
 				{/if}
 			</div>
 		{:else if searchTerm.trim()}
-			<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">
+			<div class="border border-border bg-surface p-12 text-center text-xs text-secondary">
 				No users found matching "{searchTerm}"
 			</div>
 		{:else}
-			<div class="border border-gray-200 bg-white p-12 text-center text-xs text-gray-700">No users found</div>
+			<div class="border border-border bg-surface p-12 text-center text-xs text-secondary">No users found</div>
 		{/if}
 	</div>
 </div>

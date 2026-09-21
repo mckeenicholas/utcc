@@ -104,15 +104,15 @@ const handleBlur = () => {
 			onfocus={handleFocus}
 			onblur={handleBlur}
 			onkeydown={handleKeyDown}
-			class="w-full rounded-sm border border-gray-300 px-3 py-1.5 text-xs text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+			class="w-full rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-xs text-main placeholder:text-muted focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none"
 			autocomplete="off"
 		/>
 	{/if}
 
 	{#if showDropdown && searchTerm.trim()}
-		<div class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-sm border border-gray-200 bg-white py-1">
+		<div class="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-sm border border-border bg-surface py-1">
 			{#if loading}
-				<div class="px-3 py-2 text-sm text-gray-700">Searching...</div>
+				<div class="px-3 py-2 text-sm text-secondary">Searching...</div>
 			{:else if searchResults.length > 0}
 				{#each searchResults as user, index (user.id)}
 					<button
@@ -121,15 +121,15 @@ const handleBlur = () => {
 							onSelect(user);
 							showDropdown = false;
 						}}
-						class="w-full px-3 py-2 text-left hover:bg-gray-100 {selectedIndex === index
-							? 'bg-secondary-cyan-25 font-medium text-uoft-blue'
+						class="w-full px-3 py-2 text-left text-main hover:bg-surface-muted {selectedIndex === index
+							? 'bg-surface-muted font-medium text-brand'
 							: ''}"
 					>
 						{user.name}
 					</button>
 				{/each}
 			{:else if searchTerm.trim()}
-				<div class="px-3 py-2 text-sm text-gray-700">No users found</div>
+				<div class="px-3 py-2 text-sm text-secondary">No users found</div>
 			{/if}
 
 			{#if searchTerm.trim()}
@@ -139,9 +139,9 @@ const handleBlur = () => {
 						onAddUser();
 						showDropdown = false;
 					}}
-					class="w-full border-t border-gray-200 px-3 py-2 text-left text-green-700 hover:bg-green-50 {selectedIndex ===
+					class="w-full border-t border-border px-3 py-2 text-left text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950/30 {selectedIndex ===
 					searchResults.length
-						? 'bg-green-100'
+						? 'bg-green-100 dark:bg-green-950/50'
 						: ''}"
 				>
 					Add new user: "{searchTerm}"
@@ -153,12 +153,12 @@ const handleBlur = () => {
 	{#if value}
 		<div
 			class="mt-2 flex items-center justify-between rounded-sm border px-3 py-1.5 text-xs {isEditMode
-				? 'border-blue-200 bg-blue-50 text-uoft-blue'
-				: 'border-gray-200 bg-gray-50 text-gray-900'}"
+				? 'border-blue-200 bg-blue-50 text-uoft-blue dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-300'
+				: 'border-border bg-surface-subtle text-main'}"
 		>
 			<span class="truncate">
-				<span class="text-gray-700">{isEditMode ? "Editing: " : "Selected: "}</span>
-				<span class="font-semibold {isEditMode ? 'text-uoft-blue' : 'text-gray-900'}">{value}</span>
+				<span class="text-secondary">{isEditMode ? "Editing: " : "Selected: "}</span>
+				<span class="font-semibold {isEditMode ? 'text-uoft-blue dark:text-blue-300' : 'text-main'}">{value}</span>
 			</span>
 			<button
 				type="button"
@@ -166,7 +166,7 @@ const handleBlur = () => {
 					searchTerm = "";
 					onClear();
 				}}
-				class="ml-2 inline-flex h-4 w-4 shrink-0 items-center justify-center text-sm font-bold text-gray-400 transition-colors hover:text-gray-700"
+				class="ml-2 inline-flex h-4 w-4 shrink-0 items-center justify-center text-sm font-bold text-muted transition-colors hover:text-secondary"
 				aria-label="Clear selected competitor"
 			>
 				&times;

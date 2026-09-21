@@ -147,27 +147,27 @@ const scrollToEvent = (eventId: string) => {
 				{@const comp = results.competition}
 				<div class="flex items-center gap-2">
 					{#if comp.session_name}
-						<span class="rounded-sm bg-gray-100 px-2 py-0.5 text-xs font-semibold text-uoft-blue">
+						<span class="rounded-sm bg-surface-muted px-2 py-0.5 text-xs font-semibold text-brand">
 							{comp.session_name}
 						</span>
 					{/if}
-					<span class="text-xs text-gray-700">
+					<span class="text-xs text-secondary">
 						{formatCompetitionDate(comp.date)}
 					</span>
 				</div>
-				<h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+				<h1 class="mt-1 text-2xl font-bold tracking-tight text-main sm:text-3xl">
 					{comp.name}
 				</h1>
 			{:else if loading}
-				<div class="h-8 w-64 animate-pulse bg-gray-200"></div>
+				<div class="h-8 w-64 animate-pulse bg-surface-muted"></div>
 			{/if}
 		</div>
 
 		<!-- Toolbar: Switcher & Status Filter -->
-		<div class="mb-6 flex flex-wrap items-center gap-4 border border-gray-200 bg-white p-4 sm:p-5">
+		<div class="mb-6 flex flex-wrap items-center gap-4 border border-border bg-surface p-4 sm:p-5">
 			{#if competitionList && competitionList.length > 0}
 				<div class="flex items-center gap-2">
-					<span class="text-xs font-medium text-gray-700">Competition:</span>
+					<span class="text-xs font-medium text-secondary">Competition:</span>
 					<div class="w-56 sm:w-64">
 						<SelectMenu
 							bind:value={selectedCompValue}
@@ -179,7 +179,7 @@ const scrollToEvent = (eventId: string) => {
 			{/if}
 
 			<div class="flex items-center gap-2">
-				<span class="text-xs font-medium text-gray-700">Status:</span>
+				<span class="text-xs font-medium text-secondary">Status:</span>
 				<UofTSelector bind:status={studentStatus} />
 			</div>
 		</div>
@@ -187,14 +187,14 @@ const scrollToEvent = (eventId: string) => {
 		<!-- Sticky Event Navigation Strip -->
 		{#if availableEvents.length > 0}
 			<div
-				class="sticky top-0 z-20 -mx-4 mb-6 overflow-x-auto border-y border-gray-200 bg-white px-4 py-2.5 sm:mx-0 sm:border"
+				class="sticky top-0 z-20 -mx-4 mb-6 overflow-x-auto border-y border-border bg-surface px-4 py-2.5 sm:mx-0 sm:border"
 			>
 				<div class="flex items-center gap-1.5">
-					<span class="mr-2 shrink-0 text-xs font-bold tracking-wider text-uoft-blue uppercase"> Jump to: </span>
+					<span class="mr-2 shrink-0 text-xs font-bold tracking-wider text-brand uppercase"> Jump to: </span>
 					{#each availableEvents as event (event)}
 						<button
 							type="button"
-							class="inline-flex cursor-pointer items-center gap-1.5 rounded-sm bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-uoft-blue hover:text-white"
+							class="inline-flex cursor-pointer items-center gap-1.5 rounded-sm bg-surface-muted px-2.5 py-1 text-xs font-medium text-secondary transition-colors hover:bg-uoft-blue hover:text-white"
 							onclick={() => scrollToEvent(event)}
 						>
 							<span class="cubing-icon event-{event} text-sm"></span>
@@ -207,12 +207,14 @@ const scrollToEvent = (eventId: string) => {
 
 		<!-- Main Results Section -->
 		{#if loading && !results}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen inline message="Loading Competition Results..." />
 			</div>
 		{:else if hasError}
-			<div class="border border-red-200 bg-white p-8 text-center sm:p-12">
-				<div class="mx-auto flex h-10 w-10 items-center justify-center rounded bg-red-50 text-uoft-warm-red">
+			<div class="border border-red-200 bg-surface p-8 text-center sm:p-12 dark:border-red-900/60">
+				<div
+					class="mx-auto flex h-10 w-10 items-center justify-center rounded bg-red-50 text-uoft-warm-red dark:bg-red-950/40 dark:text-red-400"
+				>
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
@@ -222,11 +224,11 @@ const scrollToEvent = (eventId: string) => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-3 text-base font-bold text-gray-900">Failed to Load Results</h3>
-				<p class="mt-1 text-sm text-gray-600">Could not retrieve competition results from the server.</p>
+				<h3 class="mt-3 text-base font-bold text-main">Failed to Load Results</h3>
+				<p class="mt-1 text-sm text-secondary">Could not retrieve competition results from the server.</p>
 				<button
 					type="button"
-					class="mt-4 inline-flex items-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none"
+					class="mt-4 inline-flex items-center rounded-sm bg-uoft-blue px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-uoft-blue-80 focus:outline-none dark:border dark:border-blue-500/30 dark:hover:bg-blue-900"
 					onclick={fetchLatest}
 				>
 					Retry

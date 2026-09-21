@@ -43,7 +43,7 @@ const scrambles = $derived(
 
 <div class="space-y-4">
 	{#if scrambles.length}
-		<div class="text-xs font-semibold tracking-wider text-gray-700 uppercase">Official Scrambles</div>
+		<div class="text-xs font-semibold tracking-wider text-secondary uppercase">Official Scrambles</div>
 	{/if}
 
 	{#each scrambles as eventScramble (eventScramble.event)}

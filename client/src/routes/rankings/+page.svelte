@@ -99,10 +99,10 @@ $effect(() => {
 	<div class="mx-auto max-w-6xl px-4 sm:px-6">
 		<!-- Header -->
 		<div class="mb-6">
-			<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+			<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">
 				Rankings: {eventName}
 			</h1>
-			<p class="mt-1 text-sm text-gray-700">Official club leaderboards by event and student status.</p>
+			<p class="mt-1 text-sm text-secondary">Official club leaderboards by event and student status.</p>
 		</div>
 
 		<RankingSelector
@@ -113,58 +113,58 @@ $effect(() => {
 			bind:studentStatus={uoftStudentStatus}
 		/>
 
-		<div class="mt-6 overflow-x-auto border border-gray-200 bg-white">
+		<div class="mt-6 overflow-x-auto border border-border bg-surface">
 			{#if loading}
 				<div class="p-12 text-center">
 					<LoadingScreen message="Loading Rankings for {eventName}" inline />
 				</div>
 			{:else if results?.results.length}
-				<table class="min-w-full divide-y divide-gray-200">
-					<thead class="bg-gray-50">
+				<table class="min-w-full divide-y divide-border">
+					<thead class="bg-surface-subtle">
 						<tr>
-							<th class="w-14 px-4 py-2.5 text-center text-xs font-semibold tracking-wider text-gray-700 uppercase"
+							<th class="w-14 px-4 py-2.5 text-center text-xs font-semibold tracking-wider text-secondary uppercase"
 								>#</th
 							>
-							<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase">Name</th>
+							<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase">Name</th>
 							<th
-								class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase"
+								class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
 								class:lg:pe-24={!isAverage}>Result</th
 							>
-							<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase"
+							<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase"
 								>Competition</th
 							>
 							{#if isAverage}
 								{#each Array.from({ length: eventSolves[selectedEvent]! }).keys() as idx (idx)}
 									<th
-										class="hidden px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase md:table-cell"
+										class="hidden px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase md:table-cell"
 										>Solve {idx + 1}</th
 									>
 								{/each}
 							{/if}
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-gray-100 bg-white">
+					<tbody class="divide-y divide-border bg-surface">
 						{#each results?.results as result, idx (idx)}
-							<tr class="transition-colors hover:bg-gray-50/80">
+							<tr class="transition-colors hover:bg-surface-muted">
 								<td
-									class="w-14 px-4 py-3 text-center font-mono text-xs font-semibold whitespace-nowrap text-gray-700 tabular-nums"
+									class="w-14 px-4 py-3 text-center font-mono text-xs font-semibold whitespace-nowrap text-secondary tabular-nums"
 								>
 									{result.rank}
 								</td>
-								<td class="px-4 py-3 text-left text-sm font-medium whitespace-nowrap text-gray-900">
-									<a href="/persons/{result.person}" class="transition-colors hover:text-uoft-blue hover:underline">
+								<td class="px-4 py-3 text-left text-sm font-medium whitespace-nowrap text-main">
+									<a href="/persons/{result.person}" class="transition-colors hover:text-brand hover:underline">
 										{result.person_name}
 									</a>
 								</td>
 								<td
-									class="px-4 py-3 text-right font-mono text-sm font-bold whitespace-nowrap text-uoft-blue tabular-nums"
+									class="px-4 py-3 text-right font-mono text-sm font-bold whitespace-nowrap text-brand tabular-nums"
 									class:lg:pe-24={!isAverage}
 								>
 									{renderTime(result.result)}
 								</td>
-								<td class="px-4 py-3 text-left text-sm whitespace-nowrap text-gray-600">
+								<td class="px-4 py-3 text-left text-sm whitespace-nowrap text-secondary">
 									<a
-										class="transition-colors hover:text-uoft-blue hover:underline"
+										class="transition-colors hover:text-brand hover:underline"
 										href="/competitions/{result.competition_id}"
 									>
 										{result.competition_name}
@@ -173,7 +173,7 @@ $effect(() => {
 								{#if isAverage}
 									{#each result.times_list as time, timeIdx (timeIdx)}
 										<td
-											class="hidden px-4 py-3 text-right font-mono text-sm whitespace-nowrap text-gray-600 tabular-nums md:table-cell"
+											class="hidden px-4 py-3 text-right font-mono text-sm whitespace-nowrap text-secondary tabular-nums md:table-cell"
 										>
 											{renderTime(time)}
 										</td>
@@ -184,7 +184,7 @@ $effect(() => {
 					</tbody>
 				</table>
 				{#if totalPages > 1}
-					<div class="border-t border-gray-200 px-4 py-3">
+					<div class="border-t border-border px-4 py-3">
 						<PaginationControls
 							{currentPage}
 							{totalPages}
@@ -199,9 +199,9 @@ $effect(() => {
 					</div>
 				{/if}
 			{:else}
-				<div class="p-12 text-center text-gray-700">
-					<h2 class="text-base font-semibold text-gray-900">No results found for {eventName}</h2>
-					<p class="mt-1 text-xs text-gray-700">Try selecting a different event or adjusting your filters.</p>
+				<div class="p-12 text-center text-secondary">
+					<h2 class="text-base font-semibold text-main">No results found for {eventName}</h2>
+					<p class="mt-1 text-xs text-secondary">Try selecting a different event or adjusting your filters.</p>
 				</div>
 			{/if}
 		</div>

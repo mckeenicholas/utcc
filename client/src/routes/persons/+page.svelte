@@ -99,13 +99,13 @@ $effect(() => {
 	<div class="mx-auto max-w-6xl px-4 sm:px-6">
 		<!-- Header -->
 		<div class="mb-6">
-			<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Competitors</h1>
-			<p class="mt-1 text-sm text-gray-700">Directory of club members and individual competitor records.</p>
+			<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">Competitors</h1>
+			<p class="mt-1 text-sm text-secondary">Directory of club members and individual competitor records.</p>
 		</div>
 
 		<!-- Search Bar Toolbar -->
-		<div class="mb-6 border border-gray-200 bg-white p-4 sm:p-5">
-			<label for="search-users" class="block text-xs font-semibold tracking-wider text-gray-700 uppercase">
+		<div class="mb-6 border border-border bg-surface p-4 sm:p-5">
+			<label for="search-users" class="block text-xs font-semibold tracking-wider text-secondary uppercase">
 				Search by Name
 			</label>
 			<div class="mt-2">
@@ -114,14 +114,14 @@ $effect(() => {
 					type="search"
 					placeholder="Type competitor name..."
 					bind:value={searchTerm}
-					class="block w-full max-w-md rounded-sm border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none"
+					class="block w-full max-w-md rounded-sm border border-border-strong bg-surface px-3 py-2 text-sm text-main placeholder:text-muted focus:border-uoft-blue focus:ring-1 focus:ring-uoft-blue focus:outline-none dark:focus:border-blue-400 dark:focus:ring-blue-400"
 				/>
 			</div>
 		</div>
 
 		<!-- Competitors Grid & Results -->
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen
 					message={isSearching ? "Searching competitors..." : "Loading competitors..."}
 					inline={true}
@@ -130,8 +130,8 @@ $effect(() => {
 			</div>
 		{:else if users.length > 0}
 			<div>
-				<div class="mb-3 flex items-center justify-between border-b border-gray-200 pb-2">
-					<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">
+				<div class="mb-3 flex items-center justify-between border-b border-border pb-2">
+					<span class="text-xs font-semibold tracking-wider text-secondary uppercase">
 						{isSearching ? `Search Results (${totalCount})` : `All Competitors (${totalCount})`}
 					</span>
 				</div>
@@ -143,7 +143,7 @@ $effect(() => {
 				</div>
 
 				{#if !isSearching && totalPages > 1}
-					<div class="mt-6 border border-gray-200 bg-white p-4">
+					<div class="mt-6 border border-border bg-surface p-4">
 						<PaginationControls
 							{currentPage}
 							{totalPages}
@@ -159,13 +159,15 @@ $effect(() => {
 				{/if}
 			</div>
 		{:else if searchTerm.trim()}
-			<div class="border border-gray-200 bg-white p-12 text-center">
-				<p class="text-base font-semibold text-gray-900">No competitors found matching "{searchTerm}"</p>
-				<p class="mt-1 text-xs text-gray-700">Try searching with a different spelling or name.</p>
+			<div class="border border-border bg-surface p-12 text-center">
+				<p class="text-base font-semibold text-main">
+					No competitors found matching "{searchTerm}"
+				</p>
+				<p class="mt-1 text-xs text-secondary">Try searching with a different spelling or name.</p>
 			</div>
 		{:else}
-			<div class="border border-gray-200 bg-white p-12 text-center">
-				<p class="text-base font-semibold text-gray-900">No competitors found</p>
+			<div class="border border-border bg-surface p-12 text-center">
+				<p class="text-base font-semibold text-main">No competitors found</p>
 			</div>
 		{/if}
 	</div>

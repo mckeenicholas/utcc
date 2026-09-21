@@ -76,61 +76,61 @@ const recordsDisplay = $derived.by(() => {
 	<div class="mx-auto max-w-6xl px-4 sm:px-6">
 		<!-- Header -->
 		<div class="mb-6">
-			<h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Club Records</h1>
-			<p class="mt-1 text-sm text-gray-700">Fastest official times set at club-sanctioned competitions.</p>
+			<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">Club Records</h1>
+			<p class="mt-1 text-sm text-secondary">Fastest official times set at club-sanctioned competitions.</p>
 		</div>
 
 		<!-- Filter Toolbar -->
-		<div class="mb-6 flex flex-wrap items-center gap-4 border border-gray-200 bg-white p-4 sm:p-5">
-			<span class="text-xs font-semibold tracking-wider text-gray-700 uppercase">Filter:</span>
+		<div class="mb-6 flex flex-wrap items-center gap-4 border border-border bg-surface p-4 sm:p-5">
+			<span class="text-xs font-semibold tracking-wider text-secondary uppercase">Filter:</span>
 			<div class="flex items-center gap-2">
-				<span class="text-xs font-medium text-gray-700">Session:</span>
+				<span class="text-xs font-medium text-secondary">Session:</span>
 				<SessionSelector bind:value={selectedSession} sessionData={sessions} />
 			</div>
 			<div class="flex items-center gap-2">
-				<span class="text-xs font-medium text-gray-700">Status:</span>
+				<span class="text-xs font-medium text-secondary">Status:</span>
 				<UofTSelector bind:status={studentStatus} />
 			</div>
 		</div>
 
 		{#if loading}
-			<div class="border border-gray-200 bg-white p-12 text-center">
+			<div class="border border-border bg-surface p-12 text-center">
 				<LoadingScreen message="Loading Records..." inline />
 			</div>
 		{:else if recordsDisplay.length > 0}
 			<div class="space-y-6">
 				{#each recordsDisplay as [eventKey, eventRecords] (eventKey)}
-					<div class="overflow-hidden border border-gray-200 bg-white">
-						<div class="flex items-center gap-2.5 border-b border-gray-200 bg-gray-50 px-4 py-2.5 sm:px-5">
-							<span class="cubing-icon event-{eventKey} text-base text-uoft-blue"></span>
-							<h2 class="text-sm font-bold tracking-tight text-gray-900">{eventNames[eventKey]}</h2>
+					<div class="overflow-hidden border border-border bg-surface">
+						<div class="flex items-center gap-2.5 border-b border-border bg-surface-subtle px-4 py-2.5 sm:px-5">
+							<span class="cubing-icon event-{eventKey} text-base text-brand"></span>
+							<h2 class="text-sm font-bold tracking-tight text-main">{eventNames[eventKey]}</h2>
 						</div>
 						<div class="overflow-x-auto">
-							<table class="min-w-full divide-y divide-gray-200">
-								<thead class="bg-gray-50">
+							<table class="min-w-full divide-y divide-border">
+								<thead class="bg-surface-subtle">
 									<tr>
-										<th class="w-24 px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase"
+										<th class="w-24 px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase"
 											>Type</th
 										>
-										<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase"
+										<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase"
 											>Name</th
 										>
-										<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-gray-700 uppercase"
+										<th class="px-4 py-2.5 text-left text-xs font-semibold tracking-wider text-secondary uppercase"
 											>Competition</th
 										>
-										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-uoft-blue uppercase"
+										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-brand uppercase"
 											>Result</th
 										>
 										{#each Array.from({ length: eventSolves[eventKey]! }).keys() as idx (idx)}
 											<th
-												class="hidden px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-gray-700 uppercase md:table-cell"
+												class="hidden px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase md:table-cell"
 											>
 												Solve {idx + 1}
 											</th>
 										{/each}
 									</tr>
 								</thead>
-								<tbody class="divide-y divide-gray-100 bg-white">
+								<tbody class="divide-y divide-border bg-surface">
 									{#if eventRecords.single}
 										<RecordRow record={eventRecords.single} {eventKey} type="Single" />
 									{/if}
@@ -144,8 +144,8 @@ const recordsDisplay = $derived.by(() => {
 				{/each}
 			</div>
 		{:else}
-			<div class="border border-gray-200 bg-white p-12 text-center">
-				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-gray-100 text-gray-700">
+			<div class="border border-border bg-surface p-12 text-center">
+				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-sm bg-surface-muted text-secondary">
 					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
@@ -155,8 +155,8 @@ const recordsDisplay = $derived.by(() => {
 						/>
 					</svg>
 				</div>
-				<h3 class="mt-3 text-base font-bold text-gray-900">No Records Found</h3>
-				<p class="mt-1 text-xs text-gray-700">There are no records matching the selected session or status filter.</p>
+				<h3 class="mt-3 text-base font-bold text-main">No Records Found</h3>
+				<p class="mt-1 text-xs text-secondary">There are no records matching the selected session or status filter.</p>
 			</div>
 		{/if}
 	</div>
