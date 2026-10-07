@@ -72,7 +72,9 @@ const convertToResult = (
 		<div class="mb-6 last:mb-0">
 			<div class="mb-3 flex items-center gap-2 border-b border-border pb-2">
 				<CubeIcon event={eventResult.event} class="text-base text-brand" />
-				<h3 class="text-sm font-bold text-main">{eventNames[eventResult.event]}</h3>
+				<h3 class="text-sm font-bold text-main">
+					{eventNames[eventResult.event]}
+				</h3>
 			</div>
 
 			{#each eventResult.rounds as round (round.round)}
@@ -85,7 +87,8 @@ const convertToResult = (
 							<table class="w-full table-fixed border-collapse">
 								<colgroup>
 									<col class="w-36" />
-									<col class="w-20" /> <col class="w-20" /> <col class="w-20" />
+									<col class="w-20" /> <col class="w-20" />
+									<col class="w-20" />
 									{#if eventAttempts == 5}
 										<col class="w-20" />
 										<col class="w-20" />
@@ -100,20 +103,20 @@ const convertToResult = (
 											>Name</th
 										>
 										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
-											>T1</th
+											>A1</th
 										>
 										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
-											>T2</th
+											>A2</th
 										>
 										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
-											>T3</th
+											>A3</th
 										>
 										{#if eventAttempts == 5}
 											<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
-												>T4</th
+												>A4</th
 											>
 											<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
-												>T5</th
+												>A5</th
 											>
 										{/if}
 										<th

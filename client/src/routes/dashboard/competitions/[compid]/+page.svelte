@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from "svelte";
+import { onMount, tick } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import CreateUserModal from "$lib/components/CreateUserModal.svelte";
@@ -12,7 +12,7 @@ import SelectMenu from "$lib/components/SelectMenu.svelte";
 import UserSearch from "$lib/components/UserSearch.svelte";
 import authFetch from "$lib/authFetch";
 import { eventNames, type CompetitionResults, type Result, type User, type WCAEvent } from "$lib/types";
-import { BASE_URL, checkLoginStatus, fetchJson } from "$lib/utils";
+import { BASE_URL, checkLoginStatus, fetchJson, sortEvents } from "$lib/utils";
 
 const compId = $page.params.compid;
 
@@ -38,15 +38,12 @@ let formData = $state({
 	time5: 0,
 });
 
-const eventOptions = Object.entries(eventNames).map(([key, name]) => ({
-	label: name,
-	value: key,
-}));
-
-const selectedEventLabel = $derived.by(() => {
-	const selected = eventOptions.find((option) => option.value === formData.event);
-	return selected ? selected.label : "Select an event";
-});
+const eventOptions = Object.entries(eventNames)
+	.map(([key, name]) => ({
+		label: name,
+		value: key,
+	}))
+	.toSorted((a, b) => sortEvents(a.value as WCAEvent, b.value as WCAEvent));
 
 const fetchData = async (background = true) => {
 	loading = background;
@@ -124,9 +121,28 @@ $effect(() => {
 	}
 });
 
+const focusFirstTimeField = async () => {
+	await tick();
+	const time1Input = document.querySelector<HTMLInputElement>("#time1");
+	if (time1Input) {
+		time1Input.focus();
+		time1Input.select();
+	}
+	if (typeof requestAnimationFrame !== "undefined") {
+		requestAnimationFrame(() => {
+			const el = document.querySelector<HTMLInputElement>("#time1");
+			if (el && document.activeElement !== el) {
+				el.focus();
+				el.select();
+			}
+		});
+	}
+};
+
 const handleUserSelect = (user: User) => {
 	selectedPersonId = user.id;
 	selectedPersonName = user.name;
+	focusFirstTimeField();
 };
 
 const handleClearUser = () => {
@@ -179,6 +195,7 @@ const editResult = (result: Result) => {
 	selectedPersonId = result.person;
 	selectedPersonName = result.person_name;
 	formData = { ...formData, ...result };
+	focusFirstTimeField();
 };
 
 const deleteResult = async (resultId: number) => {
@@ -186,7 +203,9 @@ const deleteResult = async (resultId: number) => {
 		return;
 	}
 	try {
-		await authFetch(`${BASE_URL}/api/results/${resultId}/`, { method: "DELETE" });
+		await authFetch(`${BASE_URL}/api/results/${resultId}/`, {
+			method: "DELETE",
+		});
 		await fetchData(true);
 	} catch {
 		errorMessage = "Failed to delete result.";
