@@ -14,8 +14,8 @@ RUN pip install --upgrade pip
 # Copy project metadata first to take advantage of Docker layer caching
 COPY pyproject.toml /app/
 
-# Install dependencies defined in pyproject.toml without installing the editable root package
-RUN pip install --no-cache-dir --no-root .
+# Install dependencies defined in pyproject.toml
+RUN pip install --no-cache-dir .
 
 # Copy the rest of the Django project to the container
 COPY . /app/
