@@ -1,17 +1,17 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-import DashboardCompetitionCard from "$lib/components/DashboardCompetitionCard.svelte";
-import DashboardHeader from "$lib/components/DashboardHeader.svelte";
-import DateForm from "$lib/components/DateForm.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import PaginationControls from "$lib/components/PaginationControls.svelte";
-import SelectMenu from "$lib/components/SelectMenu.svelte";
-import SessionSelector from "$lib/components/SessionSelector.svelte";
-import authFetch from "$lib/authFetch";
-import { fetchSessions } from "$lib/competitionSessionService";
-import { type Competition, type Paginated, type Session, studentDesignatorOptions } from "$lib/types";
-import { BASE_URL, PAGINATION_SIZE, checkLoginStatus, toInt } from "$lib/utils";
+import authFetch from "#lib/authFetch.js";
+import { fetchSessions } from "#lib/competitionSessionService.js";
+import DashboardCompetitionCard from "#lib/components/DashboardCompetitionCard.svelte";
+import DashboardHeader from "#lib/components/DashboardHeader.svelte";
+import DateForm from "#lib/components/DateForm.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import PaginationControls from "#lib/components/PaginationControls.svelte";
+import SelectMenu from "#lib/components/SelectMenu.svelte";
+import SessionSelector from "#lib/components/SessionSelector.svelte";
+import { type Competition, type Paginated, type Session, studentDesignatorOptions } from "#lib/types.js";
+import { BASE_URL, PAGINATION_SIZE, checkLoginStatus, toInt } from "#lib/utils.js";
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);

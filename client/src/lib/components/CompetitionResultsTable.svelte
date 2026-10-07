@@ -1,6 +1,6 @@
 <script lang="ts">
-import { type ResultsTableCompetition, type WCAEvent, eventNames, eventSolves } from "$lib/types";
-import { getMeanType, renderTime, sortEvents } from "$lib/utils";
+import { type ResultsTableCompetition, type WCAEvent, eventNames, eventSolves } from "#lib/types.js";
+import { getMeanType, renderTime, sortEvents } from "#lib/utils.js";
 import EventPicker from "./EventPicker.svelte";
 
 interface ResultsTableProp {

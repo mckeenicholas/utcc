@@ -1,5 +1,5 @@
 <script lang="ts">
-import { setTheme, theme, type Theme } from "$lib/stores/theme";
+import { setTheme, theme, type Theme } from "#lib/stores/theme.js";
 
 interface Props {
 	class?: string;

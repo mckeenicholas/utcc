@@ -1,6 +1,6 @@
-import authFetch from "$lib/authFetch";
-import type { Paginated, User } from "$lib/types";
-import { BASE_URL, fetchJson } from "$lib/utils";
+import authFetch from "#lib/authFetch.js";
+import type { Paginated, User } from "#lib/types.js";
+import { BASE_URL, fetchJson } from "#lib/utils.js";
 
 export const fetchUsers = (page = 1): Promise<Paginated<User>> =>
 	fetchJson(`${BASE_URL}/api/users/persons/?page=${page}`);

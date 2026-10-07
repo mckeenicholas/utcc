@@ -1,12 +1,12 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { page } from "$app/state";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import PaginationControls from "$lib/components/PaginationControls.svelte";
-import PublicUserCard from "$lib/components/PublicUserCard.svelte";
-import type { User } from "$lib/types";
-import { fetchUsers, searchUsersByName } from "$lib/userService";
-import { PAGINATION_SIZE } from "$lib/utils";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import PaginationControls from "#lib/components/PaginationControls.svelte";
+import PublicUserCard from "#lib/components/PublicUserCard.svelte";
+import type { User } from "#lib/types.js";
+import { fetchUsers, searchUsersByName } from "#lib/userService.js";
+import { PAGINATION_SIZE } from "#lib/utils.js";
 
 // State Management
 let users: User[] = $state([]);

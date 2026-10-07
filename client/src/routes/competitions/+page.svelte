@@ -1,14 +1,14 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import CompetitionCard from "$lib/components/CompetitionCard.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import PaginationControls from "$lib/components/PaginationControls.svelte";
-import SelectMenu from "$lib/components/SelectMenu.svelte";
-import SessionSelector from "$lib/components/SessionSelector.svelte";
-import UofTSelector from "$lib/components/UofTSelector.svelte";
-import { fetchSessions } from "$lib/competitionSessionService";
-import type { Competition, Paginated, Session, StudentStatus } from "$lib/types";
-import { BASE_URL, PAGINATION_SIZE, fetchJson, toInt } from "$lib/utils";
+import { fetchSessions } from "#lib/competitionSessionService.js";
+import CompetitionCard from "#lib/components/CompetitionCard.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import PaginationControls from "#lib/components/PaginationControls.svelte";
+import SelectMenu from "#lib/components/SelectMenu.svelte";
+import SessionSelector from "#lib/components/SessionSelector.svelte";
+import UofTSelector from "#lib/components/UofTSelector.svelte";
+import type { Competition, Paginated, Session, StudentStatus } from "#lib/types.js";
+import { BASE_URL, PAGINATION_SIZE, fetchJson, toInt } from "#lib/utils.js";
 
 let competitions: Competition[] = $state([]);
 let loading = $state(true);

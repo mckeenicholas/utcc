@@ -1,6 +1,6 @@
 <script lang="ts">
-import { type EventResult, eventListIdx, type ScrambleKey } from "$lib/types";
-import { scrambleOrder } from "$lib/utils";
+import { type EventResult, eventListIdx, type ScrambleKey } from "#lib/types.js";
+import { scrambleOrder } from "#lib/utils.js";
 import CompetitionScrambleItem from "./CompetitionScrambleItem.svelte";
 
 const { results }: { results: EventResult[] } = $props();

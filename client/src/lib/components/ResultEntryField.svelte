@@ -6,7 +6,7 @@ interface Props {
 	disabled?: boolean;
 }
 
-import { toInt } from "$lib/utils";
+import { toInt } from "#lib/utils.js";
 
 let { value = $bindable(0), placeholder = "Enter time", id, disabled = false }: Props = $props();
 

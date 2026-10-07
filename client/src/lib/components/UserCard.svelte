@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type User, studentDesignatorOptions } from "$lib/types";
+import { type User, studentDesignatorOptions } from "#lib/types.js";
 import SelectMenu from "./SelectMenu.svelte";
 
 interface Props {

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Portal } from "bits-ui";
-import { type User, studentDesignatorOptions } from "$lib/types";
-import { createUser } from "$lib/userService";
+import { type User, studentDesignatorOptions } from "#lib/types.js";
+import { createUser } from "#lib/userService.js";
 import SelectMenu from "./SelectMenu.svelte";
 
 let {

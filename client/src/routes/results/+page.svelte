@@ -1,9 +1,9 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import SelectMenu from "$lib/components/SelectMenu.svelte";
-import UofTSelector from "$lib/components/UofTSelector.svelte";
+import CompetitionResultsDisplay from "#lib/components/CompetitionResultsDisplay.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import SelectMenu from "#lib/components/SelectMenu.svelte";
+import UofTSelector from "#lib/components/UofTSelector.svelte";
 import {
 	type Competition,
 	type CompetitionResults,
@@ -11,7 +11,7 @@ import {
 	type StudentStatus,
 	type WCAEvent,
 	eventNames,
-} from "$lib/types";
+} from "#lib/types.js";
 import {
 	BASE_URL,
 	fetchJson,
@@ -19,7 +19,7 @@ import {
 	latestCompetitionsURL,
 	latestResultsURL,
 	sortEvents,
-} from "$lib/utils";
+} from "#lib/utils.js";
 
 let results: CompetitionResults | null = $state(null);
 let competitionList = $state<Competition[] | null>(null);

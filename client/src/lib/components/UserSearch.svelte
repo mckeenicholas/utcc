@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { User } from "$lib/types";
-import { searchUsersByName } from "$lib/userService";
+import type { User } from "#lib/types.js";
+import { searchUsersByName } from "#lib/userService.js";
 
 interface Props {
 	value: string;

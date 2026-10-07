@@ -1,8 +1,8 @@
 <script lang="ts">
 import { SvelteURLSearchParams } from "svelte/reactivity";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import PaginationControls from "$lib/components/PaginationControls.svelte";
-import RankingSelector from "$lib/components/RankingSelector.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import PaginationControls from "#lib/components/PaginationControls.svelte";
+import RankingSelector from "#lib/components/RankingSelector.svelte";
 import {
 	type Paginated,
 	type RecordInstance,
@@ -10,8 +10,8 @@ import {
 	type WCAEvent,
 	eventNames,
 	eventSolves,
-} from "$lib/types";
-import { BASE_URL, PAGINATION_SIZE, fetchJson, isSinglePrimaryEvent, renderTime } from "$lib/utils";
+} from "#lib/types.js";
+import { BASE_URL, PAGINATION_SIZE, fetchJson, isSinglePrimaryEvent, renderTime } from "#lib/utils.js";
 
 let selectedEvent: WCAEvent = $state("333");
 let previousEvent: WCAEvent = $state("333");

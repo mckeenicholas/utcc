@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { RecordInstance, WCAEvent } from "$lib/types";
-import { getMeanType, renderTime } from "$lib/utils";
+import type { RecordInstance, WCAEvent } from "#lib/types.js";
+import { getMeanType, renderTime } from "#lib/utils.js";
 
 const {
 	record,

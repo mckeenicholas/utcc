@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { fetchSessions } from "$lib/competitionSessionService";
-import { type Session, type StudentStatus, type WCAEvent } from "$lib/types";
+import { fetchSessions } from "#lib/competitionSessionService.js";
+import { type Session, type StudentStatus, type WCAEvent } from "#lib/types.js";
 import EventPicker from "./EventPicker.svelte";
 import SessionSelector from "./SessionSelector.svelte";
 import ToggleButton from "./ToggleButton.svelte";

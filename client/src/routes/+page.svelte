@@ -1,9 +1,9 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import CubeIcon from "$lib/components/CubeIcon.svelte";
-import ThemeToggle from "$lib/components/ThemeToggle.svelte";
-import { type Competition, type Paginated } from "$lib/types";
-import { fetchJson, formatCompetitionDate, latestCompetitionsURL } from "$lib/utils";
+import CubeIcon from "#lib/components/CubeIcon.svelte";
+import ThemeToggle from "#lib/components/ThemeToggle.svelte";
+import { type Competition, type Paginated } from "#lib/types.js";
+import { fetchJson, formatCompetitionDate, latestCompetitionsURL } from "#lib/utils.js";
 
 let latestCompetition: Competition | null = $state(null);
 let upcomingCompetitions: Competition[] = $state([]);

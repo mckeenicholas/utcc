@@ -1,5 +1,5 @@
 <script lang="ts">
-import { eventSolves, type Result, type WCAEvent } from "$lib/types";
+import { eventSolves, type Result, type WCAEvent } from "#lib/types.js";
 import ResultEntryField from "./ResultEntryField.svelte";
 
 interface Props {

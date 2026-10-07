@@ -1,8 +1,8 @@
 <script lang="ts">
 import { slide } from "svelte/transition";
 import { Collapsible } from "bits-ui";
-import { eventNames, type ScrambleKey, type WCAEvent } from "$lib/types";
-import { scrambleOrder } from "$lib/utils";
+import { eventNames, type ScrambleKey, type WCAEvent } from "#lib/types.js";
+import { scrambleOrder } from "#lib/utils.js";
 import CubeIcon from "./CubeIcon.svelte";
 
 interface ScrambleItem {

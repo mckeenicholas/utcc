@@ -1,4 +1,4 @@
-import { dev } from "$app/environment";
+import { dev } from "$app/env";
 import { formatCentiseconds } from "@wca/helpers";
 import {
 	type PersonResult,

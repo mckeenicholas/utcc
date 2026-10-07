@@ -1,13 +1,13 @@
 <script lang="ts">
-import { page } from "$app/stores";
-import CompetitionResultsTable from "$lib/components/CompetitionResultsTable.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import PersonalRecordsTable from "$lib/components/PersonalRecordsTable.svelte";
-import SessionSelector from "$lib/components/SessionSelector.svelte";
-import { type ProfileResponse, type Session, type UserProfileResponse, type WCAEvent } from "$lib/types";
-import { BASE_URL, fetchJson, generateRecordsForEvent, processPersonalRecords, sortEvents } from "$lib/utils";
+import { page } from "$app/state";
+import CompetitionResultsTable from "#lib/components/CompetitionResultsTable.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import PersonalRecordsTable from "#lib/components/PersonalRecordsTable.svelte";
+import SessionSelector from "#lib/components/SessionSelector.svelte";
+import { type ProfileResponse, type Session, type UserProfileResponse, type WCAEvent } from "#lib/types.js";
+import { BASE_URL, fetchJson, generateRecordsForEvent, processPersonalRecords, sortEvents } from "#lib/utils.js";
 
-const personId = $page.params.id;
+const personId = page.params.id;
 let selectedEvent: WCAEvent = $state("333");
 let selectedSession: string = $state("-1");
 let profileResults = $state<UserProfileResponse | null>(null);
@@ -71,7 +71,7 @@ $effect(() => {
 							stroke-linejoin="round"
 							stroke-width="2"
 							d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
+						></path>
 					</svg>
 				</div>
 				<h3 class="mt-3 text-base font-bold text-main">{error}</h3>
@@ -85,7 +85,7 @@ $effect(() => {
 			<!-- Header -->
 			<div class="mb-6">
 				<div class="flex items-center gap-2">
-					<a href="/persons" class="text-xs font-semibold text-brand hover:underline">&larr; All Competitors</a>
+					<a href="/persons" class="text-xs font-semibold text-brand hover:underline">← All Competitors</a>
 				</div>
 				<h1 class="mt-1 text-2xl font-bold tracking-tight text-main sm:text-3xl">
 					{profileResults.name}

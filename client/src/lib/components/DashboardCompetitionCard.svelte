@@ -1,6 +1,6 @@
 <script lang="ts">
-import type { Competition } from "$lib/types";
-import { formatCompetitionDate } from "$lib/utils";
+import type { Competition } from "#lib/types.js";
+import { formatCompetitionDate } from "#lib/utils.js";
 
 interface Props {
 	competition: Competition;

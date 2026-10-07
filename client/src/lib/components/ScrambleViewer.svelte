@@ -1,7 +1,7 @@
 <script lang="ts">
-import CubeViewer from "$lib/components/CubeViewer.svelte";
-import type { WCAEvent } from "$lib/types";
-import { formatScramble } from "$lib/utils";
+import CubeViewer from "#lib/components/CubeViewer.svelte";
+import type { WCAEvent } from "#lib/types.js";
+import { formatScramble } from "#lib/utils.js";
 
 interface Props {
 	scrambles: string[];

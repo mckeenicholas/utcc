@@ -6,8 +6,8 @@ import {
 	type PersonResult,
 	type Result,
 	type WCAEvent,
-} from "$lib/types";
-import { compareResults, getMeanType, isSinglePrimaryEvent, renderTime, sortEvents } from "$lib/utils";
+} from "#lib/types.js";
+import { compareResults, getMeanType, isSinglePrimaryEvent, renderTime, sortEvents } from "#lib/utils.js";
 import CubeIcon from "./CubeIcon.svelte";
 
 interface Props {

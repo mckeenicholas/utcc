@@ -1,17 +1,17 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-import { page } from "$app/stores";
-import DateForm from "$lib/components/DateForm.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import SelectMenu from "$lib/components/SelectMenu.svelte";
-import SessionSelector from "$lib/components/SessionSelector.svelte";
-import authFetch from "$lib/authFetch";
-import { fetchSessions } from "$lib/competitionSessionService";
-import { type Competition, type Session, studentDesignatorOptions } from "$lib/types";
-import { BASE_URL, checkLoginStatus, fetchJson, toInt } from "$lib/utils";
+import { page } from "$app/state";
+import authFetch from "#lib/authFetch.js";
+import { fetchSessions } from "#lib/competitionSessionService.js";
+import DateForm from "#lib/components/DateForm.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import SelectMenu from "#lib/components/SelectMenu.svelte";
+import SessionSelector from "#lib/components/SessionSelector.svelte";
+import { type Competition, type Session, studentDesignatorOptions } from "#lib/types.js";
+import { BASE_URL, checkLoginStatus, fetchJson, toInt } from "#lib/utils.js";
 
-const id = $page.params.compid;
+const id = page.params.compid;
 
 let competitionData: Competition | null = $state(null);
 let isLoading = $state(true);
@@ -91,10 +91,8 @@ const updateCompetitionData = async () => {
 			<div class="mb-6 flex flex-col gap-2">
 				<a
 					href="/dashboard/competitions"
-					class="text-xs font-semibold text-brand transition-colors hover:text-uoft-blue-80"
+					class="text-xs font-semibold text-brand transition-colors hover:text-uoft-blue-80">← Back to Competitions</a
 				>
-					&larr; Back to Competitions
-				</a>
 				<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">Edit Competition</h1>
 			</div>
 

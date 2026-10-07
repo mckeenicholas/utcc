@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { ClassValue } from "svelte/elements";
 import { Tooltip } from "bits-ui";
-import { type WCAEvent, eventNames } from "$lib/types";
+import { type WCAEvent, eventNames } from "#lib/types.js";
 
 const { event, class: className }: { event: WCAEvent; class?: ClassValue } = $props();
 

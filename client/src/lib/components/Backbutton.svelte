@@ -1,7 +1,7 @@
 <script lang="ts">
-import { browser } from "$app/environment";
+import { browser } from "$app/env";
 import { goto } from "$app/navigation";
-import { decrementNavigationCount, navigationCount } from "$lib/stores/navigation";
+import { decrementNavigationCount, navigationCount } from "#lib/stores/navigation.js";
 
 const getParentRoute = (path = globalThis.location.pathname) => {
 	if (path.endsWith("/")) {
@@ -35,7 +35,7 @@ const goBack = () => {
 		class="inline-flex items-center rounded-sm border border-border bg-surface py-2 ps-3 pe-4 text-sm font-medium text-secondary transition-colors duration-150 hover:bg-surface-muted hover:text-main"
 	>
 		<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
 		</svg>
 		Back
 	</button>

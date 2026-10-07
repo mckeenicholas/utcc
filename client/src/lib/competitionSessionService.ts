@@ -1,6 +1,6 @@
-import authFetch from "$lib/authFetch";
-import type { Session } from "$lib/types";
-import { BASE_URL, fetchJson } from "$lib/utils";
+import authFetch from "#lib/authFetch.js";
+import type { Session } from "#lib/types.js";
+import { BASE_URL, fetchJson } from "#lib/utils.js";
 
 const SESSIONS_API_URL = `${BASE_URL}/api/session/`;
 

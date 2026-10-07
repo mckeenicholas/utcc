@@ -2,9 +2,9 @@
 import "../app.css";
 import { afterNavigate } from "$app/navigation";
 import { page } from "$app/state";
-import Footer from "$lib/components/Footer.svelte";
-import Navbar from "$lib/components/Navbar.svelte";
-import { incrementNavigationCount } from "$lib/stores/navigation";
+import Footer from "#lib/components/Footer.svelte";
+import Navbar from "#lib/components/Navbar.svelte";
+import { incrementNavigationCount } from "#lib/stores/navigation.js";
 
 const { children } = $props();
 

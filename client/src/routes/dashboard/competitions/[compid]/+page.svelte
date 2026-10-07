@@ -1,21 +1,20 @@
 <script lang="ts">
 import { onMount, tick } from "svelte";
 import { goto } from "$app/navigation";
-import { page } from "$app/stores";
-import CreateUserModal from "$lib/components/CreateUserModal.svelte";
-import ErrorMessage from "$lib/components/ErrorMessage.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import PageHeader from "$lib/components/PageHeader.svelte";
-import ResultForm from "$lib/components/ResultForm.svelte";
-import ResultsTable from "$lib/components/ResultsTable.svelte";
-import SelectMenu from "$lib/components/SelectMenu.svelte";
-import UserSearch from "$lib/components/UserSearch.svelte";
-import authFetch from "$lib/authFetch";
-import { eventNames, type CompetitionResults, type Result, type User, type WCAEvent } from "$lib/types";
-import { BASE_URL, checkLoginStatus, fetchJson, sortEvents } from "$lib/utils";
+import { page } from "$app/state";
+import authFetch from "#lib/authFetch.js";
+import CreateUserModal from "#lib/components/CreateUserModal.svelte";
+import ErrorMessage from "#lib/components/ErrorMessage.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import PageHeader from "#lib/components/PageHeader.svelte";
+import ResultForm from "#lib/components/ResultForm.svelte";
+import ResultsTable from "#lib/components/ResultsTable.svelte";
+import SelectMenu from "#lib/components/SelectMenu.svelte";
+import UserSearch from "#lib/components/UserSearch.svelte";
+import { eventNames, type CompetitionResults, type Result, type User, type WCAEvent } from "#lib/types.js";
+import { BASE_URL, checkLoginStatus, fetchJson, sortEvents } from "#lib/utils.js";
 
-const compId = $page.params.compid;
-
+const compId = page.params.compid;
 let competitionResults: CompetitionResults | null = $state(null);
 let loading = $state(true);
 let submitting = $state(false);

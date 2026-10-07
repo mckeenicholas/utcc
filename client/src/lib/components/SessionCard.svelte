@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Portal } from "bits-ui";
-import type { Competition, Session } from "$lib/types";
-import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
+import type { Competition, Session } from "#lib/types.js";
+import { BASE_URL, fetchJson, formatCompetitionDate } from "#lib/utils.js";
 import DateForm from "./DateForm.svelte";
 import LoadingScreen from "./LoadingScreen.svelte";
 

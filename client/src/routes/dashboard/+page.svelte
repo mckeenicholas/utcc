@@ -1,9 +1,9 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-import DashboardHeader from "$lib/components/DashboardHeader.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import { checkLoginStatus } from "$lib/utils";
+import DashboardHeader from "#lib/components/DashboardHeader.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import { checkLoginStatus } from "#lib/utils.js";
 
 let loading = $state(true);
 

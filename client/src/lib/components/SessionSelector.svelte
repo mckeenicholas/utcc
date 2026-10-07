@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { ClassValue } from "svelte/elements";
 import { Select } from "bits-ui";
-import type { Session } from "$lib/types";
+import type { Session } from "#lib/types.js";
 
 let {
 	value = $bindable(),

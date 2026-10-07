@@ -1,14 +1,14 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { page } from "$app/stores";
-import CompetitionResultsDisplay from "$lib/components/CompetitionResultsDisplay.svelte";
-import CompetitionScrambleTable from "$lib/components/CompetitionScrambleTable.svelte";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import UofTSelector from "$lib/components/UofTSelector.svelte";
-import type { CompetitionResults, StudentStatus } from "$lib/types";
-import { BASE_URL, fetchJson, formatCompetitionDate } from "$lib/utils";
+import { page } from "$app/state";
+import CompetitionResultsDisplay from "#lib/components/CompetitionResultsDisplay.svelte";
+import CompetitionScrambleTable from "#lib/components/CompetitionScrambleTable.svelte";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import UofTSelector from "#lib/components/UofTSelector.svelte";
+import type { CompetitionResults, StudentStatus } from "#lib/types.js";
+import { BASE_URL, fetchJson, formatCompetitionDate } from "#lib/utils.js";
 
-const compId = $page.params.compid;
+const compId = page.params.compid;
 
 let studentStatus: StudentStatus = $state([]);
 let loading = $state(true);
@@ -71,7 +71,8 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 		{:else if !hasError && filteredResults}
 			<div class="mb-6">
 				<div class="flex items-center gap-2">
-					<a href="/competitions" class="text-xs font-semibold text-brand hover:underline">&larr; All Competitions</a>
+					<a href="/competitions" class="text-xs font-semibold text-brand hover:underline">← All Competitions</a>
+
 					<span class="text-xs text-muted">•</span>
 					{#if filteredResults.competition.session_name}
 						<span class="rounded-sm bg-surface-muted px-2 py-0.5 text-xs font-semibold text-brand">
@@ -94,10 +95,7 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 			</div>
 
 			<CompetitionResultsDisplay competitionResults={filteredResults} />
-
-			<div class="mt-8">
-				<CompetitionScrambleTable results={results!.results} />
-			</div>
+			<div class="mt-8"><CompetitionScrambleTable results={results!.results} /></div>
 		{:else}
 			<div class="border border-border bg-surface p-12 text-center">
 				<div class="mx-auto flex h-10 w-10 items-center justify-center rounded-sm bg-surface-muted text-secondary">
@@ -107,7 +105,7 @@ const filteredResults: CompetitionResults | null = $derived.by(() => {
 							stroke-linejoin="round"
 							stroke-width="2"
 							d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
+						></path>
 					</svg>
 				</div>
 				<h3 class="mt-3 text-base font-bold text-main">Competition Not Found</h3>

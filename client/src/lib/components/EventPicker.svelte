@@ -1,6 +1,6 @@
 <script lang="ts">
-import { type WCAEvent, WCAEventList, eventNames } from "$lib/types";
-import { sortEvents } from "$lib/utils";
+import { type WCAEvent, WCAEventList, eventNames } from "#lib/types.js";
+import { sortEvents } from "#lib/utils.js";
 import CubeIcon from "./CubeIcon.svelte";
 
 interface Props {

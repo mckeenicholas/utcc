@@ -2,12 +2,12 @@
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
-import LoadingScreen from "$lib/components/LoadingScreen.svelte";
-import ScrambleCard from "$lib/components/ScrambleCard.svelte";
-import SelectMenu from "$lib/components/SelectMenu.svelte";
-import authFetch from "$lib/authFetch";
-import { eventNames, eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "$lib/types";
-import { BASE_URL } from "$lib/utils";
+import authFetch from "#lib/authFetch.js";
+import LoadingScreen from "#lib/components/LoadingScreen.svelte";
+import ScrambleCard from "#lib/components/ScrambleCard.svelte";
+import SelectMenu from "#lib/components/SelectMenu.svelte";
+import { eventNames, eventListIdx, eventSolves, type CompetitionScrambleSets, type WCAEvent } from "#lib/types.js";
+import { BASE_URL } from "#lib/utils.js";
 
 const eventOptions = Object.entries(eventNames)
 	.map(([key, name]) => ({

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { type ProfileRecordDetail, type WCAEvent, eventNames } from "$lib/types";
-import { renderTime } from "$lib/utils";
+import { type ProfileRecordDetail, type WCAEvent, eventNames } from "#lib/types.js";
+import { renderTime } from "#lib/utils.js";
 
 const { records }: { records: [string, ProfileRecordDetail][] } = $props();
 </script>

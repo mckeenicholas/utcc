@@ -1,5 +1,5 @@
 <script lang="ts">
-import { studentDesignatorOptions } from "$lib/types";
+import { studentDesignatorOptions } from "#lib/types.js";
 import SelectMenu from "./SelectMenu.svelte";
 
 const { onAddUser }: { onAddUser: (name: string, studentStatus: string) => Promise<void> } = $props();

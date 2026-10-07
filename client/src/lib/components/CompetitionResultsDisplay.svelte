@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Portal } from "bits-ui";
-import { type CompetitionResults, type PersonResult, type WCAEvent, eventNames, eventSolves } from "$lib/types";
+import { type CompetitionResults, type PersonResult, type WCAEvent, eventNames, eventSolves } from "#lib/types.js";
 import {
 	compareResults,
 	getDroppedIndices,
@@ -8,7 +8,7 @@ import {
 	isSinglePrimaryEvent,
 	renderTime,
 	sortEvents,
-} from "$lib/utils";
+} from "#lib/utils.js";
 
 const BREAKPOINT = 835;
 
