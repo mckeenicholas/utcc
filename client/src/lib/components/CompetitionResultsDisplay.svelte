@@ -1,7 +1,14 @@
 <script lang="ts">
 import { Portal } from "bits-ui";
 import { type CompetitionResults, type PersonResult, type WCAEvent, eventNames, eventSolves } from "$lib/types";
-import { compareResults, getDroppedIndices, getMeanType, renderTime, sortEvents } from "$lib/utils";
+import {
+	compareResults,
+	getDroppedIndices,
+	getMeanType,
+	isSinglePrimaryEvent,
+	renderTime,
+	sortEvents,
+} from "$lib/utils";
 
 const BREAKPOINT = 835;
 
@@ -12,7 +19,7 @@ const sortedResults = $derived(
 		.map(({ event, rounds }) => ({
 			event,
 			rounds: rounds.map(({ round, results }) => ({
-				results: [...results].toSorted((a, b) => compareResults(a, b)),
+				results: [...results].toSorted((a, b) => compareResults(a, b, event)),
 				round,
 			})),
 		}))
@@ -42,6 +49,7 @@ $effect(() => {
 
 <div class="space-y-6">
 	{#each sortedResults as { event, rounds } (event)}
+		{@const isSinglePrimary = isSinglePrimaryEvent(event)}
 		<section id="event-{event}" class="scroll-mt-24 space-y-4">
 			{#each rounds as { round, results }, roundIndex (round)}
 				<div class="overflow-hidden border border-border bg-surface">
@@ -83,10 +91,18 @@ $effect(() => {
 											Solve {idx + 1}
 										</th>
 									{/each}
-									<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase">
+									<th
+										class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider uppercase"
+										class:text-brand={isSinglePrimary}
+										class:text-secondary={!isSinglePrimary}
+									>
 										Best
 									</th>
-									<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-brand uppercase">
+									<th
+										class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider uppercase"
+										class:text-brand={!isSinglePrimary}
+										class:text-secondary={isSinglePrimary}
+									>
 										{getMeanType(event)}
 									</th>
 								</tr>
@@ -170,14 +186,22 @@ $effect(() => {
 
 										<!-- Best Single -->
 										<td
-											class="px-4 py-2.5 text-right font-mono text-sm font-semibold whitespace-nowrap text-main tabular-nums"
+											class="px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap tabular-nums"
+											class:font-bold={isSinglePrimary}
+											class:text-brand={isSinglePrimary}
+											class:font-semibold={!isSinglePrimary}
+											class:text-main={!isSinglePrimary}
 										>
 											{renderTime(roundPerson.single)}
 										</td>
 
 										<!-- Average / Mean -->
 										<td
-											class="px-4 py-2.5 text-right font-mono text-sm font-bold whitespace-nowrap text-brand tabular-nums"
+											class="px-4 py-2.5 text-right font-mono text-sm whitespace-nowrap tabular-nums"
+											class:font-bold={!isSinglePrimary}
+											class:text-brand={!isSinglePrimary}
+											class:font-semibold={isSinglePrimary}
+											class:text-main={isSinglePrimary}
 										>
 											{renderTime(roundPerson.average)}
 										</td>
@@ -210,6 +234,7 @@ $effect(() => {
 <!-- Mobile Competitor Solve Breakdown Modal -->
 {#if showModal && selectedPerson}
 	{@const droppedIndices = getDroppedIndices(selectedPerson.times)}
+	{@const isSinglePrimaryModal = isSinglePrimaryEvent(selectedEvent)}
 	<Portal>
 		<div
 			class="fixed inset-0 z-50 flex h-full min-h-dvh w-full items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
@@ -279,14 +304,26 @@ $effect(() => {
 					<!-- Summary metrics -->
 					<div class="grid grid-cols-2 gap-3 border border-border bg-surface-subtle p-3">
 						<div>
-							<div class="text-xs text-secondary">Best Single</div>
-							<div class="mt-0.5 font-mono text-lg font-bold text-main tabular-nums">
+							<div class="text-xs" class:text-brand={isSinglePrimaryModal} class:text-secondary={!isSinglePrimaryModal}>
+								Best Single
+							</div>
+							<div
+								class="mt-0.5 font-mono text-lg font-bold tabular-nums"
+								class:text-brand={isSinglePrimaryModal}
+								class:text-main={!isSinglePrimaryModal}
+							>
 								{renderTime(selectedPerson.single)}
 							</div>
 						</div>
 						<div>
-							<div class="text-xs text-brand">{getMeanType(selectedEvent)}</div>
-							<div class="mt-0.5 font-mono text-lg font-bold text-brand tabular-nums">
+							<div class="text-xs" class:text-brand={!isSinglePrimaryModal} class:text-secondary={isSinglePrimaryModal}>
+								{getMeanType(selectedEvent)}
+							</div>
+							<div
+								class="mt-0.5 font-mono text-lg font-bold tabular-nums"
+								class:text-brand={!isSinglePrimaryModal}
+								class:text-main={isSinglePrimaryModal}
+							>
 								{renderTime(selectedPerson.average)}
 							</div>
 						</div>

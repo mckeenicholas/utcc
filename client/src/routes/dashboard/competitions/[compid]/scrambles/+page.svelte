@@ -39,8 +39,8 @@ const fetchScrambles = async () => {
 onMount(fetchScrambles);
 
 const generateScrambleSet = async () => {
-	if (selectedEvent === "333mbf") {
-		console.error("333 Multi-Blind scrambles are not implemented yet");
+	if (selectedEvent === "333mbf" || selectedEvent === "fto") {
+		console.error("Scrambles are not implemented for this event");
 		return;
 	}
 

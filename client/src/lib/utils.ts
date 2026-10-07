@@ -52,7 +52,20 @@ const compareTime = (time1: number, time2: number) => {
 	return 0;
 };
 
-export const compareResults = (person1: PersonResult, person2: PersonResult): number => {
+export const SINGLE_PRIMARY_EVENTS: readonly WCAEvent[] = ["333bf", "444bf", "555bf", "333mbf"] as const;
+
+export const isSinglePrimaryEvent = (event: WCAEvent): boolean => SINGLE_PRIMARY_EVENTS.includes(event);
+
+export const compareResults = (person1: PersonResult, person2: PersonResult, event?: WCAEvent): number => {
+	if (event && isSinglePrimaryEvent(event)) {
+		const singleComparison = compareTime(person1.single, person2.single);
+		if (singleComparison !== 0) {
+			return singleComparison;
+		}
+
+		return compareTime(person1.average, person2.average);
+	}
+
 	const averageComparison = compareTime(person1.average, person2.average);
 	if (averageComparison !== 0) {
 		return averageComparison;

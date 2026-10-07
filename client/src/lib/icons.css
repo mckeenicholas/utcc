@@ -131,3 +131,8 @@
 .cubing-icon.event-sq1:before {
 	content: "\EA15";
 }
+
+.cubing-icon.event-fto:before,
+.cubing-icon.unofficial-fto:before {
+	content: "\EA35";
+}

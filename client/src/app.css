@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./lib/icons.css";
+@import "@cubing/icons";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -90,4 +90,9 @@ button {
 /* Ensure speedcubing figures always align vertically */
 .tabular-nums {
 	font-variant-numeric: tabular-nums;
+}
+
+/* FTO icon mapping for @cubing/icons */
+.cubing-icon.event-fto:before {
+	content: "\f135";
 }

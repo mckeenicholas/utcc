@@ -3,7 +3,8 @@ from django.db import models
 
 from users.models import Person, StudentDesignator
 
-THREE_ATTEMPT_EVENTS = {"666", "777", "333bf", "444bf", "555bf", "333fm"}
+THREE_ATTEMPT_EVENTS = {"666", "777", "444bf", "555bf", "333fm"}
+SINGLE_PRIMARY_EVENTS = {"333bf", "444bf", "555bf"}
 
 
 class CompetitionSession(models.Model):
@@ -46,6 +47,7 @@ class Result(models.Model):
         SQ1 = "sq1", "Square-One"
         C444BF = "444bf", "4x4x4 Blindfolded"
         C555BF = "555bf", "5x5x5 Blindfolded"
+        FTO = "fto", "Face Turning Octahedron"
 
     class SpecialTime(models.IntegerChoices):
         DNF = -1, "DNF"

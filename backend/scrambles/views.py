@@ -76,9 +76,9 @@ class ScrambleGenerator(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, competition_id, event_id, round_id):
-        if event_id not in Result.Event.values:
+        if event_id not in Result.Event.values or event_id == Result.Event.FTO:
             return Response(
-                {"error": "event_id is not a valid WCA event."},
+                {"error": f"Scrambles are not supported for event {event_id}."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

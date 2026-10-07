@@ -11,17 +11,15 @@ import {
 	eventNames,
 	eventSolves,
 } from "$lib/types";
-import { BASE_URL, PAGINATION_SIZE, fetchJson, renderTime } from "$lib/utils";
+import { BASE_URL, PAGINATION_SIZE, fetchJson, isSinglePrimaryEvent, renderTime } from "$lib/utils";
 
 let selectedEvent: WCAEvent = $state("333");
+let previousEvent: WCAEvent = $state("333");
 let isAverage = $state(false);
 let showAllResults = $state(false);
 let pageNum = $state(1);
 let selectedSession: string = $state("-1");
 let uoftStudentStatus: StudentStatus = $state([]);
-
-const eventName = $derived(eventNames[selectedEvent]);
-
 let results: Paginated<RecordInstance> | null = $state(null);
 let loading = $state(true);
 let currentPage = $state(1);
@@ -29,6 +27,8 @@ let totalPages = $state(1);
 let hasNext = $state(false);
 let hasPrevious = $state(false);
 let totalCount = $state(0);
+
+const eventName = $derived(eventNames[selectedEvent]);
 
 const fetchRankings = async (urlParams: URLSearchParams) => {
 	loading = true;
@@ -60,8 +60,23 @@ const goToNextPage = () => hasNext && (pageNum = currentPage + 1);
 const goToPreviousPage = () => hasPrevious && (pageNum = currentPage - 1);
 
 $effect(() => {
+	if (selectedEvent !== previousEvent) {
+		previousEvent = selectedEvent;
+		if (isSinglePrimaryEvent(selectedEvent)) {
+			isAverage = false;
+		}
+	}
+});
+
+$effect(() => {
 	// oxlint-disable-next-line @typescript-eslint/no-unused-vars
-	const _ = { isAverage, selectedEvent, selectedSession, showAllResults, uoftStudentStatus };
+	const _ = {
+		isAverage,
+		selectedEvent,
+		selectedSession,
+		showAllResults,
+		uoftStudentStatus,
+	};
 	pageNum = 1;
 });
 
@@ -100,7 +115,7 @@ $effect(() => {
 		<!-- Header -->
 		<div class="mb-6">
 			<h1 class="text-2xl font-bold tracking-tight text-main sm:text-3xl">
-				Rankings: {eventName}
+				Rankings for {eventName}
 			</h1>
 			<p class="mt-1 text-sm text-secondary">Official club leaderboards by event and student status.</p>
 		</div>
@@ -200,7 +215,9 @@ $effect(() => {
 				{/if}
 			{:else}
 				<div class="p-12 text-center text-secondary">
-					<h2 class="text-base font-semibold text-main">No results found for {eventName}</h2>
+					<h2 class="text-base font-semibold text-main">
+						No results found for {eventName}
+					</h2>
 					<p class="mt-1 text-xs text-secondary">Try selecting a different event or adjusting your filters.</p>
 				</div>
 			{/if}

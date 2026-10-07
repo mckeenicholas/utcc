@@ -7,7 +7,7 @@ import {
 	type Result,
 	type WCAEvent,
 } from "$lib/types";
-import { compareResults, getMeanType, renderTime, sortEvents } from "$lib/utils";
+import { compareResults, getMeanType, isSinglePrimaryEvent, renderTime, sortEvents } from "$lib/utils";
 import CubeIcon from "./CubeIcon.svelte";
 
 interface Props {
@@ -31,7 +31,7 @@ const resultsObj = $derived.by(() => {
 				rounds: eventResult.rounds
 					.map((round) => ({
 						...round,
-						results: [...round.results].toSorted(compareResults),
+						results: [...round.results].toSorted((a, b) => compareResults(a, b, eventResult.event)),
 					}))
 					.toSorted((a, b) => a.round - b.round),
 			}))
@@ -67,6 +67,7 @@ const convertToResult = (
 	<h2 class="mb-5 text-base font-bold text-main">Entered Results</h2>
 
 	{#each resultsObj?.results ?? [] as eventResult (eventResult.event)}
+		{@const isSinglePrimary = isSinglePrimaryEvent(eventResult.event)}
 		{@const eventAttempts = getAttemptCount(eventResult.event)}
 		<div class="mb-6 last:mb-0">
 			<div class="mb-3 flex items-center gap-2 border-b border-border pb-2">
@@ -115,12 +116,20 @@ const convertToResult = (
 												>T5</th
 											>
 										{/if}
-										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
-											>Single</th
+										<th
+											class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider uppercase"
+											class:text-brand={isSinglePrimary}
+											class:text-secondary={!isSinglePrimary}
 										>
-										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-brand uppercase"
-											>{getMeanType(eventResult.event)}</th
+											Single
+										</th>
+										<th
+											class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider uppercase"
+											class:text-brand={!isSinglePrimary}
+											class:text-secondary={isSinglePrimary}
 										>
+											{getMeanType(eventResult.event)}
+										</th>
 										<th class="px-4 py-2.5 text-right text-xs font-semibold tracking-wider text-secondary uppercase"
 											>Actions</th
 										>
@@ -153,11 +162,17 @@ const convertToResult = (
 													>{renderTime(personResult.times[4] || 0)}</td
 												>
 											{/if}
-											<td class="px-4 py-2 text-right font-mono text-sm font-semibold text-main tabular-nums">
+											<td
+												class="px-4 py-2 text-right font-mono text-sm tabular-nums {isSinglePrimary
+													? 'bg-uoft-blue/4 font-bold text-brand dark:bg-blue-500/10'
+													: 'font-semibold text-main'}"
+											>
 												{renderTime(personResult.single)}
 											</td>
 											<td
-												class="bg-uoft-blue/4 px-4 py-2 text-right font-mono text-sm font-bold text-brand tabular-nums dark:bg-blue-500/10"
+												class="px-4 py-2 text-right font-mono text-sm tabular-nums {!isSinglePrimary
+													? 'bg-uoft-blue/4 font-bold text-brand dark:bg-blue-500/10'
+													: 'font-semibold text-main'}"
 											>
 												{renderTime(personResult.average)}
 											</td>

@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 
 from scrambles.models import ScrambleSet
 
-from .models import Competition, CompetitionSession, Result
+from .models import SINGLE_PRIMARY_EVENTS, Competition, CompetitionSession, Result
 from .serializers import (
     CompetitionSerializer,
     CompetitionSessionSerializer,
@@ -135,6 +135,19 @@ class ResultViewSet(viewsets.ModelViewSet):
         return Response(response_serializer.data, status=status_code)
 
 
+def result_rank_key(res):
+    def time_key(time):
+        if time is None or time == 0:
+            return 2, 0
+        if time < 0:
+            return 1, 0
+        return 0, time
+
+    if res.event in SINGLE_PRIMARY_EVENTS:
+        return (time_key(res.single), time_key(res.average))
+    return (time_key(res.average), time_key(res.single))
+
+
 class CompetitionResultsAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -202,6 +215,7 @@ class CompetitionResultsAPIView(APIView):
 
             for round_num, round_results_iter in groupby(event_results, key=attrgetter("round")):
                 round_results = list(round_results_iter)
+                round_results.sort(key=result_rank_key)
 
                 round_scramble_sets = scramble_sets_by_event_round.get((event_code, round_num), [])
 
